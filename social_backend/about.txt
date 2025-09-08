@@ -1,0 +1,42 @@
+//Authentication
+
+#Email Sending (Local Testing with Nodemailer)
+#Image Uploading (Local Server Storage)
+#Background Jobs (BullMQ + Redis)
+
+1.register route
+2.verify otp route
+3.confirm password route
+4.log in route
+5.log out route
+
+//Post
+
+1.Cursor-pagination route
+2.Get Post by Id route
+3.Create Post route
+4.Update Post route 
+5.Delete Post route
+
+//Friend
+1.FriendRequest Route
+2.FriendAccept
+3.FriendBlock
+4.FriendUnblock
+5.Get other_profile
+
+//Comment 
+
+1.Create Comment
+2.Update Comment
+3.Delete Comment
+
+//Reaction
+1.Create Reaction
+2.Update Or Delete Reaction
+
+//Profile
+1.Create Profile including upload the user photo
+2.Update Profile 
+3.Update Cover photo
+4.Get Profile for me

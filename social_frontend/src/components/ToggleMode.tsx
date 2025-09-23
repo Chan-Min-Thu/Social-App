@@ -16,7 +16,7 @@ export default function ToggleMode() {
     setTheme(theme === "light" ? "dark" : "light");
   };
   return (
-    <label className="swap swap-rotate">
+    <label className="swap swap-rotate ">
       <input
         type="checkbox"
         className="theme-controller"

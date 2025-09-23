@@ -13,12 +13,12 @@ export default function Login() {
       <div className="mx-auto w-80 flex gap-5 justify-center flex-col">
         <div className="flex flex-col gap-2">
           <label htmlFor="email">Email</label>
-          <label className="input validator">
+          <label className="inputbox validator">
             <EnvelopeClosedIcon />
             <input
               type="email"
               placeholder="mail@site.com"
-              className="input ml-1 focus:outline-none"
+              className="focus:outline-none"
               required
             />
           </label>
@@ -26,9 +26,10 @@ export default function Login() {
         </div>
         <div className="flex flex-col gap-2">
           <label>Password</label>
-          <label className="input focus:outline-none validator">
+          <label className="inputbox validator">
             <LockClosedIcon />
             <input
+              className="focus:outline-none"
               type="password"
               required
               placeholder="Password"
@@ -46,13 +47,13 @@ export default function Login() {
           At least one uppercase letter
         </p>
         <Link to={""} className="flex justify-end ">
-          <p className="text-error text-sm">Forgot Password?</p>
+          <p className="text-info font-medium text-sm">Forgot Password?</p>
         </Link>
         <button className="btn btn-primary">Log in</button>
         <div className="divider"></div>
         <div className="flex justify-center">
-          <p className="text-sm font-medium opacity-75">
-            Don't have an account?<span className="text-error ml-0.5">Sign Up</span>
+          <p className="text-sm font-medium ">
+            Don't have an account?<Link to="/signup"><span className="text-info ml-0.5">Sign Up</span></Link>
           </p>
         </div>
       </div>

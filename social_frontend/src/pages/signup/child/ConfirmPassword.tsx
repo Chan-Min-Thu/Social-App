@@ -1,0 +1,97 @@
+import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { Link, useNavigate } from "react-router";
+import { zodResolver } from "@hookform/resolvers/zod";
+import {
+  EyeClosedIcon,
+  EyeOpenIcon,
+  LockClosedIcon,
+} from "@radix-ui/react-icons";
+import { passwordSchema } from "../../../schemas/authSchema";
+
+export default function ConfirmPassword() {
+  const navigate = useNavigate();
+  const [visible, setVisible] = useState({ password: false, confirm: false });
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({
+    resolver: zodResolver(passwordSchema),
+  });
+
+  const onSubmitHandler = (data: any) => {
+    console.log(data);
+    navigate("/");
+  };
+  return (
+    <div className="flex justify-center flex-col w-full gap-4 mb-5">
+      <div className="text-center mx-auto flex gap-3 justify-center flex-col">
+        <h1 className=" text-2xl text-base-content font-bold">
+          Welcome soial.App
+        </h1>
+        <p className="text-sm font-medium opacity-70 ">
+          Please type your password and you need to be the same password.
+        </p>
+      </div>
+      <form onSubmit={handleSubmit(onSubmitHandler)}>
+        <div className="flex flex-col justify-center gap-2 mt-8">
+          <div className="flex gap-2 justify-center flex-col">
+            <label className="inputbox w-fullflex validator">
+              <LockClosedIcon />
+              <input
+                id="password"
+                type={visible.password ? "text" : "password"}
+                {...register("password", { required: true })}
+                placeholder="Password"
+                className="focus:outline-none flex-1"
+              />
+              <button
+                onClick={() =>
+                  setVisible({ ...visible, password: !visible.password })
+                }
+              >
+                {visible.password ? <EyeOpenIcon /> : <EyeClosedIcon />}
+              </button>
+            </label>
+            <label className="inputbox flex w-full validator">
+              <LockClosedIcon />
+              <input
+                type={visible.confirm ? "text" : "password"}
+                id="confirmPassword"
+                {...register("confirmPassword", { required: true })}
+                placeholder="Confirm password"
+                className="focus:outline-none flex-1"
+              />
+
+              <button
+                onClick={() =>
+                  setVisible({ ...visible, confirm: !visible.confirm })
+                }
+              >
+                {visible.confirm ? <EyeOpenIcon /> : <EyeClosedIcon />}
+              </button>
+            </label>
+          </div>
+          {errors.confirmPassword ? (
+            <p className=" text-error">{errors.confirmPassword.message}</p>
+          ) : null}
+          <div className="validator-hint hidden">Enter valid email address</div>
+
+          <button className="btn btn-primary" type="submit">
+            Confirm Password
+          </button>
+        </div>
+      </form>
+      <div className="divider"></div>
+      <div className="flex justify-center">
+        <p className="text-sm font-medium ">
+          If you have an account?
+          <Link to="/login">
+            <span className="text-info ml-0.5">Log in</span>
+          </Link>
+        </p>
+      </div>
+    </div>
+  );
+}

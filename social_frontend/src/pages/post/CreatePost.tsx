@@ -1,4 +1,3 @@
-import { FaceIcon, ImageIcon, ZoomInIcon } from "@radix-ui/react-icons";
 import { createPostIcons } from "../../config/CreatePost";
 
 export default function CreatePost() {

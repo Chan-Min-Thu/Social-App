@@ -5,7 +5,10 @@ import SignupLayout from "../pages/signup/SignupLayout";
 import SignUp from "../pages/signup/child/SignUp";
 import VerifyOtp from "../pages/signup/child/VerifyOtp";
 import ConfirmPassword from "../pages/signup/child/ConfirmPassword";
-import CreatePost from "../pages/post/CreatePost";
+import Friend from "../pages/friend/Friend";
+import Setting from "../pages/setting/Setting";
+import PostLayout from "../pages/post/PostLayout";
+
 
 const router = createBrowserRouter([
   {
@@ -14,7 +17,15 @@ const router = createBrowserRouter([
     children: [
       {
         index: true,
-        Component: CreatePost,
+        Component: PostLayout,
+      },
+      {
+        path: "/friends",
+        Component: Friend,
+      },
+      {
+        path: "/settings",
+        Component: Setting,
       },
     ],
   },

@@ -5,7 +5,7 @@ import Drawer from "./Drawer";
 
 export default function Navbar() {
   return (
-    <div className="navbar bg-base-200 shadow-sm px-4 md:px-20">
+    <div className="navbar bg-base-200 shadow-sm px-4 md:px-20 sticky top-0 z-50">
       <div className="flex-1 ml-2">
         <Link to={"/"} className=" text-xl">
           social.app
@@ -18,7 +18,7 @@ export default function Navbar() {
         </button>
         <input
           type="text"
-          placeholder="Search"
+          placeholder="Search post or people..."
           className="input md:block hidden focus:outline-none w-24 md:w-auto"
         />
         <div className="dropdown dropdown-end">

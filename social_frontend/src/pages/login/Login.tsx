@@ -53,7 +53,10 @@ export default function Login() {
         <div className="divider"></div>
         <div className="flex justify-center">
           <p className="text-sm font-medium ">
-            Don't have an account?<Link to="/signup"><span className="text-info ml-0.5">Sign Up</span></Link>
+            Don't have an account?
+            <Link to="/signup">
+              <span className="text-info ml-0.5">Sign Up</span>
+            </Link>
           </p>
         </div>
       </div>

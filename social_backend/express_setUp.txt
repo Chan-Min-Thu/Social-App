@@ -1,0 +1,5 @@
+To Start Express app with typescript,
+
+-npm init -
+- npm install -D typescript @types/node @types/express ts-node
+- npx tsx --init

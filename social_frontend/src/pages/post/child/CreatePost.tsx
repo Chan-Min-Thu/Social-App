@@ -1,7 +1,17 @@
-import { FaceIcon, ImageIcon, ZoomInIcon } from "@radix-ui/react-icons";
-import { createPostIcons } from "../../config/CreatePost";
+import { useState } from "react";
+import Dialog from "../../../components/Dialog";
+import ImageInput, { type ImageProps } from "../../../components/ImageInput";
 
 export default function CreatePost() {
+  const [image, setImage] = useState<ImageProps[]>([]);
+
+  const handleOpenDialog = () => {
+    (
+      document.getElementById("my_modal_2") as HTMLDialogElement | null
+    )?.showModal();
+    setImage([]);
+  };
+
   return (
     <div className="card bg-base-100 w-full shadow-sm">
       <div className="card-body">
@@ -12,22 +22,20 @@ export default function CreatePost() {
             </div>
           </div>
           <div className="w-full">
-            <button className="btn btn-ghost w-full justify-start text-sm font-medium">
+            <button
+              className="btn btn-ghost w-full justify-start text-sm font-medium"
+              onClick={handleOpenDialog}
+            >
               What's on your mind?
             </button>
           </div>
         </div>
-        <div className="card-actions px-14 justify-between mt-4">
-          {createPostIcons.map((post, index) => (
-            <div key={index}>
-              {post.input && <input hidden type="file" />}
-              <button className="btn btn-outline btn-sm">
-                {" "}
-                <post.icon /> {post.name}
-              </button>
-            </div>
-          ))}
-     
+        <div className="card-actions md:px-14 px-2 justify-between items-center mt-2">
+          <div>
+            <ImageInput setImage={setImage}/>
+          </div>
+
+          <Dialog image={image} />
           <div>
             <button className="btn btn-primary btn-sm"> Post</button>
           </div>

@@ -1,23 +1,38 @@
+import { NavLink } from "react-router";
 import { GearIcon, HomeIcon, PersonIcon } from "@radix-ui/react-icons";
-
 
 export default function FooterMenu() {
   return (
     <div className="dock">
-      <button>
-        <HomeIcon className="text-primary"/>
+      <NavLink
+        to={"/"}
+        className={({ isActive }: { isActive: boolean }) =>
+          isActive ? "dock-active" : ""
+        }
+      >
+        <HomeIcon className="text-primary" />
         <span className="dock-label">Home</span>
-      </button>
+      </NavLink>
 
-      <button className="dock-active">
-        <PersonIcon className="text-primary"/>
+      <NavLink
+        to={"/friends"}
+        className={({ isActive }: { isActive: boolean }) =>
+          isActive ? "dock-active" : ""
+        }
+      >
+        <PersonIcon className="text-primary" />
         <span className="dock-label">Friends</span>
-      </button>
+      </NavLink>
 
-      <button>
-        <GearIcon className="text-primary"/>
+      <NavLink
+        to={"/settings"}
+        className={({ isActive }: { isActive: boolean }) =>
+          isActive ? "dock-active" : ""
+        }
+      >
+        <GearIcon className="text-primary" />
         <span className="dock-label">Settings</span>
-      </button>
+      </NavLink>
     </div>
   );
 }

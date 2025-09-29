@@ -8,6 +8,6 @@ const root = document.getElementById("root");
 
 ReactDOM.createRoot(root!).render(
   <StrictMode>
-    <RouterProvider router={router}></RouterProvider>
+    <RouterProvider router={router} />
   </StrictMode>
 );

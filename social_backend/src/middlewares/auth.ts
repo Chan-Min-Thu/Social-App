@@ -4,12 +4,13 @@ import jwt from "jsonwebtoken";
 import { CustomRequest } from "../types/req.type";
 import { errorCode } from "../config/errorCode";
 import { checkUserIfNotExit } from "../utils/auth";
-import { errorFun } from "../utils/utilfunction/errorFun";
+import { errorFun } from "../utils/utilFunction/errorFun";
 import {
   accessTokenOptions,
   refreshTokenOptions,
   tokenFun,
-} from "../utils/utilfunction/tokenFun";
+} from "../utils/utilFunction/tokenFun";
+import { UserType } from "../types/user.type";
 
 export const auth = (req: CustomRequest, res: Response, next: NextFunction) => {
   // const isMobile = req.header("x-platform");
@@ -24,7 +25,7 @@ export const auth = (req: CustomRequest, res: Response, next: NextFunction) => {
 
   if (!refreshToken) {
     return errorFun(next, {
-      message: "You are unauthencicated.",
+      message: "You are unauthenticated.",
       status: 400,
       code: errorCode.unauthenticated,
     });
@@ -40,7 +41,7 @@ export const auth = (req: CustomRequest, res: Response, next: NextFunction) => {
       let decoded;
       decoded = jwt.verify(refreshToken, process.env.REFRESHTOKEN_SECRET!);
       const { id, email } = decoded as { id: string; email: string };
-      const user = await getUserById(id);
+      const user = (await getUserById(id)) as UserType;
       checkUserIfNotExit(user);
 
       if (user!.email !== email) {
@@ -61,7 +62,6 @@ export const auth = (req: CustomRequest, res: Response, next: NextFunction) => {
       }
       const { accessToken: newAccessToken, refreshToken: newRefreshToken } =
         tokenFun(user);
-      console.log(newAccessToken, newRefreshToken);
       const userData = {
         randomToken: newRefreshToken,
       };

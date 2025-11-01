@@ -1,6 +1,7 @@
 import { prisma } from "../config/prisma";
+import { FriendType } from "../types/friend.type";
 
-export const requestedFriend = (friendData: any) => {
+export const requestedFriend = (friendData: FriendType) => {
   return prisma.friend.create({
     data: { ...friendData, status: "pending" },
   });
@@ -23,7 +24,10 @@ export const getFriendRequest = (addresseeId: string) => {
   });
 };
 
-export const createBlockUser = (blockData: any) => {
+export const createBlockUser = (blockData: {
+  blockerId: string;
+  blockedId: string;
+}) => {
   return prisma.blockUser.create({
     data: { ...blockData },
   });

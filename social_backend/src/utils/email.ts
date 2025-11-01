@@ -1,24 +1,30 @@
 import nodemailer from "nodemailer";
+import "dotenv/config";
 
+console.log("Email User:", process.env.EMAIL_USER);
+console.log("Email Pass:", process.env.EMAIL_PASS);
 // Create a test account or replace with real credentials.
 const transporter = nodemailer.createTransport({
-  host: "sandbox.smtp.mailtrap.io",
-  port: 587,
-  secure: false,
+  service: "gmail",
   auth: {
-    user: "0c6aa13a9bc61b",
-    pass: "5c97563c1b510e",
+    user: process.env.EMAIL_USER,
+    pass: process.env.EMAIL_PASS,
   },
 });
 
 // Wrap in an async IIFE so we can use await.
 export const sendEmail = async (emailData: any) => {
   const mailOptions = {
-    from: "chanminthu961549167@gmail.com",
-    to: emailData.email,
+    from: process.env.EMAIL_USER,
+    to: "zinmyohtwe398@gmail.com",
     subject: emailData.subject,
     text: emailData.message, // plain‑text body
-    html: "<b>Hello world?</b>", // HTML body
   };
-  await transporter.sendMail(mailOptions);
+  await transporter.sendMail(mailOptions, (error, info) => {
+    if (error) {
+      console.log("Error occurred. " + error.message);
+      return process.exit(1);
+    }
+    console.log("Message sent: %s", info.messageId);
+  });
 };

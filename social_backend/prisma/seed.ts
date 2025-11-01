@@ -17,7 +17,6 @@ const users: Prisma.UserCreateInput[] = faker.helpers.multiple(createUser, {
 });
 
 async function main() {
-  console.log("seeding....");
   const salt = await bcrypt.genSalt(10);
   const password = await bcrypt.hash("12345678", salt);
 

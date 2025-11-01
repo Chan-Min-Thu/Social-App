@@ -14,6 +14,7 @@ import friendRoute from "./routes/v1/friend/friend";
 import profileRoute from "./routes/v1/profile/profile";
 import healthRoute from "./routes/v1/health";
 import { auth } from "./middlewares/auth";
+import { ErrorType } from "./types/error.type";
 
 export const app = express();
 
@@ -42,15 +43,15 @@ app
   .use(cookieParser())
   .use(express.static("uploads/optimized"));
 
+app.use("/api/v1", healthRoute);
 app.use("/api/v1", authRoute);
 app.use("/api/v1", auth, postRoute);
 app.use("/api/v1", auth, reactionRoute);
 app.use("/api/v1", auth, commentRoute);
 app.use("/api/v1", auth, friendRoute);
 app.use("/api/v1", auth, profileRoute);
-app.use("/api/v1", healthRoute);
 
-app.use((error: any, req: Request, res: Response, next: NextFunction) => {
+app.use((error: ErrorType, req: Request, res: Response, next: NextFunction) => {
   const status = error.status || 500;
   const message = error.message || "Server Error";
   const errorCode = error.code || "Error_code";

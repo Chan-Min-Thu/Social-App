@@ -3,7 +3,7 @@ import {
   deleteBlockUser,
 } from "./../../services/friendService";
 import { NextFunction, Response } from "express";
-import { body, validationResult } from "express-validator";
+import { body, param } from "express-validator";
 import { CustomRequest } from "../../types/req.type";
 import { errorCode } from "../../config/errorCode";
 import { getUserById } from "../../services/authService";
@@ -23,31 +23,32 @@ import {
   checkBlockRow,
 } from "../../utils/check";
 import { Friend } from "../../../generated/prisma";
-import { reqbodyErrorFn } from "../../utils/utilfunction/reqbodyError";
+import { reqBodyErrorFn } from "../../utils/utilFunction/reqBodyError";
 import { findProfileByUserId } from "../../services/profileService";
-
+import { UserType } from "../../types/user.type";
 export const requestFriendController = [
-  body("addresseeId").isUUID(),
+  body("addresseeId").isUUID().withMessage("AddresseeId was wrong."),
   async (req: CustomRequest, res: Response, next: NextFunction) => {
-    reqbodyErrorFn(req, next);
+    console.log(req.body);
+    if (reqBodyErrorFn(req, next)) return;
 
-    const userId = req.userId;
-    const { addresseeId } = req.body;
+    const userId = req.userId as string;
+    const addresseeId = req.body.addresseeId as string;
 
-    const isUser = getUserById(addresseeId);
+    const isUser = (await getUserById(addresseeId)) as UserType;
     checkUserIfNotExit(isUser);
     const isFriend = await findFriendship({
-      userId: String(userId),
-      blockedId: String(addresseeId),
+      userId: userId,
+      blockedId: addresseeId,
     });
     checkAlreadyFriend(isFriend);
-    const friendrequested = await requestedFriend({
+    const friendRequested = await requestedFriend({
       addresseeId,
       requesterId: userId,
     });
     res.status(200).json({
       message: "Requested Friend.",
-      data: { friend: friendrequested },
+      data: { friend: friendRequested },
     });
   },
 ];
@@ -55,7 +56,7 @@ export const requestFriendController = [
 export const acceptFriendController = [
   body("requesterId").isUUID(),
   async (req: CustomRequest, res: Response, next: NextFunction) => {
-    reqbodyErrorFn(req, next);
+    if (reqBodyErrorFn(req, next)) return;
     const userId = req.userId;
     const { requesterId } = req.body;
     const isAcceptFriend = await getFriendRequest(String(userId));
@@ -87,8 +88,8 @@ export const acceptFriendController = [
 export const blockFriendController = [
   body("blockedId").isUUID(),
   async (req: CustomRequest, res: Response, next: NextFunction) => {
-    reqbodyErrorFn(req, next);
-    const userId = req.userId;
+    if (reqBodyErrorFn(req, next)) return;
+    const userId = req.userId as string;
     const { blockedId } = req.body;
     const isFriend = await findFriendship({
       userId: String(userId),
@@ -112,7 +113,7 @@ export const blockFriendController = [
 export const unblockFriendController = [
   body("blockedId").isUUID(),
   async (req: CustomRequest, res: Response, next: NextFunction) => {
-    reqbodyErrorFn(req, next);
+    if (reqBodyErrorFn(req, next)) return;
     const userId = req.userId;
     const { blockedId } = req.body;
     const isFriend = await findFriendship({
@@ -143,13 +144,13 @@ export const unblockFriendController = [
 ];
 
 export const getOtherProfileController = [
-  body("profileId").isUUID(),
+  param("profileId").isUUID(),
   async (req: CustomRequest, res: Response, next: NextFunction) => {
-    const userId = req.userId;
+    const userId = req.userId as string;
 
-    const { profileId } = req.body;
+    const profileId = req.params.profileId as string;
+    console.log("profileId:", profileId);
     const isBlock = await blockYourAccount({ userId, profileId });
-    console.log(isBlock);
     let user;
     if (isBlock !== null) {
       return next({

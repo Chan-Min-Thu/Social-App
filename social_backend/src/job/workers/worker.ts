@@ -19,25 +19,27 @@ const worker = new Worker(
       fileName,
       width,
       height,
-      qualitity,
+      quality,
       email,
       subject,
       message,
     } = job.data;
     if (type === "image") {
       const filePath = Buffer.from(base64Image, "base64");
+      console.log("hello world");
       const optimizedImagePath = path.join(
         __dirname,
         "../../..",
         "/uploads/optimized/",
         `${fileName.split(".")[0]}.webp`
       );
-
+      console.log(optimizedImagePath);
       await sharp(filePath)
         .resize(width, height)
-        .webp(qualitity)
+        .webp(quality)
         .toFile(optimizedImagePath);
     } else if (type === "email") {
+      console.log(email);
       await sendEmail({ email, subject, message });
     }
   },

@@ -8,7 +8,7 @@ import {
 const router = express.Router();
 
 router.post("/comments", createCommentController);
-router.patch("/comments", updateCommentController);
+router.patch("/comments/:commentId", updateCommentController);
 router.delete("/comments", deleteCommentController);
 
 export default router;

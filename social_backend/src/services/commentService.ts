@@ -1,9 +1,20 @@
-import { Comment } from "../../generated/prisma";
 import { prisma } from "../config/prisma";
+import { CommentType } from "../types/comment.type";
 
-export const createComment = (commentData: any) => {
+export const createComment = (commentData: CommentType) => {
+  const { content, authorId, postId, parentId } = commentData;
+
+  if (!authorId || !postId) {
+    throw new Error("authorId and postId are required to create a comment");
+  }
+
   return prisma.comment.create({
-    data: commentData,
+    data: {
+      content,
+      authorId,
+      postId,
+      parentId: parentId ?? null,
+    },
   });
 };
 

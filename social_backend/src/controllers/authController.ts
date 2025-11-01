@@ -21,14 +21,15 @@ import { getUserById } from "./../services/authService";
 import { generateOtp, generateToken } from "../utils/generate";
 import { sendEmail } from "../utils/email";
 import { Otp, User } from "../../generated/prisma";
-import { isSameDate } from "../utils/utilfunction/sameDate";
+import { isSameDate } from "../utils/utilFunction/sameDate";
 import {
   accessTokenOptions,
   refreshTokenOptions,
   tokenFun,
-} from "../utils/utilfunction/tokenFun";
+} from "../utils/utilFunction/tokenFun";
 import { errorCode } from "../config/errorCode";
 import queue from "../job/queues/queue";
+import { UserType } from "../types/user.type";
 
 /*
  1. ) Email validation
@@ -41,10 +42,10 @@ import queue from "../job/queues/queue";
   c ) if not the same date, otp row create
   d ) if the same date and also count is 3 times, error return.
   e ) if the same date and valid count (count < 3), can get the otp
-  Resopnse (otp,email,rememberToken)
+  Response (otp,email,rememberToken)
  */
 export const register = [
-  body("email", "Please fill the valid email.").isEmail(),
+  body("email").isEmail().withMessage("Please fill the valid email."),
   async (req: Request, res: Response, next: NextFunction) => {
     // 1. ) Email validation
     const errors: any = validationResult(req).array({ onlyFirstError: true });
@@ -56,15 +57,15 @@ export const register = [
     }
     const email = req.body.email;
     // 2. )User have already registered before?.
-    const user = await getUserByEmail(req.body.email);
-    checkUserExit(user);
+    const user = (await getUserByEmail(req.body.email)) as UserType;
+    checkUserExit(user); //user.id !==undefined ,It will run
 
     // 3. ) Otp generate and sending
     const otp = generateOtp();
     const message = `Your otp is ${otp}.`;
     // const sendEmailData = {
     //   email,
-    //   subject: "Your otp is vaild for 10 mins.",
+    //   subject: "Your otp is valid for 10 mins.",
     //   message,
     // };
 
@@ -122,7 +123,7 @@ export const register = [
     await queue.add("email", {
       type: "email",
       email,
-      subject: "Your otp is vaild for 10 mins.",
+      subject: "Your otp is valid for 10 mins.",
       message,
     });
     res.status(200).json({
@@ -141,20 +142,21 @@ export const register = [
   4. ) Token is valid ? if invalid ,error strictly updating 5,
   5. ) check otp is the same or not the same? /(
     a.) !isMatched { 
-     !thesameDate
-     {error:1} : the same date {eroor+1} /,
+     !theSameDate
+     {error:1} : the same date {error+1} /,
     b.) isMatched { 
-     update the otp table(verifytoken,error,count)
+     update the otp table(verifyToken,error,count)
       
      Response {verifytoken,email}  
  */
 export const verifyOtp = [
-  body("email", "Invalid Email.").isEmail(),
-  body("otp", "Your OTP invalid.")
+  body("email").isEmail().withMessage("Please fill the valid email."),
+  body("otp")
     .isLength({ min: 6, max: 6 })
     .isNumeric()
-    .trim(),
-  body("token").notEmpty().trim().escape(),
+    .trim()
+    .withMessage("Your OTP invalid."),
+  body("token").notEmpty().trim().escape().withMessage("Your token was wrong."),
   async (req: Request, res: Response, next: NextFunction) => {
     // 1. ) request are email,opt,token,
     const errors = validationResult(req).array({ onlyFirstError: true });
@@ -165,7 +167,7 @@ export const verifyOtp = [
       return next(error);
     }
     const { email, otp, token } = req.body;
-    const user = await getUserByEmail(email);
+    const user = (await getUserByEmail(email)) as UserType;
     checkUserExit(user);
 
     //2. ) By using email ,check otp row exit?
@@ -242,13 +244,14 @@ export const verifyOtp = [
  */
 
 export const confirmPassword = [
-  body("email", "Invalid Email").isEmail(),
-  body("password", "Invalid Password")
+  body("email").isEmail().withMessage("Please fill the valid email."),
+  body("password")
     .notEmpty()
     .trim()
     .matches("^[0-9]+[a-z0-9]?$")
-    .isLength({ min: 10, max: 16 }),
-  body("token").notEmpty().trim().escape(),
+    .isLength({ min: 10, max: 16 })
+    .withMessage("Your password was wrong"),
+  body("token").notEmpty().trim().escape().withMessage("Your token was wrong."),
   async (req: Request, res: Response, next: NextFunction) => {
     // 1. ) Request validation
     const errors = validationResult(req).array({ onlyFirstError: true });
@@ -261,7 +264,7 @@ export const confirmPassword = [
     const { email, password, token } = req.body;
 
     // 2. ) By using Email , check user exit in the user table and in the otp table
-    const isUser = await getUserByEmail(email);
+    const isUser = (await getUserByEmail(email)) as UserType;
     checkUserExit(isUser);
 
     const isOtp = await getOtpByEmail(email);
@@ -350,7 +353,7 @@ export const confirmPassword = [
       })
       .status(200)
       .json({
-        message: "You've already successfully crearted an account.",
+        message: "You've already successfully created an account.",
         data: user,
       });
   },
@@ -358,7 +361,7 @@ export const confirmPassword = [
 
 /*
   1. ) Request validation
-  2. ) Checkuser exit,if not exit error
+  2. ) CheckUser exit,if not exit error
   3. ) User exit but account is freeze , error return
   4. ) Password is matched,
       if not match
@@ -367,8 +370,12 @@ export const confirmPassword = [
  */
 
 export const login = [
-  body("email").isEmail(),
-  body("password").notEmpty().trim().matches("^[0-9]+[a-z0-9]?$"),
+  body("email").isEmail().withMessage("Please fill the valid email."),
+  body("password")
+    .notEmpty()
+    .trim()
+    .matches("^[0-9]+[a-z0-9]?$")
+    .withMessage("Your password was wrong."),
   async (req: Request, res: Response, next: NextFunction) => {
     //  1. ) Request validation
     const errors = validationResult(req).array({ onlyFirstError: true });
@@ -380,11 +387,11 @@ export const login = [
     }
 
     const { email, password } = req.body;
-    //  2. ) Checkuser exit,if not exit error
+    //  2. ) CheckUser exit,if not exit error
     let user;
-    user = await getUserByEmail(email);
+    user = (await getUserByEmail(email)) as UserType;
     checkUserIfNotExit(user);
-    const userId = user!.id;
+    const userId = user!.id as string;
 
     //  3. ) User exit but account is freeze , error return
     if (user!.status === "FREEZE") {
@@ -479,7 +486,7 @@ export const logout = async (
   }
 
   const { id, email } = decoded!;
-  const user = await getUserById(id);
+  const user = (await getUserById(id)) as UserType;
   checkUserIfNotExit(user);
 
   if (user?.email !== email) {

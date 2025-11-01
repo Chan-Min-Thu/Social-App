@@ -12,14 +12,16 @@ import {
   getPostsByInfinite,
   updatePost,
 } from "../../services/postService";
-import { checkfile, checkPostById } from "../../utils/check";
+import { checkFile, checkPostById } from "../../utils/check";
 import path from "path";
 import { unlink } from "fs";
 import { errorCode } from "../../config/errorCode";
 import { getUserById } from "../../services/authService";
 import { checkUserIfNotExit } from "../../utils/auth";
 import queue from "../../job/queues/queue";
-import { reqbodyErrorFn } from "../../utils/utilfunction/reqbodyError";
+import { reqBodyErrorFn } from "../../utils/utilFunction/reqBodyError";
+import { UserType } from "../../types/user.type";
+import { Image, PostType } from "../../types/post.type";
 
 export const getAllPostsController = (
   req: CustomRequest,
@@ -39,18 +41,21 @@ export const createPostController = [
     .trim()
     .notEmpty()
     .escape()
-    .customSanitizer((val) => sanitizeHtml(val)),
+    .customSanitizer((val) => sanitizeHtml(val))
+    .withMessage("Your title does not match."),
   body("content")
     .trim()
     .notEmpty()
     .escape()
-    .customSanitizer((val) => sanitizeHtml(val)),
+    .customSanitizer((val) => sanitizeHtml(val))
+    .withMessage("Your content does not match."),
   async (req: CustomRequest, res: Response, next: NextFunction) => {
-    reqbodyErrorFn(req, next);
-    const userId = String(req.userId);
+    if (reqBodyErrorFn(req, next)) return;
+
+    const userId = req.userId as string;
     const { title, content } = req.body;
     const images = req.files;
-    checkfile(images);
+    checkFile(images);
 
     const createdPost = await createPost({
       title,
@@ -58,22 +63,20 @@ export const createPostController = [
       authorId: userId,
     });
 
-    console.log(createdPost);
-
     const imagesData =
       Array.isArray(images) && images.length > 0
         ? await Promise.all(
             images.map(async (image: any) => {
-              console.log("image data", image);
+              // console.log("image data", image);
               await queue.add(
-                "optimized-image",
+                "image",
                 {
                   type: "image",
                   filePath: image.buffer.toString("base64"),
                   fileName: image.originalname,
                   width: 500,
                   height: 600,
-                  qualitity: 100,
+                  quality: 100,
                 },
                 {
                   attempts: 3,
@@ -100,29 +103,36 @@ export const createPostController = [
 ];
 
 export const updatePostController = [
-  body("id").notEmpty().trim(),
+  param("postId").notEmpty().trim(),
   body("title")
     .trim()
     .notEmpty()
     .escape()
-    .customSanitizer((val) => sanitizeHtml(val)),
+    .customSanitizer((val) => sanitizeHtml(val))
+    .withMessage("Your title does not match."),
   body("content")
     .trim()
     .notEmpty()
     .escape()
-    .customSanitizer((val) => sanitizeHtml(val)),
-  body("authorId").notEmpty().trim(),
+    .customSanitizer((val) => sanitizeHtml(val))
+    .withMessage("Your content does not match."),
+  body("authorId")
+    .notEmpty()
+    .trim()
+    .withMessage("Your authorId does not match."),
   async (req: CustomRequest, res: Response, next: NextFunction) => {
-    reqbodyErrorFn(req, next);
-    const userId = req.userId;
-    const { title, content, id } = req.body;
+    if (reqBodyErrorFn(req, next)) return;
+    const userId = req?.userId as string;
+    const id = req.params.postId as string;
+    const { title, content } = req.body;
     const images = req.files;
-    checkfile(images);
+    checkFile(images);
 
-    const post = await getPostById(id);
-    console.log(post);
-    if (post) {
-      post.image.map(async (img) => {
+    const post = (await getPostById(id)) as PostType;
+    checkPostById(post);
+    // This is to delete inside optimized file
+    if (post?.id !== undefined && post.image?.length !== 0) {
+      post.image?.map(async (img) => {
         const imgUrl = img.imageUrl;
         try {
           const imagePath = path.join(
@@ -144,11 +154,12 @@ export const updatePostController = [
         }
       });
     }
-
+    // this is to delete the image path from the database.
     try {
-      if (post?.image) {
+      if (post && post.image?.length !== 0) {
+        const images = post.image ?? [];
         await Promise.all(
-          post.image.map((img) => {
+          images.map((img) => {
             const originalPath = path.join(
               __dirname,
               "../../..",
@@ -163,11 +174,9 @@ export const updatePostController = [
       console.log(error);
     }
     checkPostById(post);
-    const updatedpost = await updatePost({
-      title,
-      content,
-      authorId: userId,
-      id,
+    const postData: PostType = { id, title, content, authorId: userId };
+    const updatedPost = await updatePost({
+      ...postData,
     });
 
     // images data mapping and optimized with queue,job,worker
@@ -176,13 +185,14 @@ export const updatePostController = [
         ? Promise.all(
             images.map(async (image: any) => {
               await queue.add(
-                "optimized-image",
+                "image",
                 {
+                  type: "image",
                   filePath: image.buffer.toString("base64"), // you need to change buffer file to base64 because when buffer is transfer to redis server, there has potential issues just like normalization and denormalization.
                   fileName: image.originalname,
                   width: 500,
                   height: 600,
-                  qualitity: 100,
+                  quality: 100,
                 },
                 {
                   attempts: 3,
@@ -194,13 +204,18 @@ export const updatePostController = [
               );
               return {
                 imageUrl: `${image.originalname.split(".")[0]}.webp`,
-                postId: updatedpost.id,
+                postId: updatedPost.id,
               };
             })
           )
         : [];
-    await deleteImage(req.body.id);
-    await createImage(await imagesData);
+
+    if (images?.length !== undefined && images.length) {
+      console.log("true");
+      await deleteImage(req.params.postId);
+      await createImage(await imagesData);
+    }
+
     const updatedPostWithImage = await getPostById(id);
 
     res.status(200).json({
@@ -213,17 +228,17 @@ export const updatePostController = [
 export const deletePostController = [
   body("id").isUUID(),
   async (req: CustomRequest, res: Response, next: NextFunction) => {
-    reqbodyErrorFn(req, next);
+    if (reqBodyErrorFn(req, next)) return;
     const userId = String(req.userId);
     const postId = req.body.id;
-    const user = await getUserById(userId);
+    const user = (await getUserById(userId)) as UserType;
     checkUserIfNotExit(user);
 
-    const post = await getPostById(postId);
+    const post = (await getPostById(postId)) as PostType;
     checkPostById(post);
 
-    if (post) {
-      post.image.map(async (img) => {
+    if (post && post.image?.length !== 0) {
+      post.image?.map(async (img) => {
         const imgUrl = img.imageUrl;
         try {
           const imagePath = path.join(
@@ -268,7 +283,7 @@ export const getPostByIdController = [
     const { postId } = req.params;
     const userId = req.userId;
 
-    const user = await getUserById(userId!);
+    const user = (await getUserById(userId!)) as UserType;
     checkUserIfNotExit(user);
 
     const post = await getPostByIdWithRelation(String(postId));
@@ -295,7 +310,7 @@ export const getPostByInfiniteScrollController = [
 
     const userId = req.userId;
     const { lastCursor, take, skip } = req.query;
-    const user = await getUserById(userId!);
+    const user = (await getUserById(userId!)) as UserType;
     checkUserIfNotExit(user);
 
     const options = {

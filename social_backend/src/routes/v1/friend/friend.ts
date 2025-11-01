@@ -13,6 +13,6 @@ router.post("/friendRequest", requestFriendController);
 router.post("/friendAccept", acceptFriendController);
 router.post("/friendBlock", blockFriendController);
 router.post("/friendUnblock", unblockFriendController);
-router.get("/other_profile", getOtherProfileController);
+router.get("/otherProfile/:profileId", getOtherProfileController);
 
 export default router;

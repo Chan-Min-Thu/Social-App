@@ -1,5 +1,5 @@
 import { NextFunction, Response } from "express";
-import { body, validationResult } from "express-validator";
+import { body, param, validationResult } from "express-validator";
 import { CustomRequest } from "../../types/req.type";
 import { errorCode } from "../../config/errorCode";
 import { getUserById } from "../../services/authService";
@@ -17,25 +17,43 @@ import {
   getReactionByUserIdAndPostId,
   updateReaction,
 } from "../../services/reactionService";
-import { reqbodyErrorFn } from "../../utils/utilfunction/reqbodyError";
+import { reqBodyErrorFn } from "../../utils/utilFunction/reqBodyError";
+import { UserType } from "../../types/user.type";
+import { PostType } from "../../types/post.type";
+import { ReactionType } from "../../types/reaction.type";
+
+const reaction = {
+  LOVE: "LOVE",
+  LIKE: "LIKE",
+  HAHA: "HAHA",
+  WOW: "WOW",
+  SAD: "SAD",
+  ANGRY: "ANGRY",
+};
+
+const allowedReaction = Object.values(reaction);
 
 export const createReactionController = [
-  body("type").notEmpty(),
-  body("userId").isUUID(),
+  body("type")
+    .isIn(allowedReaction)
+    .withMessage("Reaction must be allowed field."),
   body("postId").isUUID(),
   async (req: CustomRequest, res: Response, next: NextFunction) => {
-    reqbodyErrorFn(req, next);
+    if (reqBodyErrorFn(req, next)) return;
 
-    const userId = req.userId;
+    const userId = req?.userId as string;
     const { postId, type } = req.body;
 
-    const user = await getUserById(userId!);
+    const user = (await getUserById(userId!)) as UserType;
     checkUserIfNotExit(user);
 
-    const post = await getPostById(postId);
+    const post = (await getPostById(postId)) as PostType;
     checkPostById(post);
 
-    const isReaction = await getReactionByUserIdAndPostId({ userId, postId });
+    const isReaction = (await getReactionByUserIdAndPostId({
+      userId,
+      postId,
+    })) as ReactionType;
     checkReactionExit(isReaction);
 
     const reactionData = {
@@ -52,45 +70,55 @@ export const createReactionController = [
 ];
 
 export const updateReactionController = [
-  body("id").isUUID(),
-  body("type").notEmpty(),
-  body("userId").isUUID(),
+  param("reactionId").isUUID(),
+  body("type")
+    .isIn(allowedReaction)
+    .withMessage("Reaction must be allowed field.")
+    .optional(),
+  // body("userId").isUUID(),j
   body("postId").isUUID().withMessage({ message: "Invalid request" }),
 
   async (req: CustomRequest, res: Response, next: NextFunction) => {
-    reqbodyErrorFn(req, next);
+    if (reqBodyErrorFn(req, next)) return;
 
-    const userId = req.userId;
-    const { postId, type, id } = req.body;
+    const userId = req.userId as string;
+    const reactionId = req.params.reactionId;
+    const { postId, type } = req.body;
 
-    const user = await getUserById(userId!);
+    const user = (await getUserById(userId!)) as UserType;
     checkUserIfNotExit(user);
 
-    const post = await getPostById(postId);
+    const post = (await getPostById(postId)) as PostType;
     checkPostById(post);
 
-    console.log(id);
-    const isReaction = await getReactionById(id);
-    console.log(isReaction);
+    const isReaction = await getReactionById(reactionId);
     checkReactionById(isReaction);
 
-    if (type === "") {
-      await deleteReaction(id);
-      return res.status(203).json({
-        message: "Your reaction is deleted.",
-      });
+    const isSuccessor = isReaction?.userId === user.id;
+    if (isSuccessor) {
+      if (type === "") {
+        await deleteReaction(reactionId);
+        return res.status(203).json({
+          message: "Your reaction is deleted.",
+        });
+      } else {
+        const reactionData = {
+          id: reactionId,
+          type,
+          userId,
+          postId,
+        };
+        const reaction = await updateReaction(reactionData);
+        res.status(200).json({
+          message: "Your reaction is successfully updated.",
+          data: { reaction },
+        });
+      }
     } else {
-      const reactionData = {
-        id,
-        type,
-        userId,
-        postId,
-      };
-      const reaction = await updateReaction(reactionData);
-      res.status(200).json({
-        message: "Your reaction is successfully updated.",
-        data: { reaction },
-      });
+      const error: any = new Error("This reaction does not belong you.");
+      error.status = 400;
+      error.code = errorCode.unauthenticated;
+      throw error;
     }
   },
 ];

@@ -1,15 +1,25 @@
+import { ReactionType, UpdateReactionType } from "../types/reaction.type";
 import { prisma } from "../config/prisma";
 
-export const createReaction = (reactionData: any) => {
+export const createReaction = (reactionData: ReactionType) => {
+  console.log(reactionData);
   return prisma.reaction.create({
-    data: reactionData,
+    data: {
+      type: reactionData.type,
+      userId: reactionData.userId,
+      postId: reactionData.postId,
+    },
   });
 };
 
-export const updateReaction = (reactionData: any) => {
+export const updateReaction = (reactionData: UpdateReactionType) => {
   return prisma.reaction.update({
     where: { id: reactionData.id },
-    data: reactionData,
+    data: {
+      type: reactionData.type,
+      userId: reactionData.userId,
+      postId: reactionData.postId,
+    },
   });
 };
 export const deleteReaction = (id: string) => {
@@ -17,7 +27,7 @@ export const deleteReaction = (id: string) => {
     where: { id },
   });
 };
-export const getReactionById = (id: any) => {
+export const getReactionById = (id: string) => {
   console.log(id);
   return prisma.reaction.findUnique({
     where: { id },

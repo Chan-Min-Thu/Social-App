@@ -50,7 +50,7 @@ model BlockUser {
 }
 
 model Friend {
-  id          String   @id @default(cuid())
+  id          String   @id @default(uuid())
   requester   User     @relation("FriendsInitiated", fields: [requesterId], references: [id])
   requesterId String
   addressee   User     @relation("FriendsReceived", fields: [addresseeId], references: [id])

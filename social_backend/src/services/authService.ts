@@ -1,4 +1,3 @@
-import { profile } from "console";
 import { prisma } from "../config/prisma";
 
 export const getUserByEmail = (email: string) => {

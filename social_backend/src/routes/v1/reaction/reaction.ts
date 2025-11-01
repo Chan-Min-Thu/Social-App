@@ -7,6 +7,6 @@ import {
 const router = express.Router();
 
 router.post("/reactions", createReactionController);
-router.patch("/reactions", updateReactionController);
+router.patch("/reactions/:reactionId", updateReactionController);
 
 export default router;

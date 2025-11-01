@@ -16,12 +16,12 @@ router.post(
   createProfileController
 );
 router.patch(
-  "/profile",
+  "/profile/:profileId",
   uploadMemory.single("profilePicture"),
   updateProfileController
 );
 router.patch(
-  "/profile/cover_photo",
+  "/profile/cover_photo/:profileId",
   uploadMemory.single("coverPhoto"),
   updateProfileCoverImageController
 );

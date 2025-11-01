@@ -1,4 +1,5 @@
 import { errorCode } from "../config/errorCode";
+import { UserType } from "../types/user.type";
 
 /*
  checkOtpErrorIfInSameDate,
@@ -6,8 +7,8 @@ import { errorCode } from "../config/errorCode";
   checkUserExit,
   checkUserIfNotExit,
  */
-export const checkUserExit = (user: any) => {
-  if (user) {
+export const checkUserExit = (user: UserType) => {
+  if (user?.id !== undefined) {
     const error: any = new Error("Your email has already registered.");
     error.status = 409;
     error.code = errorCode.userExit;
@@ -15,8 +16,8 @@ export const checkUserExit = (user: any) => {
   }
 };
 
-export const checkUserIfNotExit = (user: any) => {
-  if (!user) {
+export const checkUserIfNotExit = (user: UserType) => {
+  if (user.id === undefined) {
     const error: any = new Error("Your email does not register.");
     error.status = 401;
     error.code = errorCode.unauthenticated;

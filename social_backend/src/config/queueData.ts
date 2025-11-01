@@ -13,6 +13,6 @@ export const profileQueueOptions = (profileImage: any) => {
     fileName: profileImage.originalname,
     width: 600,
     height: 600,
-    qualitity: 100,
+    quality: 100,
   };
 };

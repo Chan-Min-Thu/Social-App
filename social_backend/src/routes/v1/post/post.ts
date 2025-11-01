@@ -13,7 +13,11 @@ const router = express.Router();
 router.get("/posts/cursor-pagination", getPostByInfiniteScrollController);
 router.get("/posts/:postId", getPostByIdController);
 router.post("/posts", uploadMemory.array("image", 4), createPostController);
-router.patch("/posts", uploadMemory.array("image", 4), updatePostController);
+router.patch(
+  "/posts/:postId",
+  uploadMemory.array("image", 4),
+  updatePostController
+);
 router.delete("/posts", deletePostController);
 
 export default router;

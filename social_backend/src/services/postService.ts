@@ -1,5 +1,5 @@
 import { prisma as PrismaClient } from "../config/prisma";
-import { PostType } from "../types/post.type";
+import { PostType, UpdatedPost } from "../types/post.type";
 
 const prisma = PrismaClient.$extends({
   result: {
@@ -19,6 +19,7 @@ const prisma = PrismaClient.$extends({
     },
   },
 });
+
 export const createPost = (postData: PostType) => {
   const post = {
     title: postData.title,
@@ -50,10 +51,14 @@ export const deleteImage = (postId: string) => {
     },
   });
 };
-export const updatePost = (postData: any) => {
+export const updatePost = (postData: PostType) => {
   return prisma.post.update({
     where: { id: postData.id },
-    data: postData,
+    data: {
+      title: postData.title,
+      content: postData.content,
+      authorId: postData.authorId,
+    },
   });
 };
 
@@ -67,7 +72,6 @@ export const getPostById = (id: string) => {
 };
 
 export const getPostByIdWithRelation = (id: string) => {
-  console.log("post id in service", id);
   return prisma.post.findUnique({
     where: { id },
     select: {
@@ -91,13 +95,6 @@ export const getPostByIdWithRelation = (id: string) => {
         select: {
           id: true,
           content: true,
-        },
-      },
-      reactions: {
-        select: {
-          id: true,
-          type: true,
-          userId: true,
         },
       },
     },

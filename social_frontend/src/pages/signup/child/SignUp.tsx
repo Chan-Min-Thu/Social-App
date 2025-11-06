@@ -2,15 +2,15 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { EnvelopeClosedIcon } from "@radix-ui/react-icons";
 import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router";
-import { emailSchema } from "../../../schemas/authSchema";
+import { emailSchema } from "../../../utils/schema/validationSchemas";
 
 export default function SignUp() {
-  const { handleSubmit } = useForm({resolver:zodResolver(emailSchema)});
+  const { handleSubmit } = useForm({ resolver: zodResolver(emailSchema) });
   const navigate = useNavigate();
 
-  const onSubmitHandler = (data:any)=>{
-    console.log(data)
-  }
+  const onSubmitHandler = (data: any) => {
+    console.log(data);
+  };
   return (
     <div className="flex justify-center flex-col w-full gap-4 mb-5">
       <div className="text-center mx-auto flex gap-3 justify-center flex-col">
@@ -21,9 +21,7 @@ export default function SignUp() {
           Sign up with your email
         </p>
       </div>
-      <form
-        onSubmit={handleSubmit(onSubmitHandler)}
-      >
+      <form onSubmit={handleSubmit(onSubmitHandler)}>
         <div className="flex flex-col justify-center gap-2 mt-8">
           <label className="inputbox validator">
             <EnvelopeClosedIcon />

@@ -2,10 +2,12 @@ import { Link, useNavigate } from "react-router";
 import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import OtpInput from "react-otp-input";
-import { OtpSchema } from "../../../schemas/authSchema";
+import { otpSchema } from "../../../utils/schema/validationSchemas";
 
 export default function VerifyOtp() {
-  const { handleSubmit,control } = useForm({resolver:zodResolver(OtpSchema)});
+  const { handleSubmit, control } = useForm({
+    resolver: zodResolver(otpSchema),
+  });
   const navigate = useNavigate();
   const onSubmit = (data: any) => {
     console.log("hello", data);
@@ -37,7 +39,7 @@ export default function VerifyOtp() {
                   renderInput={(props) => (
                     <input
                       {...props}
-                      className="border-[1px] border-base-300 rounded-sm input-info focus:outline-none"
+                      className=" border-base-300 rounded-sm input-info focus:outline-none"
                     />
                   )}
                 />

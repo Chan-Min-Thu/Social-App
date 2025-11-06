@@ -7,7 +7,7 @@ import {
   EyeOpenIcon,
   LockClosedIcon,
 } from "@radix-ui/react-icons";
-import { passwordSchema } from "../../../schemas/authSchema";
+import { passwordSchema } from "../../../utils/schema/validationSchemas";
 
 export default function ConfirmPassword() {
   const navigate = useNavigate();

@@ -1,7 +1,8 @@
 import { EnvelopeClosedIcon, LockClosedIcon } from "@radix-ui/react-icons";
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
 
 export default function Login() {
+  const navigate = useNavigate();
   return (
     <div className="card bg-base-100 w-96 shadow-sm mx-auto mt-28 flex gap-4 p-3 font-family">
       <div className="text-center mx-auto w-full flex gap-3 justify-center flex-col">
@@ -49,7 +50,9 @@ export default function Login() {
         <Link to={""} className="flex justify-end ">
           <p className="text-info font-medium text-sm">Forgot Password?</p>
         </Link>
-        <button className="btn btn-primary">Log in</button>
+        <button className="btn btn-primary" onClick={() => navigate("/")}>
+          Log in
+        </button>
         <div className="divider"></div>
         <div className="flex justify-center">
           <p className="text-sm font-medium ">

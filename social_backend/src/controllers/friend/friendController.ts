@@ -29,7 +29,7 @@ import { UserType } from "../../types/user.type";
 export const requestFriendController = [
   body("addresseeId").isUUID().withMessage("AddresseeId was wrong."),
   async (req: CustomRequest, res: Response, next: NextFunction) => {
-    console.log(req.body);
+    req.body;
     if (reqBodyErrorFn(req, next)) return;
 
     const userId = req.userId as string;
@@ -149,7 +149,6 @@ export const getOtherProfileController = [
     const userId = req.userId as string;
 
     const profileId = req.params.profileId as string;
-    console.log("profileId:", profileId);
     const isBlock = await blockYourAccount({ userId, profileId });
     let user;
     if (isBlock !== null) {

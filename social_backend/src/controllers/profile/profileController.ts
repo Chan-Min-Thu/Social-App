@@ -87,7 +87,6 @@ export const updateProfileController = [
     if (reqBodyErrorFn(req, next)) return;
     const userId = req.userId as string;
     const profileImage = req.file;
-    console.log("Profile Image", profileImage);
     const profileId = req.params.profileId as string;
     const { bio, location, website, birthDate, gender } = req.body;
 
@@ -157,7 +156,6 @@ export const updateProfileCoverImageController = [
     const isProfile = await findProfileById(profileId);
     checkProfileIfNotExit(isProfile);
 
-    console.log(userId, isProfile?.userId);
     let profile;
     if (isProfile?.userId !== userId) {
       return next({

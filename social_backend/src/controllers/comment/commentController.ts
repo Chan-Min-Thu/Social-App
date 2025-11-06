@@ -32,7 +32,6 @@ export const createCommentController = [
     const { content, postId, parentId } = req.body;
 
     const isReply = !!parentId;
-    console.log(isReply);
 
     //Check post exit or not exit;
     const post = (await getPostById(postId!)) as PostType;
@@ -49,9 +48,8 @@ export const createCommentController = [
       comment = await createComment(commentData);
       //Reply comments
     } else {
-      console.log("comment outer function.");
       const isComment = (await getCommentById(parentId)) as CommentType;
-      console.log(isComment);
+      isComment;
       checkCommentIfNotExit(isComment);
 
       const commentData = {
@@ -62,7 +60,6 @@ export const createCommentController = [
       };
       comment = await createComment(commentData);
     }
-    console.log(comment);
     return res.status(201).json({
       message: "Your comment is successfully created.",
       data: comment,

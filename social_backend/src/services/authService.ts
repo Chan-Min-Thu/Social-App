@@ -43,7 +43,9 @@ export const updateOtp = (id: string, otpData: any) => {
 };
 
 export const getUserById = (id: string) => {
-  return prisma.user.findUnique({
-    where: { id },
-  });
+  if (id) {
+    return prisma.user.findUnique({
+      where: { id },
+    });
+  }
 };

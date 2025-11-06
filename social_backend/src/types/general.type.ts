@@ -3,4 +3,5 @@ export interface TokenOptionType {
   secure: boolean;
   sameSite: boolean | "none" | "strict" | "lax" | undefined;
   maxAge: number;
+  path: string;
 }

@@ -2,7 +2,6 @@ import { ReactionType, UpdateReactionType } from "../types/reaction.type";
 import { prisma } from "../config/prisma";
 
 export const createReaction = (reactionData: ReactionType) => {
-  console.log(reactionData);
   return prisma.reaction.create({
     data: {
       type: reactionData.type,
@@ -28,7 +27,6 @@ export const deleteReaction = (id: string) => {
   });
 };
 export const getReactionById = (id: string) => {
-  console.log(id);
   return prisma.reaction.findUnique({
     where: { id },
   });

@@ -20,95 +20,105 @@ export const auth = (req: CustomRequest, res: Response, next: NextFunction) => {
   // } else {
   //   console.log("web");
   // }
+
   const refreshToken = req.cookies ? req.cookies.refreshToken : null;
   const accessToken = req.cookies ? req.cookies.accessToken : null;
-
   if (!refreshToken) {
-    return errorFun(next, {
-      message: "You are unauthenticated.",
-      status: 400,
-      code: errorCode.unauthenticated,
-    });
-    // const error: any = new Error("You are unauthenticated.");
-    // error.status = 400;
-    // error.code = errorCode.unauthenticated;
-    // return next(error);
+    console.log("refreshToken does not exit.");
+    return next(
+      errorFun({
+        message: "You are unauthenticated.",
+        status: 401,
+        code: errorCode.unauthenticated,
+      })
+    );
   }
 
   // token rotation,after access token expired and
   const generateNewToken = async () => {
+    let decoded;
     try {
-      let decoded;
-      decoded = jwt.verify(refreshToken, process.env.REFRESHTOKEN_SECRET!);
-      const { id, email } = decoded as { id: string; email: string };
-      const user = (await getUserById(id)) as UserType;
-      checkUserIfNotExit(user);
-
-      if (user!.email !== email) {
-        console.log(email);
-        return errorFun(next, {
-          message: "You are unauthenticated.",
-          status: 401,
-          code: errorCode.unauthenticated,
-        });
-      }
-
-      if (user!.randomToken !== refreshToken) {
-        return errorFun(next, {
-          message: "You are unauthenticated.",
-          status: 401,
-          code: errorCode.unauthenticated,
-        });
-      }
-      const { accessToken: newAccessToken, refreshToken: newRefreshToken } =
-        tokenFun(user);
-      const userData = {
-        randomToken: newRefreshToken,
-      };
-      await updateUser(id, userData);
-
-      res
-        .cookie("accessToken", newAccessToken, accessTokenOptions)
-        .cookie("refreshToken", newRefreshToken, refreshTokenOptions);
-      req.userId === id;
-      next();
-    } catch (error: any) {
-      return errorFun(next, {
-        message: "Access Token is invalid.",
-        status: 400,
-        code: errorCode.attack,
-      });
+      decoded = (await jwt.verify(
+        refreshToken,
+        process.env.REFRESHTOKEN_SECRET!
+      )) as { id: string; email: string };
+    } catch (error) {
+      return next(
+        errorFun({
+          message: "Token is invalid.",
+          status: 400,
+          code: errorCode.attack,
+        })
+      );
     }
+
+    const user = (await getUserById(decoded.id)) as UserType;
+    checkUserIfNotExit(user);
+
+    if (user.email !== decoded.email) {
+      return next(
+        errorFun({
+          message: "You are unauthenticated.",
+          status: 401,
+          code: errorCode.unauthenticated,
+        })
+      );
+    }
+    if (user.randomToken !== refreshToken) {
+      return next(
+        errorFun({
+          message: "You are unauthenticated.",
+          status: 401,
+          code: errorCode.unauthenticated,
+        })
+      );
+    }
+    const { accessToken: newAccessToken, refreshToken: newRefreshToken } =
+      tokenFun({ id: user.id!, email: user.email });
+    const userData = {
+      randomToken: newRefreshToken,
+    };
+    await updateUser(decoded.id, userData);
+    res
+      .cookie("accessToken", newAccessToken, accessTokenOptions)
+      .cookie("refreshToken", newRefreshToken, refreshTokenOptions);
+    req.userId = decoded.id;
+    next();
   };
+
   // Before access Token is not expired,
   if (!accessToken) {
-    return generateNewToken();
-    //   return errorFun(next, {
-    //     message: "Access token has expired.",
-    //     status: 401,
-    //     code: errorCode.unauthenticated,
-    //   });
-  }
-  let decoded;
-  try {
-    decoded = jwt.verify(accessToken, process.env.ACCESSTOKEN_SECRET!) as {
-      id: string;
-    };
-  } catch (error: any) {
-    if (error.code === errorCode.accessTokenExpired) {
-      return errorFun(next, {
-        message: "Access token has expired.",
-        status: 401,
-        code: errorCode.unauthenticated,
-      });
-    } else {
-      return errorFun(next, {
-        message: "Access token has expired.",
-        status: 401,
-        code: errorCode.unauthenticated,
-      });
+    console.log("accessToken does not exit");
+    generateNewToken();
+  } else {
+    let decoded;
+    try {
+      decoded = jwt.verify(accessToken, process.env.ACCESSTOKEN_SECRET!) as {
+        id: string;
+      };
+      if (!decoded) {
+        return next(
+          errorFun({
+            message: "User id does not exit.",
+            status: 401,
+            code: errorCode.unauthenticated,
+          })
+        );
+      }
+      req.userId = decoded.id;
+      next();
+    } catch (error: any) {
+      if (error.name === "TokenExpiredError") {
+        generateNewToken();
+      } else {
+        return next(
+          errorFun({
+            message: "Access token has expired.",
+            status: 401,
+            code: errorCode.unauthenticated,
+          })
+        );
+      }
     }
   }
-  req.userId = decoded.id;
-  next();
 };

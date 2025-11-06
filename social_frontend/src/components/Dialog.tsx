@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { postSchema } from "../schemas/postSchema";
+import { postSchema } from "../utils/schema/postSchema";
 import { Cross1Icon } from "@radix-ui/react-icons";
 import ImageInput, { type ImageProps } from "./ImageInput";
 

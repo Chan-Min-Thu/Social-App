@@ -67,7 +67,6 @@ export const createPostController = [
       Array.isArray(images) && images.length > 0
         ? await Promise.all(
             images.map(async (image: any) => {
-              // console.log("image data", image);
               await queue.add(
                 "image",
                 {
@@ -211,7 +210,6 @@ export const updatePostController = [
         : [];
 
     if (images?.length !== undefined && images.length) {
-      console.log("true");
       await deleteImage(req.params.postId);
       await createImage(await imagesData);
     }
@@ -362,7 +360,6 @@ export const getPostByInfiniteScrollController = [
     }
     const newCursor = posts!.length > 0 ? posts![posts!.length - 1].id : null;
 
-    console.log("hello infinite posts");
     res.status(200).json({
       message: "Infinite posts successfully got.",
       length: posts?.length,

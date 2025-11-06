@@ -190,7 +190,6 @@ export const verifyOtp = [
 
     //5. ) OTP lifetime and expiration
     const isExpired = moment().diff(isOtp!.updatedAt, "minutes") < 5;
-    console.log(moment().diff(isOtp?.updatedAt, "minutes"));
     if (!isExpired) {
       const error: any = new Error("Your otp is expired.");
       error.status = 401;
@@ -343,7 +342,7 @@ export const confirmPassword = [
         httpOnly: true,
         secure: process.env.NODE_ENV === "production" ? true : false,
         sameSite: process.env.NODE_ENV === "production" ? "none" : "strict",
-        maxAge: 15 * 60 * 1000,
+        maxAge: 2 * 60 * 1000,
       })
       .cookie("refreshToken", tokenObj.refreshToken, {
         httpOnly: true,
@@ -438,7 +437,10 @@ export const login = [
       return next(error);
     }
 
-    const { accessToken, refreshToken } = tokenFun(user);
+    const { accessToken, refreshToken } = tokenFun({
+      id: user.id!,
+      email: user.email!,
+    });
 
     user = await updateUser(userId, { randomToken: refreshToken });
 

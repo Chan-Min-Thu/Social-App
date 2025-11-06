@@ -1,12 +1,12 @@
 import jwt from "jsonwebtoken";
 import { TokenOptionType } from "../../types/general.type";
 
-export const tokenFun = (data: any) => {
+export const tokenFun = ({ ...data }: { id: string; email: string }) => {
   const accessToken = jwt.sign(
     { id: data.id },
     process.env.ACCESSTOKEN_SECRET!,
     {
-      expiresIn: 60 * 15,
+      expiresIn: 60 * 2 * 1000,
     }
   );
   const refreshToken = jwt.sign(
@@ -25,7 +25,8 @@ export const accessTokenOptions: TokenOptionType = {
   secure: process.env.NODE_ENV === "production" ? true : false,
   sameSite:
     process.env.NODE_ENV === "production" ? "none" : ("strict" as const),
-  maxAge: 15 * 60 * 1000,
+  maxAge: 2 * 60 * 1000,
+  path: "/",
 };
 
 export const refreshTokenOptions: TokenOptionType = {
@@ -34,4 +35,5 @@ export const refreshTokenOptions: TokenOptionType = {
   sameSite:
     process.env.NODE_ENV === "production" ? "none" : ("strict" as const),
   maxAge: 30 * 24 * 60 * 60 * 1000,
+  path: "/",
 };

@@ -4,12 +4,12 @@ import { formatDistanceToNow } from "date-fns";
 import Comments from "./Comments";
 
 export default function PostCard({ post }) {
-  const [comments, setComments] = useState<number | null>(null);
+  const [toShowComment, setToShowComment] = useState<boolean>(false);
   const createdAt = new Date(post.createdAt);
   const createdTime = formatDistanceToNow(createdAt, { addSuffix: true });
 
-  const showComments = (id: number | null) => {
-    setComments((prev) => (prev === id ? null : id));
+  const showComments = () => {
+    setToShowComment((prev) => !prev);
   };
   return (
     <div className="card card-border bg-base-100 w-full p-6 my-4 rel">
@@ -30,7 +30,7 @@ export default function PostCard({ post }) {
         <h2 className="text-md">{post.title}</h2>
         <p className="text-sm">{post.content}</p>
       </div>
-      <div className={`grid grid-cols-${post.imageUrls.length} gap-1`}>
+      <div className={`grid grid-cols-3 gap-1`}>
         {post.imageUrls.map((image: string, index: number) => (
           <figure key={index}>
             <img
@@ -48,7 +48,7 @@ export default function PostCard({ post }) {
         </button>
         <button
           className="btn flex flex-row items-center gap-1"
-          onClick={() => showComments(post.id)}
+          onClick={() => showComments()}
         >
           <ChatBubbleIcon className="text-primary" />
           <span className="text-xs">Comment</span>
@@ -58,7 +58,7 @@ export default function PostCard({ post }) {
           <span className="text-xs">Share</span>
         </button>
       </div>
-      {comments === post.id && <Comments comments={post.comments} />}
+      {toShowComment && <Comments comments={post.comments} />}
     </div>
   );
 }

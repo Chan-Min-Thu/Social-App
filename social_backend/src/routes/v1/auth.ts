@@ -5,14 +5,16 @@ import {
   confirmPassword,
   login,
   logout,
+  authCheck,
 } from "../../controllers/authController";
+import { auth } from "../../middlewares/auth";
 
 const router = express.Router();
 
 router.post("/register", register);
-router.post("/verifyOtp", verifyOtp);
-router.post("/confirmPassword", confirmPassword);
+router.post("/verify-otp", verifyOtp);
+router.post("/confirm-password", confirmPassword);
 router.post("/login", login);
 router.post("/logout", logout);
-
+router.get("/auth-check", auth, authCheck);
 export default router;

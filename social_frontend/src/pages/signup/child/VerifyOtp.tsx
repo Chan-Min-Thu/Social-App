@@ -1,4 +1,4 @@
-import { Link, useNavigate } from "react-router";
+import { Link, useActionData, useNavigation, useSubmit } from "react-router";
 import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import OtpInput from "react-otp-input";
@@ -8,10 +8,12 @@ export default function VerifyOtp() {
   const { handleSubmit, control } = useForm({
     resolver: zodResolver(otpSchema),
   });
-  const navigate = useNavigate();
+  const navigation = useNavigation();
+  const actionData = useActionData();
+  const isSubmitting = navigation.state === "submitting";
+  const submit = useSubmit();
   const onSubmit = (data: any) => {
-    console.log("hello", data);
-    navigate("/signup/confirmPassword");
+    submit(data, { method: "post", action: "." });
   };
 
   return (
@@ -26,7 +28,7 @@ export default function VerifyOtp() {
       </div>
       <form onSubmit={handleSubmit(onSubmit)}>
         <div className="flex flex-col justify-center gap-2 mt-8">
-          <div className="flex gap-2 justify-center">
+          <div className="flex gap-2 m-4 justify-center">
             <Controller
               name={"otp"}
               control={control}
@@ -35,7 +37,7 @@ export default function VerifyOtp() {
                   value={field.value}
                   onChange={field.onChange}
                   numInputs={6}
-                  renderSeparator={<span>-</span>}
+                  renderSeparator={<span>|</span>}
                   renderInput={(props) => (
                     <input
                       {...props}
@@ -45,15 +47,22 @@ export default function VerifyOtp() {
                 />
               )}
             />
+            <div className=" validator-hint hidden">Enter valid otp.</div>
           </div>
         </div>
-        <button
-          type="submit"
-          className="btn btn-primary w-full mt-5"
-          // onClick={() => navigate("/signup/confirmPassword")}
-        >
-          Verify Otp
-        </button>
+        {actionData && (
+          <div className="my-2 text-error">{actionData?.message}</div>
+        )}
+        {isSubmitting ? (
+          <button className="btn btn-primary w-full">
+            <span className="loading loading-spinner"></span>
+            Submitting...
+          </button>
+        ) : (
+          <button className="btn btn-primary w-full" type="submit">
+            Verify OTP
+          </button>
+        )}
       </form>
       <div className="divider"></div>
       <div className="flex justify-center">

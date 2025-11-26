@@ -5,3 +5,9 @@ export interface TokenOptionType {
   maxAge: number;
   path: string;
 }
+
+export interface EmailData {
+  email: string;
+  subject: string;
+  message: string;
+}

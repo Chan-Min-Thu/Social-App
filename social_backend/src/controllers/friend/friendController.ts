@@ -22,10 +22,10 @@ import {
   checkAlreadyFriend,
   checkBlockRow,
 } from "../../utils/check";
-import { Friend } from "../../../generated/prisma";
 import { reqBodyErrorFn } from "../../utils/utilFunction/reqBodyError";
 import { findProfileByUserId } from "../../services/profileService";
 import { UserType } from "../../types/user.type";
+import { Friend } from "../../../generated/prisma/client";
 export const requestFriendController = [
   body("addresseeId").isUUID().withMessage("AddresseeId was wrong."),
   async (req: CustomRequest, res: Response, next: NextFunction) => {

@@ -1,4 +1,4 @@
-import { NavLink } from "react-router-dom";
+import { NavLink } from "react-router";
 import FriendHeader from "../../components/FriendHeader";
 import FriendLayout from "./child/FriendLayout";
 

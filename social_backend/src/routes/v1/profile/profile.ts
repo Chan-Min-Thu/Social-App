@@ -6,8 +6,6 @@ import {
   updateProfileController,
   updateProfileCoverImageController,
 } from "../../../controllers/profile/profileController";
-import { get } from "http";
-
 const router = express.Router();
 
 router.post(
@@ -21,7 +19,7 @@ router.patch(
   updateProfileController
 );
 router.patch(
-  "/profile/cover_photo/:profileId",
+  "/profile/cover-photo/:profileId",
   uploadMemory.single("coverPhoto"),
   updateProfileCoverImageController
 );

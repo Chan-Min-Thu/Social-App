@@ -1,13 +1,20 @@
-import type { Post } from "@/types/post.type";
+import type { FC } from "react";
+import type { PostType } from "../../../types/post.type";
 import PostCard from "../../../components/PostCard";
-import { generatePosts } from "../../../config/CreatePost";
 
-export default function Post() {
+type PostPropsType = {
+  posts: PostType[];
+};
+
+const Post: FC<PostPropsType> = ({ posts }) => {
   return (
     <div className=" w-full">
-      {generatePosts.map((post: any) => (
-        <PostCard post={post} key={post.id} />
+      {posts.map((post: any) => (
+        <div key={post.id}>
+          <PostCard post={post} />
+        </div>
       ))}
     </div>
   );
-}
+};
+export default Post;

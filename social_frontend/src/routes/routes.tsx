@@ -1,4 +1,4 @@
-import { createBrowserRouter } from "react-router";
+import { createBrowserRouter, redirect } from "react-router";
 import AppLayout from "../pages/home/Applayout";
 import Login from "../pages/login/Login";
 import SignupLayout from "../pages/signup/SignupLayout";
@@ -12,19 +12,41 @@ import Friends from "../pages/friend/child/Friends";
 import Requests from "../pages/friend/child/Requests";
 import Sent from "../pages/friend/child/Sent";
 import Suggestions from "../pages/friend/child/Suggestions";
+import {
+  confirmAction,
+  loginAction,
+  logoutAction,
+  otpAction,
+  signUpAction,
+} from "../router/action/authAction";
+import {
+  confirmLoader,
+  loginLoader,
+  otpLoader,
+} from "../router/loader/authLoader";
+import { postLoader } from "../router/loader/postLoader";
+import ErrorBoundary from "../pages/ErrorBoundary";
+import { postAction } from "../router/action/postAction";
+import HydrateFallBack from "../components/HydrateFallBack";
 
 const router = createBrowserRouter([
   {
     path: "/",
     Component: AppLayout,
+    ErrorBoundary: ErrorBoundary,
+    // HydrateFallback: HydrateFallBack,
     children: [
       {
         index: true,
+        loader: postLoader,
+        action: postAction,
         Component: PostLayout,
+        HydrateFallback: HydrateFallBack,
       },
       {
         path: "/friends",
         Component: Friend,
+        HydrateFallback: HydrateFallBack,
         children: [
           {
             index: true,
@@ -53,22 +75,38 @@ const router = createBrowserRouter([
   {
     path: "login",
     Component: Login,
+    loader: loginLoader,
+    action: loginAction,
+    HydrateFallback: HydrateFallBack,
+  },
+  {
+    path: "logout",
+    action: logoutAction,
+    loader: () => redirect("/"),
+    HydrateFallback: HydrateFallBack,
   },
   {
     path: "signup",
     Component: SignupLayout,
+    HydrateFallback: HydrateFallBack,
     children: [
       {
         index: true,
         Component: SignUp,
+        loader: loginLoader,
+        action: signUpAction,
       },
       {
         path: "verify",
         Component: VerifyOtp,
+        loader: otpLoader,
+        action: otpAction,
       },
       {
-        path: "confirmPassword",
+        path: "confirm-password",
         Component: ConfirmPassword,
+        loader: confirmLoader,
+        action: confirmAction,
       },
     ],
   },

@@ -20,7 +20,7 @@ import {
 import { getUserById } from "./../services/authService";
 import { generateOtp, generateToken } from "../utils/generate";
 import { sendEmail } from "../utils/email";
-import { Otp, User } from "../../generated/prisma";
+// import { Otp, User } from "../../generated/prisma";
 import { isSameDate } from "../utils/utilFunction/sameDate";
 import {
   accessTokenOptions,
@@ -30,6 +30,9 @@ import {
 import { errorCode } from "../config/errorCode";
 import queue from "../job/queues/queue";
 import { UserType } from "../types/user.type";
+import { errorFun } from "../utils/utilFunction/errorFun";
+import { CustomRequest } from "../types/req.type";
+import { Otp } from "../../generated/prisma/client";
 
 /*
  1. ) Email validation
@@ -50,10 +53,12 @@ export const register = [
     // 1. ) Email validation
     const errors: any = validationResult(req).array({ onlyFirstError: true });
     if (errors.length > 0) {
-      const error: any = new Error(errors[0].msg);
-      error.status = 400;
-      error.code = errorCode.invalid;
-      return next(error);
+      const error = {
+        message: errors[0].msg,
+        status: 400,
+        code: errorCode.invalid,
+      };
+      return next(errorFun(error));
     }
     const email = req.body.email;
     // 2. )User have already registered before?.
@@ -106,7 +111,7 @@ export const register = [
           );
           error.status = 405;
           error.code = errorCode.overLimit;
-          next(error);
+          next(errorFun(error));
         } else {
           // 4. e if the same date and valid limited count (count < 3), can get the otp
           const otpData = {
@@ -120,6 +125,7 @@ export const register = [
         }
       }
     }
+    console.log(message);
     await queue.add("email", {
       type: "email",
       email,
@@ -338,18 +344,8 @@ export const confirmPassword = [
 
     user = await updateUser(user!.id, { randomToken: tokenObj.refreshToken });
     res
-      .cookie("accessToken", tokenObj.accessToken, {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === "production" ? true : false,
-        sameSite: process.env.NODE_ENV === "production" ? "none" : "strict",
-        maxAge: 2 * 60 * 1000,
-      })
-      .cookie("refreshToken", tokenObj.refreshToken, {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === "production" ? true : false,
-        sameSite: "none",
-        maxAge: 1000 * 60 * 60 * 24 * 30,
-      })
+      .cookie("accessToken", tokenObj.accessToken, accessTokenOptions)
+      .cookie("refreshToken", tokenObj.refreshToken, refreshTokenOptions)
       .status(200)
       .json({
         message: "You've already successfully created an account.",
@@ -432,9 +428,9 @@ export const login = [
         }
       }
       const error: any = new Error("Your password does not match.");
-      error.status = 400;
+      error.status = 401;
       error.code = errorCode.invalid;
-      return next(error);
+      return next(errorFun(error));
     }
 
     const { accessToken, refreshToken } = tokenFun({
@@ -447,7 +443,7 @@ export const login = [
     res
       .cookie("accessToken", accessToken, accessTokenOptions)
       .cookie("refreshToken", refreshToken, refreshTokenOptions)
-      .status(201)
+      .status(200)
       .json({
         message: "Your account successfully logged in.",
         userId: user!.id,
@@ -513,5 +509,21 @@ export const logout = async (
   });
   res.status(201).json({
     message: "You can successfully logout.",
+  });
+};
+
+export const authCheck = async (
+  req: CustomRequest,
+  res: Response,
+  next: NextFunction
+) => {
+  const userId = req.userId as string;
+
+  const user = (await getUserById(userId)) as UserType;
+  checkUserIfNotExit(user);
+
+  res.status(200).json({
+    message: "You are authenticated user.",
+    userId: user.id,
   });
 };

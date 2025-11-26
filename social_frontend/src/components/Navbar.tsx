@@ -1,4 +1,4 @@
-import { Link } from "react-router";
+import { Link, Form } from "react-router";
 import ToggleMode from "./ToggleMode";
 import { BellIcon, HamburgerMenuIcon } from "@radix-ui/react-icons";
 import Drawer from "./Drawer";
@@ -47,8 +47,12 @@ export default function Navbar() {
             <li>
               <Link to="/settings">Settings</Link>
             </li>
-            <li>
-              <Link to="/login">Logout</Link>
+            <li className="w-full flex">
+              <Form method="post" action="logout" className="w-full flex">
+                <button type="submit" className="w-full">
+                  Logout
+                </button>
+              </Form>
             </li>
           </ul>
         </div>

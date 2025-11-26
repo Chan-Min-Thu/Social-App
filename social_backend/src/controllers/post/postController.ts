@@ -22,6 +22,7 @@ import queue from "../../job/queues/queue";
 import { reqBodyErrorFn } from "../../utils/utilFunction/reqBodyError";
 import { UserType } from "../../types/user.type";
 import { Image, PostType } from "../../types/post.type";
+import { profile } from "console";
 
 export const getAllPostsController = (
   req: CustomRequest,
@@ -297,6 +298,7 @@ export const getPostByInfiniteScrollController = [
   query("take").optional().isString(),
   query("skip").optional().isString(),
   async (req: CustomRequest, res: Response, next: NextFunction) => {
+    // console.log(req);
     const errors = validationResult(req).array({ onlyFirstError: true });
     if (errors.length > 0) {
       return next({
@@ -336,6 +338,12 @@ export const getPostByInfiniteScrollController = [
           select: {
             id: true,
             content: true,
+            author: {
+              select: {
+                id: true,
+                username: true,
+              },
+            },
           },
         },
         reactions: {
@@ -363,10 +371,10 @@ export const getPostByInfiniteScrollController = [
     res.status(200).json({
       message: "Infinite posts successfully got.",
       length: posts?.length,
-      data: {
+      posts: {
         hasNextPage,
         newCursor,
-        posts,
+        data: posts,
       },
     });
   },

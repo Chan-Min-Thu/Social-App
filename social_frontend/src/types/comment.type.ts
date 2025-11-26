@@ -14,6 +14,7 @@
 export interface comment {
   id: string;
   content: string;
+  parentId?: string;
   createdAt: Date;
   updatedAt: Date;
   author: string;

@@ -1,8 +1,6 @@
 import nodemailer from "nodemailer";
 import "dotenv/config";
-
-console.log("Email User:", process.env.EMAIL_USER);
-console.log("Email Pass:", process.env.EMAIL_PASS);
+import { EmailData } from "../types/general.type";
 // Create a test account or replace with real credentials.
 const transporter = nodemailer.createTransport({
   service: "gmail",
@@ -13,10 +11,10 @@ const transporter = nodemailer.createTransport({
 });
 
 // Wrap in an async IIFE so we can use await.
-export const sendEmail = async (emailData: any) => {
+export const sendEmail = async (emailData: EmailData) => {
   const mailOptions = {
     from: process.env.EMAIL_USER,
-    to: "zinmyohtwe398@gmail.com",
+    to: emailData.email,
     subject: emailData.subject,
     text: emailData.message, // plain‑text body
   };

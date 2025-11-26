@@ -7,10 +7,26 @@
 //   authorId  String
 //   comments  Comment[]
 //   reactions Reaction[]
+
+import type { comment } from "./comment.type";
+import type { ReactionType } from "./reaction.type";
+
 //   image     Image[]
-export interface Post {
+export type ImageType = {
+  id: string;
+  imageUrl: string;
+};
+
+export interface PostType {
   id: string;
   title: string;
   content: string;
-  authorId: string;
+  updatedAt: Date;
+  author?: {
+    id: string;
+    username: string;
+  };
+  comments?: comment[];
+  reactions?: ReactionType[];
+  image: ImageType[] | [];
 }

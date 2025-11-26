@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { Link, useNavigate } from "react-router";
+import { Link, useActionData, useNavigation, useSubmit } from "react-router";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
   EyeClosedIcon,
@@ -10,7 +10,6 @@ import {
 import { passwordSchema } from "../../../utils/schema/validationSchemas";
 
 export default function ConfirmPassword() {
-  const navigate = useNavigate();
   const [visible, setVisible] = useState({ password: false, confirm: false });
   const {
     register,
@@ -19,10 +18,13 @@ export default function ConfirmPassword() {
   } = useForm({
     resolver: zodResolver(passwordSchema),
   });
+  const submit = useSubmit();
+  const navigation = useNavigation();
+  const isSubmitting = navigation.state === "submitting";
+  const actionData = useActionData();
 
   const onSubmitHandler = (data: any) => {
-    console.log(data);
-    navigate("/");
+    submit(data, { method: "post", action: "." });
   };
   return (
     <div className="flex justify-center flex-col w-full gap-4 mb-5">
@@ -72,15 +74,23 @@ export default function ConfirmPassword() {
                 {visible.confirm ? <EyeOpenIcon /> : <EyeClosedIcon />}
               </button>
             </label>
+            {errors.confirmPassword ? (
+              <div className="validator-hint hidden">
+                {errors.confirmPassword.message}
+              </div>
+            ) : null}
           </div>
-          {errors.confirmPassword ? (
-            <p className=" text-error">{errors.confirmPassword.message}</p>
-          ) : null}
-          <div className="validator-hint hidden">Enter valid email address</div>
-
-          <button className="btn btn-primary" type="submit">
-            Confirm Password
-          </button>
+          {actionData && <p className="text-error">{actionData.message}</p>}
+          {isSubmitting ? (
+            <button className="btn">
+              <span className="loading loading-spinner"></span>
+              Submitting...
+            </button>
+          ) : (
+            <button className="btn btn-primary" type="submit">
+              Confirm Password
+            </button>
+          )}
         </div>
       </form>
       <div className="divider"></div>

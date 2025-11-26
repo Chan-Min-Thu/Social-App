@@ -1,9 +1,11 @@
 import { prisma } from "../config/prisma";
 
 export const getUserByEmail = (email: string) => {
-  return prisma.user.findUnique({
-    where: { email },
-  });
+  if (email) {
+    return prisma.user.findUnique({
+      where: { email },
+    });
+  }
 };
 
 export const getOtpByEmail = (email: string) => {
@@ -43,9 +45,7 @@ export const updateOtp = (id: string, otpData: any) => {
 };
 
 export const getUserById = (id: string) => {
-  if (id) {
-    return prisma.user.findUnique({
-      where: { id },
-    });
-  }
+  return prisma.user.findUnique({
+    where: { id },
+  });
 };

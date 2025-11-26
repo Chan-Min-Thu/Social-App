@@ -8,7 +8,7 @@ import { UserType } from "../types/user.type";
   checkUserIfNotExit,
  */
 export const checkUserExit = (user: UserType) => {
-  if (user?.id !== undefined) {
+  if (user) {
     const error: any = new Error("Your email has already registered.");
     error.status = 409;
     error.code = errorCode.userExit;
@@ -17,7 +17,7 @@ export const checkUserExit = (user: UserType) => {
 };
 
 export const checkUserIfNotExit = (user: UserType) => {
-  if (user.id === undefined) {
+  if (!user) {
     const error: any = new Error("Your email does not register.");
     error.status = 401;
     error.code = errorCode.unauthenticated;

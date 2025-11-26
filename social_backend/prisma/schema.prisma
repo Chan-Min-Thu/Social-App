@@ -3,9 +3,8 @@
 
 // Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
 // Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
-  provider = "prisma-client-js"
+  provider = "prisma-client"
   output   = "../generated/prisma"
 }
 
@@ -21,6 +20,7 @@ model User {
   passwordHash     String
   randomToken      String
   status           Status      @default(ACTIVE)
+  avatarUrl        String?
   lastLogin        DateTime?
   errorCount       Int         @default(0) @db.SmallInt
   createdAt        DateTime    @default(now())

@@ -4,6 +4,7 @@ import { useForm } from "react-hook-form";
 import { postSchema } from "../utils/schema/postSchema";
 import { Cross1Icon } from "@radix-ui/react-icons";
 import ImageInput, { type ImageProps } from "./ImageInput";
+import { useSubmit } from "react-router";
 
 interface DialogProps {
   image: ImageProps[] | [];
@@ -19,9 +20,18 @@ const Dialog = ({ image }: DialogProps) => {
     register,
     setValue,
     formState: { errors },
-  } = useForm({ resolver: zodResolver(postSchema) });
+  } = useForm({
+    resolver: zodResolver(postSchema),
+    defaultValues: {
+      title: "",
+      content: "",
+      images: [],
+    },
+  });
+  // const submit = useSubmit();
+
   const onSubmithandler = (data: any) => {
-    console.log(data);
+    // submit(data, { method: "post", action: "." });
     (document.getElementById("my_modal_2") as HTMLDialogElement).close();
   };
   return (

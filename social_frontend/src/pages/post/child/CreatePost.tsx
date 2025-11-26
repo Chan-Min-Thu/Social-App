@@ -32,7 +32,7 @@ export default function CreatePost() {
         </div>
         <div className="card-actions md:px-14 px-2 justify-between items-center mt-2">
           <div>
-            <ImageInput setImage={setImage}/>
+            <ImageInput setImage={setImage} />
           </div>
 
           <Dialog image={image} />

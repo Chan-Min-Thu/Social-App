@@ -17,6 +17,7 @@ export const checkUserExit = (user: UserType) => {
 };
 
 export const checkUserIfNotExit = (user: UserType) => {
+  // console.log("checkUserIfNotExit user:", user);
   if (!user) {
     const error: any = new Error("Your email does not register.");
     error.status = 401;

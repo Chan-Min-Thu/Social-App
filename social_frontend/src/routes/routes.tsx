@@ -24,7 +24,7 @@ import {
   loginLoader,
   otpLoader,
 } from "../router/loader/authLoader";
-import { postLoader } from "../router/loader/postLoader";
+// import { postLoader } from "../router/loader/postLoader";
 import ErrorBoundary from "../pages/ErrorBoundary";
 import { postAction } from "../router/action/postAction";
 import HydrateFallBack from "../components/HydrateFallBack";
@@ -38,7 +38,7 @@ const router = createBrowserRouter([
     children: [
       {
         index: true,
-        loader: postLoader,
+        // loader: postLoader,
         action: postAction,
         Component: PostLayout,
         HydrateFallback: HydrateFallBack,

@@ -30,7 +30,6 @@ export default function Login() {
     // console.log("data", data);
     submit(data, { method: "POST", action: "/login" });
   };
-  console.log(errors.password);
   return (
     <div className="card bg-base-100 w-96 shadow-sm mx-auto mt-28 flex gap-4 p-3 font-family">
       <div className="text-center mx-auto w-full flex gap-3 justify-center flex-col">

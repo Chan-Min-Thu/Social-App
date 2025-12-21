@@ -14,6 +14,7 @@ import { checkCommentIfNotExit, checkPostById } from "../../utils/check";
 import { reqBodyErrorFn } from "../../utils/utilFunction/reqBodyError";
 import { PostType } from "../../types/post.type";
 import { CommentType } from "../../types/comment.type";
+import { crossOriginOpenerPolicy } from "helmet";
 
 export const createCommentController = [
   body("content")
@@ -27,7 +28,6 @@ export const createCommentController = [
   async (req: CustomRequest, res: Response, next: NextFunction) => {
     // Validation Request
     if (reqBodyErrorFn(req, next)) return;
-
     const authorId = req.userId as string;
     const { content, postId, parentId } = req.body;
 

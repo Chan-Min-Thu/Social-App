@@ -28,10 +28,23 @@ const Dialog = ({ image }: DialogProps) => {
       images: [],
     },
   });
-  // const submit = useSubmit();
+  const submit = useSubmit();
 
   const onSubmithandler = (data: any) => {
-    // submit(data, { method: "post", action: "." });
+    // Build FormData including files stored in selectedImage state
+    const formData = new FormData();
+    formData.append("title", data.title || "");
+    formData.append("content", data.content || "");
+    // append files (multiple) with the same field name 'images'
+    selectedImage.forEach((img) => {
+      formData.append("images", img.file);
+    });
+
+    submit(formData, {
+      method: "post",
+      action: ".",
+      encType: "multipart/form-data",
+    });
     (document.getElementById("my_modal_2") as HTMLDialogElement).close();
   };
   return (

@@ -1,8 +1,9 @@
 import { Response, NextFunction } from "express";
 import { body, param, query, validationResult } from "express-validator";
-import sanitizeHtml, { options } from "sanitize-html";
+import sanitizeHtml from "sanitize-html";
 import { CustomRequest } from "../../types/req.type";
 import {
+  countPosts,
   createImage,
   createPost,
   deleteImage,
@@ -21,8 +22,7 @@ import { checkUserIfNotExit } from "../../utils/auth";
 import queue from "../../job/queues/queue";
 import { reqBodyErrorFn } from "../../utils/utilFunction/reqBodyError";
 import { UserType } from "../../types/user.type";
-import { Image, PostType } from "../../types/post.type";
-import { profile } from "console";
+import { PostType } from "../../types/post.type";
 
 export const getAllPostsController = (
   req: CustomRequest,
@@ -55,8 +55,11 @@ export const createPostController = [
 
     const userId = req.userId as string;
     const { title, content } = req.body;
+    console.log(req.body);
+    console.log("files", req.files);
     const images = req.files;
-    checkFile(images);
+
+    checkFile(req.files);
 
     const createdPost = await createPost({
       title,
@@ -126,7 +129,7 @@ export const updatePostController = [
     const id = req.params.postId as string;
     const { title, content } = req.body;
     const images = req.files;
-    checkFile(images);
+    checkFile(req.files);
 
     const post = (await getPostById(id)) as PostType;
     checkPostById(post);
@@ -297,6 +300,7 @@ export const getPostByInfiniteScrollController = [
   query("lastCursor").optional().isString(),
   query("take").optional().isString(),
   query("skip").optional().isString(),
+  query("page").optional().isString(),
   async (req: CustomRequest, res: Response, next: NextFunction) => {
     // console.log(req);
     const errors = validationResult(req).array({ onlyFirstError: true });
@@ -313,50 +317,14 @@ export const getPostByInfiniteScrollController = [
     const user = (await getUserById(userId!)) as UserType;
     checkUserIfNotExit(user);
 
+    const totalCount = await countPosts();
+    const totalPages = Math.ceil(totalCount / (Number(take) || 5));
+    // const currentPage = Math.floor()
+
     const options = {
-      take: Number(take) + 1,
-      skip: lastCursor ? 1 : 0,
-      cursor: lastCursor ? { id: lastCursor as string } : undefined,
-      select: {
-        id: true,
-        title: true,
-        content: true,
-        updatedAt: true,
-        author: {
-          select: {
-            id: true,
-            username: true,
-          },
-        },
-        image: {
-          select: {
-            id: true,
-            imageUrl: true,
-          },
-        },
-        comments: {
-          select: {
-            id: true,
-            content: true,
-            author: {
-              select: {
-                id: true,
-                username: true,
-              },
-            },
-          },
-        },
-        reactions: {
-          select: {
-            id: true,
-            type: true,
-            userId: true,
-          },
-        },
-      },
-      orderBy: {
-        updatedAt: "asc",
-      },
+      take: take ? Number(take) + 1 : 6,
+      skip: skip ? Number(skip) : 0,
+      cursor: lastCursor ? { id: lastCursor as string } : { id: null },
     };
 
     const posts = await getPostsByInfinite(options);
@@ -366,14 +334,15 @@ export const getPostByInfiniteScrollController = [
     if (hasNextPage) {
       posts?.pop();
     }
-    const newCursor = posts!.length > 0 ? posts![posts!.length - 1].id : null;
 
+    const newCursor = posts!.length > 0 ? posts![posts!.length - 1].id : null;
     res.status(200).json({
       message: "Infinite posts successfully got.",
       length: posts?.length,
+      totalPages,
+      hasNextPage,
+      newCursor,
       posts: {
-        hasNextPage,
-        newCursor,
         data: posts,
       },
     });

@@ -3,8 +3,9 @@
 
 // Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
 // Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
 generator client {
-  provider = "prisma-client"
+  provider = "prisma-client-js"
   output   = "../generated/prisma"
 }
 
@@ -17,10 +18,10 @@ model User {
   id               String      @id @default(uuid())
   username         String? // kyaw1 // aung2
   email            String      @unique @db.VarChar(41)
+  avatarUrl        String?
   passwordHash     String
   randomToken      String
   status           Status      @default(ACTIVE)
-  avatarUrl        String?
   lastLogin        DateTime?
   errorCount       Int         @default(0) @db.SmallInt
   createdAt        DateTime    @default(now())
@@ -65,7 +66,6 @@ model Profile {
   id        String   @id @default(uuid())
   userId    String   @unique
   bio       String   @db.Text
-  avatarUrl String?
   coverUrl  String?
   location  String
   website   String
@@ -153,12 +153,7 @@ model Reaction {
 }
 
 enum ReactionType {
-  LIKE
   LOVE
-  HAHA
-  WOW
-  SAD
-  ANGRY
 }
 
 enum Status {

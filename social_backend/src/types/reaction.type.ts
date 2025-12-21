@@ -1,8 +1,8 @@
-import { $Enums } from "../../generated/prisma";
+import type { ReactionType as PrismaReactionType } from "../../generated/prisma/enums";
 
 export interface ReactionType {
   id?: string;
-  type: $Enums.ReactionType;
+  type: PrismaReactionType;
   userId: string;
   postId?: string;
   commentId?: string;

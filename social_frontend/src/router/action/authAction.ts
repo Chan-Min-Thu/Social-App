@@ -2,17 +2,25 @@ import { redirect, type ActionFunctionArgs } from "react-router";
 import api, { authApi } from "../../api/index";
 import { AxiosError } from "axios";
 import useAuthStore, { SignUpStatus } from "../../store/authStore";
+import useUserStore from "../../store/userStore";
 
 export const loginAction = async ({ request }: ActionFunctionArgs) => {
   const formData = await request.formData();
   const credentials = Object.fromEntries(formData);
-
+  const { getUser } = useUserStore.getState();
   try {
     const response = await authApi.post("login", credentials);
-    console.log(response);
+    getUser({
+      id: response.data.userId,
+      email: response.data.email,
+      username: response.data.username,
+      avatarUrl: response.data.avatarUrl,
+    });
     if (response.status !== 201) {
       return { error: response.data || "Login Failed!" };
     }
+
+    // useUserStore.getUser({ id: "", username: "", email: "", avatarUrl: "" });
     const redirectTo = new URL(request.url).searchParams.get("redirect") || "/";
     return redirect(redirectTo);
   } catch (error) {

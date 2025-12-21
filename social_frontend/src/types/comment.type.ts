@@ -11,12 +11,14 @@
 //   parent    Comment?   @relation("CommentReplies", fields: [parentId], references: [id], onDelete: Cascade)
 //   replies   Comment[]  @relation("CommentReplies")
 
-export interface comment {
-  id: string;
+import type { UserType } from "./user.type";
+
+export interface CommentType {
+  id?: string;
   content: string;
   parentId?: string;
-  createdAt: Date;
-  updatedAt: Date;
-  author: string;
-  postId: string;
+  createdAt?: Date;
+  updatedAt?: Date;
+  author?: UserType;
+  postId?: string;
 }

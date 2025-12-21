@@ -24,11 +24,7 @@ import { ReactionType } from "../../types/reaction.type";
 
 const reaction = {
   LOVE: "LOVE",
-  LIKE: "LIKE",
-  HAHA: "HAHA",
-  WOW: "WOW",
-  SAD: "SAD",
-  ANGRY: "ANGRY",
+  NONE: "",
 };
 
 const allowedReaction = Object.values(reaction);
@@ -70,6 +66,60 @@ export const createReactionController = [
 ];
 
 export const updateReactionController = [
+  param("reactionId").isUUID(),
+  body("type")
+    .isIn(allowedReaction)
+    .withMessage("Reaction must be allowed field.")
+    .optional(),
+  // body("userId").isUUID(),j
+  body("postId").isUUID().withMessage({ message: "Invalid request" }),
+
+  async (req: CustomRequest, res: Response, next: NextFunction) => {
+    if (reqBodyErrorFn(req, next)) return;
+
+    const userId = req.userId as string;
+    const reactionId = req.params.reactionId;
+    const { postId, type } = req.body;
+
+    const user = (await getUserById(userId!)) as UserType;
+    checkUserIfNotExit(user);
+
+    const post = (await getPostById(postId)) as PostType;
+    checkPostById(post);
+
+    const isReaction = await getReactionById(reactionId);
+    checkReactionById(isReaction);
+
+    const isSuccessor = isReaction?.userId === user.id;
+    if (isSuccessor) {
+      if (type === "") {
+        await deleteReaction(reactionId);
+        return res.status(203).json({
+          message: "Your reaction is deleted.",
+        });
+      } else {
+        const reactionData = {
+          id: reactionId,
+          type,
+          userId,
+          postId,
+        };
+        const reaction = await updateReaction(reactionData);
+        res.status(200).json({
+          message: "Your reaction is successfully updated.",
+          data: { reaction },
+        });
+      }
+    } else {
+      const error: any = new Error("This reaction does not belong you.");
+      error.status = 400;
+      error.code = errorCode.unauthenticated;
+      throw error;
+    }
+  },
+];
+
+export const toggleReactionController = [
   param("reactionId").isUUID(),
   body("type")
     .isIn(allowedReaction)

@@ -10,6 +10,7 @@ export const loginLoader = async () => {
       console.log("null");
       return null;
     }
+
     return redirect("/");
   } catch (error) {
     if (error instanceof AxiosError) {

@@ -1,4 +1,4 @@
-import { prisma } from "../config/prisma";
+import { prisma } from "../lib/prisma";
 import { ProfileType, UpdatedProfileType } from "../types/profile.type";
 
 export const createProfile = (profileData: ProfileType) => {

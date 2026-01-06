@@ -53,7 +53,7 @@ const router = createBrowserRouter([
             Component: Friends,
           },
           {
-            path: "requests",
+            path: "requested",
             Component: Requests,
           },
           {
@@ -61,7 +61,7 @@ const router = createBrowserRouter([
             Component: Sent,
           },
           {
-            path: "suggestions",
+            path: "toadd",
             Component: Suggestions,
           },
         ],

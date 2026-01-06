@@ -60,7 +60,7 @@ export const createReactionController = [
     const reaction = await createReaction(reactionData);
     res.status(200).json({
       message: "Your reaction is successfully created.",
-      data: { reaction },
+      data: reaction,
     });
   },
 ];
@@ -107,7 +107,7 @@ export const updateReactionController = [
         const reaction = await updateReaction(reactionData);
         res.status(200).json({
           message: "Your reaction is successfully updated.",
-          data: { reaction },
+          data: reaction,
         });
       }
     } else {
@@ -161,7 +161,7 @@ export const toggleReactionController = [
         const reaction = await updateReaction(reactionData);
         res.status(200).json({
           message: "Your reaction is successfully updated.",
-          data: { reaction },
+          data: reaction,
         });
       }
     } else {

@@ -6,6 +6,7 @@ import { useInfiniteQuery } from "@tanstack/react-query";
 import { postInfiniteQuery } from "../../api/query";
 import HydrateFallBack from "../../components/HydrateFallBack";
 import { useInView } from "react-intersection-observer";
+import type { PostType } from "@/types/post.type";
 
 const PostLayout: FC = () => {
   // const { posts } = useLoaderData();
@@ -19,23 +20,30 @@ const PostLayout: FC = () => {
     refetch,
     hasNextPage,
   } = useInfiniteQuery(postInfiniteQuery());
-
   // Define the expected type for a page
-  type PageType = { posts?: { newCursor?: string; data?: any[] } };
+  type PageType = {
+    hasNextPage: boolean;
+    length: number;
+    message: string;
+    newCursor: string;
+    totalPages: number;
+    data: PostType[];
+  };
 
   useEffect(() => {
-    const page = data?.pages[0] as PageType | undefined;
-    const lastCursor = page && page.newCursor;
+    const lastCursor = data?.pages[0].newCursor;
     if (inView) {
       fetchNextPage(lastCursor);
     }
-  }, [inView, fetchNextPage, refetch]);
+  }, [inView, fetchNextPage, hasNextPage, refetch]);
+
   const posts =
-    data && data?.pages.flatMap((page: PageType) => page.posts?.data || []);
+    data && data?.pages.flatMap((page: PageType) => page.data || []);
 
   if (isLoading) {
     return <HydrateFallBack />;
   }
+
   if (isError) {
     return (
       <div className="w-full text-center text-red-500">

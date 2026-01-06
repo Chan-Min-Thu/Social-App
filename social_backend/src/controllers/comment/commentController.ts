@@ -102,7 +102,7 @@ export const updateCommentController = [
     //Response
     res.status(200).json({
       message: "Your comment is successfully updated.",
-      data: { comment },
+      data: comment,
     });
   },
 ];

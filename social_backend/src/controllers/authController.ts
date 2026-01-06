@@ -443,10 +443,12 @@ export const login = [
       .status(200)
       .json({
         message: "Your account successfully logged in.",
-        userId: user!.id,
-        username: user.username,
-        avatarUrl: user.avatarUrl,
-        email: user.email,
+        data: {
+          userId: user!.id,
+          username: user.username,
+          avatarUrl: user.avatarUrl,
+          email: user.email,
+        },
       });
   },
 ];
@@ -524,9 +526,11 @@ export const authCheck = async (
 
   res.status(200).json({
     message: "You are authenticated user.",
-    userId: user.id,
-    username: user.username,
-    email: user.email,
-    avatarUrl: user?.avatarUrl,
+    data: {
+      userId: user.id,
+      username: user.username,
+      email: user.email,
+      avatarUrl: user?.avatarUrl,
+    },
   });
 };

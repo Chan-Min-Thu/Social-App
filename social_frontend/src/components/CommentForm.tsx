@@ -11,13 +11,21 @@ const CommentForm: FC<CommentFormPorps> = ({ onSubmitHandler }) => {
   const {
     handleSubmit,
     register,
+    setValue,
     formState: { errors },
   } = useForm({
     resolver: zodResolver(commentSchema),
     defaultValues: { content: "" },
   });
+  const onSubmitHandlerAndSetValue = (data: any) => {
+    onSubmitHandler(data);
+    setValue("content", "");
+  };
   return (
-    <form onSubmit={handleSubmit(onSubmitHandler)} className="ml-10 my-2">
+    <form
+      onSubmit={handleSubmit(onSubmitHandlerAndSetValue)}
+      className="ml-10 my-2"
+    >
       <div className="flex flex-row gap-2 bg-base-200 w-full px-4 py-4 rounded-xl">
         <input
           type="text"

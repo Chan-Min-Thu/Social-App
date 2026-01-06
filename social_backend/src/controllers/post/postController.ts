@@ -100,7 +100,7 @@ export const createPostController = [
     const postWithImage = await getPostById(createdPost.id);
     res.status(200).json({
       message: "Post is successfully created.",
-      data: { post: postWithImage },
+      data: postWithImage,
     });
   },
 ];
@@ -222,7 +222,7 @@ export const updatePostController = [
 
     res.status(200).json({
       message: "Post is successfully updated.",
-      data: { post: updatedPostWithImage },
+      data: updatedPostWithImage,
     });
   },
 ];
@@ -288,10 +288,10 @@ export const getPostByIdController = [
     const user = (await getUserById(userId!)) as UserType;
     checkUserIfNotExit(user);
 
-    const post = await getPostByIdWithRelation(String(postId));
+    const posts = await getPostByIdWithRelation(String(postId));
     res.status(200).json({
       message: "Post get successfully.",
-      data: { post },
+      data: posts,
     });
   },
 ];
@@ -302,7 +302,6 @@ export const getPostByInfiniteScrollController = [
   query("skip").optional().isString(),
   query("page").optional().isString(),
   async (req: CustomRequest, res: Response, next: NextFunction) => {
-    // console.log(req);
     const errors = validationResult(req).array({ onlyFirstError: true });
     if (errors.length > 0) {
       return next({
@@ -342,9 +341,7 @@ export const getPostByInfiniteScrollController = [
       totalPages,
       hasNextPage,
       newCursor,
-      posts: {
-        data: posts,
-      },
+      data: posts,
     });
   },
 ];

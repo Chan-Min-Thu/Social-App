@@ -23,7 +23,6 @@ export default function Comments({ comments, postId }: CommentPropType) {
     },
     {}
   );
-  console.log(childComment);
   const [replybox, setReplybox] = useState<string | null>(null);
   const { mutate } = useMutation({
     mutationFn: (data: CommentType) => createComment(data),

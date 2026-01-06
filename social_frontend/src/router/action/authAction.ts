@@ -2,14 +2,22 @@ import { redirect, type ActionFunctionArgs } from "react-router";
 import api, { authApi } from "../../api/index";
 import { AxiosError } from "axios";
 import useAuthStore, { SignUpStatus } from "../../store/authStore";
+import useUserStore from "../../store/userStore";
 
 export const loginAction = async ({ request }: ActionFunctionArgs) => {
   const formData = await request.formData();
   const credentials = Object.fromEntries(formData);
-
+  const { getUser } = useUserStore.getState();
   try {
     const response = await authApi.post("login", credentials);
-    console.log(response);
+    console.log("authapi with login");
+    console.log("user", response.data.data);
+    getUser({
+      id: response.data.data.userId,
+      email: response.data.data.email,
+      username: response.data.data.username,
+      avatarUrl: response.data.data.avatarUrl,
+    });
     if (response.status !== 201) {
       return { error: response.data || "Login Failed!" };
     }
@@ -89,7 +97,6 @@ export const confirmAction = async ({ request }: ActionFunctionArgs) => {
     token: authStore.token,
     password,
   };
-  console.log(credentials);
   try {
     const response = await authApi.post("confirm-password", credentials);
     if (response.status !== 200) {

@@ -1,4 +1,4 @@
-import { prisma } from "../config/prisma";
+import { prisma } from "../lib/prisma";
 
 export const getUserByEmail = (email: string) => {
   if (email) {
@@ -45,7 +45,15 @@ export const updateOtp = (id: string, otpData: any) => {
 };
 
 export const getUserById = (id: string) => {
+  console.log("id in auth service:", id);
   return prisma.user.findUnique({
     where: { id },
+    select: {
+      id: true,
+      email: true,
+      username: true,
+      avatarUrl: true,
+      randomToken: true,
+    },
   });
 };

@@ -8,5 +8,6 @@ const router = express.Router();
 
 router.post("/reactions", createReactionController);
 router.patch("/reactions/:reactionId", updateReactionController);
+// router.post("reactions/toggle", toggleReactionController);
 
 export default router;

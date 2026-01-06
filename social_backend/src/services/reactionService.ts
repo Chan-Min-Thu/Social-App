@@ -1,5 +1,5 @@
 import { ReactionType, UpdateReactionType } from "../types/reaction.type";
-import { prisma } from "../config/prisma";
+import { prisma } from "../lib/prisma";
 
 export const createReaction = (reactionData: ReactionType) => {
   return prisma.reaction.create({

@@ -1,17 +1,7 @@
-// id        String     @id @default(uuid())
-//   title     String
-//   content   String
-//   createdAt DateTime   @default(now())
-//   updatedAt DateTime   @updatedAt
-//   author    User       @relation(fields: [authorId], references: [id])
-//   authorId  String
-//   comments  Comment[]
-//   reactions Reaction[]
-
-import type { comment } from "./comment.type";
+import type { CommentType } from "./comment.type";
 import type { ReactionType } from "./reaction.type";
+import type { UserType } from "./user.type";
 
-//   image     Image[]
 export type ImageType = {
   id: string;
   imageUrl: string;
@@ -22,11 +12,8 @@ export interface PostType {
   title: string;
   content: string;
   updatedAt: Date;
-  author?: {
-    id: string;
-    username: string;
-  };
-  comments?: comment[];
-  reactions?: ReactionType[];
+  author?: UserType;
+  comments?: CommentType[];
+  reactions?: ReactionType[] | [] | undefined;
   image: ImageType[] | [];
 }

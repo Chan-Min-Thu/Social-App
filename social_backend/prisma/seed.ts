@@ -1,30 +1,69 @@
+import { Status } from "./../generated/prisma/enums";
 import { PrismaClient, Prisma } from "../generated/prisma/client";
 import bcrypt from "bcrypt";
 import { faker } from "@faker-js/faker";
+import { Post, User } from "../generated/prisma";
+
 const prisma = new PrismaClient();
 
-const createUser = () => {
+const createUser = (): Prisma.UserCreateInput => {
   return {
-    username: faker.internet.username(),
     email: faker.internet.email(),
+    username: faker.internet.username(),
     passwordHash: "",
     randomToken: faker.internet.jwt(),
+    avatarUrl: faker.image.avatar(),
+    status: "ACTIVE" as Status,
+  };
+};
+
+const createPost = (users: User[]): Prisma.PostCreateManyInput => {
+  const randomIndex = Math.floor(Math.random() * users.length);
+  return {
+    content: faker.lorem.paragraph(),
+    authorId: users[randomIndex].id,
+    title: faker.lorem.sentence(),
+  };
+};
+
+const createComment = (users: User[], posts: Post[]) => {
+  const randomIndexUser = Math.floor(Math.random() * users.length);
+  const randomIndexPost = Math.floor(Math.random() * posts.length);
+  return {
+    content: faker.lorem.sentence(),
+    authorId: users[randomIndexUser].id,
+    postId: posts[randomIndexPost].id,
   };
 };
 
 const users: Prisma.UserCreateInput[] = faker.helpers.multiple(createUser, {
-  count: 5,
+  count: 10,
 });
 
 async function main() {
   const salt = await bcrypt.genSalt(10);
-  const password = await bcrypt.hash("12345678", salt);
-
+  const password = await bcrypt.hash("1111111111", salt);
   for (const u of users) {
     u.passwordHash = password;
-    await prisma.user.create({ data: u });
+    (await prisma.user.create({ data: u })) as User;
   }
+  let createdUsers = await prisma.user.findMany();
+  await prisma.post.createMany({
+    data: faker.helpers.multiple(() => createPost(createdUsers), {
+      count: 50,
+    }),
+  });
+  let createdPosts = (await prisma.post.findMany()) as Post[];
+  await prisma.comment.createMany({
+    data: faker.helpers.multiple(
+      () => createComment(createdUsers, createdPosts),
+      {
+        count: 50,
+      }
+    ),
+  });
 }
+
 main()
   .then(async () => {
     await prisma.$disconnect();

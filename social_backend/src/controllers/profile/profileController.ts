@@ -140,7 +140,7 @@ export const updateProfileController = [
 
     res.status(200).json({
       message: "You successfully updated.",
-      data: { profile },
+      data: profile,
     });
   },
 ];
@@ -192,7 +192,7 @@ export const updateProfileCoverImageController = [
 
     res.status(200).json({
       message: "You successfully updated.",
-      data: { profile },
+      data: profile,
     });
   },
 ];

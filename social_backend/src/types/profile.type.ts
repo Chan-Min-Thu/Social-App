@@ -1,4 +1,4 @@
-import { $Enums } from "../../generated/prisma";
+import type { Gender as PrismaGender } from "../../generated/prisma/enums";
 
 export interface ProfileType {
   id?: string;
@@ -9,7 +9,7 @@ export interface ProfileType {
   location: string;
   website: string;
   birthDate: Date;
-  gender: $Enums.Gender;
+  gender: PrismaGender;
   createdAt?: Date;
   updatedAt?: Date;
 }
@@ -23,7 +23,7 @@ export interface UpdatedProfileType {
   location?: string;
   website?: string;
   birthDate?: Date;
-  gender?: $Enums.Gender;
+  gender?: PrismaGender;
   createdAt?: Date;
   updatedAt?: Date;
 }

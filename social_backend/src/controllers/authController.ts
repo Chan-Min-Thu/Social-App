@@ -399,10 +399,7 @@ export const login = [
     }
 
     //4. ) Password Matched
-    const passwordIsMatched = await bcrypt.compare(
-      password,
-      user!.passwordHash
-    );
+    const passwordIsMatched = await bcrypt.compare(password, user.passwordHash);
     // If password does not match,
     1;
     if (!passwordIsMatched) {
@@ -446,7 +443,12 @@ export const login = [
       .status(200)
       .json({
         message: "Your account successfully logged in.",
-        userId: user!.id,
+        data: {
+          userId: user!.id,
+          username: user.username,
+          avatarUrl: user.avatarUrl,
+          email: user.email,
+        },
       });
   },
 ];
@@ -519,11 +521,16 @@ export const authCheck = async (
 ) => {
   const userId = req.userId as string;
 
-  const user = (await getUserById(userId)) as UserType;
+  const user = (await getUserById(String(userId))) as unknown as UserType;
   checkUserIfNotExit(user);
 
   res.status(200).json({
     message: "You are authenticated user.",
-    userId: user.id,
+    data: {
+      userId: user.id,
+      username: user.username,
+      email: user.email,
+      avatarUrl: user?.avatarUrl,
+    },
   });
 };

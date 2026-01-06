@@ -11,6 +11,7 @@ import {
   tokenFun,
 } from "../utils/utilFunction/tokenFun";
 import { UserType } from "../types/user.type";
+import { User } from "../../generated/prisma/client";
 
 export const auth = (req: CustomRequest, res: Response, next: NextFunction) => {
   // const isMobile = req.header("x-platform");

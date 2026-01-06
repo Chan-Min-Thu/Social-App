@@ -1,4 +1,4 @@
-import { prisma as PrismaClient } from "../config/prisma";
+import { prisma as PrismaClient } from "../lib/prisma";
 import { PostType, UpdatedPost } from "../types/post.type";
 
 const prisma = PrismaClient.$extends({
@@ -109,9 +109,66 @@ export const deletePostById = async (postId: string) => {
   });
 };
 
+const optionsDefault = {
+  id: true,
+  title: true,
+  content: true,
+  updatedAt: true,
+  author: {
+    select: {
+      id: true,
+      username: true,
+      avatarUrl: true,
+    },
+  },
+  image: {
+    select: {
+      id: true,
+      imageUrl: true,
+    },
+  },
+  comments: {
+    select: {
+      id: true,
+      content: true,
+      postId: true,
+      parentId: true,
+      author: {
+        select: {
+          id: true,
+          username: true,
+          avatarUrl: true,
+        },
+      },
+    },
+  },
+  reactions: {
+    select: {
+      id: true,
+      type: true,
+      userId: true,
+    },
+  },
+};
+
 export const getPostsByInfinite = async (options: any) => {
   if (options.cursor.id) {
-    console.log(options);
-    return prisma.post.findMany(options);
+    return prisma.post.findMany({
+      ...options,
+      select: optionsDefault,
+      orderBy: { createdAt: "asc" },
+    });
   }
+  return prisma.post.findMany({
+    take: options.take,
+    skip: 0,
+    select: optionsDefault,
+    orderBy: {
+      createdAt: "asc",
+    },
+  });
+};
+
+export const countPosts = async () => {
+  return prisma.post.count();
 };

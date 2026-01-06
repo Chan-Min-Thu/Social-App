@@ -53,6 +53,7 @@ export default function ImageInput({
           ref={inputRef}
           accept="image/*"
           multiple
+          name="images"
           onChange={handleFileChange}
           type="file"
         />

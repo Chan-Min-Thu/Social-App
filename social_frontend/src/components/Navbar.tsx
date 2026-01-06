@@ -3,7 +3,15 @@ import ToggleMode from "./ToggleMode";
 import { BellIcon, HamburgerMenuIcon } from "@radix-ui/react-icons";
 import Drawer from "./Drawer";
 
-export default function Navbar() {
+interface NavbarProps {
+  user?: {
+    id: number;
+    name: string;
+    email: string;
+    avatarUrl: string;
+  };
+}
+export default function Navbar({ user }: NavbarProps) {
   return (
     <div className="navbar bg-base-200 shadow-sm px-4 md:px-20 sticky top-0 z-50">
       <div className="flex-1 ml-2">
@@ -28,10 +36,7 @@ export default function Navbar() {
             className="btn btn-ghost btn-circle avatar"
           >
             <div className="w-8 rounded-full">
-              <img
-                alt="Tailwind CSS Navbar component"
-                src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp"
-              />
+              <img alt="Tailwind CSS Navbar component" src={user?.avatarUrl} />
             </div>
           </div>
           <ul
@@ -41,7 +46,7 @@ export default function Navbar() {
             <li>
               <Link to="/profile" className="justify-between">
                 Profile
-                <span className="badge">New</span>
+                <span className="badge">{user?.name}</span>
               </Link>
             </li>
             <li>

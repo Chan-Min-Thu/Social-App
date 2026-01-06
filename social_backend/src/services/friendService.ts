@@ -1,4 +1,5 @@
-import { prisma } from "../config/prisma";
+import { request } from "node:http";
+import { prisma } from "../lib/prisma";
 import { FriendType } from "../types/friend.type";
 
 export const requestedFriend = (friendData: FriendType) => {
@@ -70,6 +71,70 @@ export const blockYourAccount = ({ userId, friendId }: any) => {
         { blockerId: userId, blockedId: friendId },
         { blockerId: friendId, blockedId: userId },
       ],
+    },
+  });
+};
+
+export const getFriends = (userId: string) => {
+  return prisma.friend.findMany({
+    where: {
+      OR: [{ requesterId: userId }, { addresseeId: userId }],
+      status: "accepted",
+    },
+    select: {
+      id: true,
+      addresseeId: true,
+      addressee: {
+        select: {
+          id: true,
+          username: true,
+          avatarUrl: true,
+        },
+      },
+      requesterId: true,
+      requester: {
+        select: {
+          id: true,
+          username: true,
+          avatarUrl: true,
+        },
+      },
+    },
+  });
+};
+
+export const getRequestedFriends = (userId: string) => {
+  return prisma.friend.findMany({
+    where: { addresseeId: userId },
+    select: {
+      id: true,
+      addresseeId: true,
+      requesterId: true,
+      requester: {
+        select: {
+          id: true,
+          avatarUrl: true,
+          username: true,
+        },
+      },
+    },
+  });
+};
+
+export const getSentFriends = (userId: string) => {
+  return prisma.friend.findMany({
+    where: { requesterId: userId },
+    select: {
+      id: true,
+      addresseeId: true,
+      requesterId: true,
+      addressee: {
+        select: {
+          id: true,
+          avatarUrl: true,
+          username: true,
+        },
+      },
     },
   });
 };

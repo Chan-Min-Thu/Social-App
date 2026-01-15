@@ -28,13 +28,12 @@ const friendNavs: friendNav[] = [
 ];
 export default function Friend() {
   const location = useLocation();
-  console.log(location.pathname.split("/")?.[2]);
   const status = location.pathname.split("/")?.[2] ?? "accepted";
   const { data: friends, isLoading } = useQuery({
     queryKey: ["friends", status],
     queryFn: () => fetchFriend(status),
   });
-  console.log(friends);
+  console.log("friends", friends);
   return (
     <div className="">
       <FriendHeader />

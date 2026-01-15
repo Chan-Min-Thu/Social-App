@@ -24,6 +24,17 @@ export const fetchPostById = async (param: string) =>
 export const fetchFriend = async (param: string) =>
   await api.get(`friends/${param}`).then((res) => res.data);
 
+export const acceptedFriend = async (requesterId: string) =>
+  await api.post(`friend-accept`, { requesterId }).then((res) => res.data);
+
+export const requestedFriend = async (addresseeId: string) =>
+  await api.post(`friend-request`, { addresseeId }).then((res) => res.data);
+
+export const removeFriendship = async (removeFriendshipId: string) =>
+  await api
+    .delete("friend-remove", { data: { removeFriendshipId } })
+    .then((res) => res.data);
+
 export const postQuery = (query: string) => ({
   queryKey: ["posts", query],
   queryFn: () => fetchPosts(query),

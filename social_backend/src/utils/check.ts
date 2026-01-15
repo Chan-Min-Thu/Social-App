@@ -1,5 +1,6 @@
 import { errorCode } from "../config/errorCode";
 import { CommentType } from "../types/comment.type";
+import { FriendType } from "../types/friend.type";
 import { PostType } from "../types/post.type";
 import { ReactionType } from "../types/reaction.type";
 
@@ -27,6 +28,15 @@ export const checkReactionExit = (reaction: ReactionType) => {
     const error: any = new Error("Your reaction already exited.");
     error.status = 400;
     error.code = errorCode.alreadyExit;
+    throw error;
+  }
+};
+
+export const checkAlreadyRequest = (friend: FriendType) => {
+  if (!friend) {
+    const error: any = new Error("You don't have request from this person.");
+    error.status = 400;
+    error.code = errorCode.notMatched;
     throw error;
   }
 };
@@ -68,7 +78,7 @@ export const checkAlreadyFriend = (friend: any) => {
   }
 };
 
-export const checkIsFriend = (friend: any) => {
+export const checkIsFriend = (friend: FriendType) => {
   if (!friend) {
     const error: any = new Error("You are not friend.");
     error.status = 400;

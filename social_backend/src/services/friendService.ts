@@ -1,12 +1,38 @@
-import { request } from "node:http";
+import { XOR } from "./../../generated/prisma/internal/prismaNamespace";
 import { prisma } from "../lib/prisma";
-import { FriendType } from "../types/friend.type";
+import { FriendType, ToCoupleFriend } from "../types/friend.type";
 
 export const requestedFriend = (friendData: FriendType) => {
+  console.log("requstedFriend", friendData);
   return prisma.friend.create({
     data: { ...friendData, status: "pending" },
   });
 };
+
+export const alreadyRequestToBeFriend = ({
+  userId,
+  toBeFriendId,
+}: ToCoupleFriend) => {
+  return prisma.friend.findFirst({
+    where: {
+      OR: [
+        { requesterId: toBeFriendId, addresseeId: userId },
+        { requesterId: userId, addresseeId: toBeFriendId },
+      ],
+      status: "pending",
+    },
+  });
+};
+
+export const acceptedFriend = (id: string) => {
+  return prisma.friend.update({
+    where: { id },
+    data: {
+      status: "accepted",
+    },
+  });
+};
+
 export const updatedFriend = (friendData: { id: string; status: string }) => {
   return prisma.friend.update({
     where: { id: friendData.id },
@@ -19,9 +45,25 @@ export const isFriend = (friendId: string) => {
     where: { id: friendId },
   });
 };
+
 export const getFriendRequest = (addresseeId: string) => {
   return prisma.friend.findMany({
-    where: { addresseeId },
+    where: { addresseeId, status: "accepted" },
+  });
+};
+
+export const alreadyAcceptedFriend = ({
+  userId,
+  toBeFriendId,
+}: ToCoupleFriend) => {
+  return prisma.friend.findFirst({
+    where: {
+      OR: [
+        { requesterId: toBeFriendId, addresseeId: userId },
+        { requesterId: userId, addresseeId: toBeFriendId },
+      ],
+      status: "accepted",
+    },
   });
 };
 
@@ -50,16 +92,16 @@ export const findBlockRow = ({
 
 export const findFriendship = ({
   userId,
-  blockedId,
+  friendId,
 }: {
   userId: string;
-  blockedId: string;
+  friendId: string;
 }) => {
   return prisma.friend.findFirst({
     where: {
       OR: [
-        { requesterId: userId, addresseeId: blockedId },
-        { requesterId: blockedId, addresseeId: userId },
+        { requesterId: userId, addresseeId: friendId },
+        { requesterId: friendId, addresseeId: userId },
       ],
     },
   });
@@ -71,6 +113,33 @@ export const blockYourAccount = ({ userId, friendId }: any) => {
         { blockerId: userId, blockedId: friendId },
         { blockerId: friendId, blockedId: userId },
       ],
+    },
+  });
+};
+
+export const getFriendsAcceptedAndPending = (userId: string) => {
+  return prisma.friend.findMany({
+    where: {
+      OR: [{ requesterId: userId }, { addresseeId: userId }],
+    },
+    select: {
+      id: true,
+      addresseeId: true,
+      addressee: {
+        select: {
+          id: true,
+          username: true,
+          avatarUrl: true,
+        },
+      },
+      requesterId: true,
+      requester: {
+        select: {
+          id: true,
+          username: true,
+          avatarUrl: true,
+        },
+      },
     },
   });
 };
@@ -105,7 +174,7 @@ export const getFriends = (userId: string) => {
 
 export const getRequestedFriends = (userId: string) => {
   return prisma.friend.findMany({
-    where: { addresseeId: userId },
+    where: { addresseeId: userId, status: "pending" },
     select: {
       id: true,
       addresseeId: true,
@@ -123,7 +192,7 @@ export const getRequestedFriends = (userId: string) => {
 
 export const getSentFriends = (userId: string) => {
   return prisma.friend.findMany({
-    where: { requesterId: userId },
+    where: { requesterId: userId, status: "pending" },
     select: {
       id: true,
       addresseeId: true,
@@ -135,6 +204,23 @@ export const getSentFriends = (userId: string) => {
           username: true,
         },
       },
+    },
+  });
+};
+
+export const deleteFriendship = (friendshipId: string) => {
+  return prisma.friend.delete({ where: { id: friendshipId } });
+};
+
+export const profileWithFriend = (id: string) => {
+  return prisma.user.findUnique({
+    where: { id },
+    select: {
+      id: true,
+      username: true,
+      avatarUrl: true,
+      friendsInitiated: true,
+      friendsReceived: true,
     },
   });
 };

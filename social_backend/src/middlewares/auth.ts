@@ -11,19 +11,16 @@ import {
   tokenFun,
 } from "../utils/utilFunction/tokenFun";
 import { UserType } from "../types/user.type";
-import { User } from "../../generated/prisma/client";
+import { emit } from "node:process";
 
-export const auth = (req: CustomRequest, res: Response, next: NextFunction) => {
-  // const isMobile = req.header("x-platform");
-  // if (isMobile === "mobile") {
-  //   const accessToken = req.headers.authorization?.split(" ")[1];
-  //   console.log("mobile");
-  // } else {
-  //   console.log("web");
-  // }
-
-  const refreshToken = req.cookies ? req.cookies.refreshToken : null;
+export const auth = async (
+  req: CustomRequest,
+  res: Response,
+  next: NextFunction
+) => {
   const accessToken = req.cookies ? req.cookies.accessToken : null;
+  const refreshToken = req.cookies ? req.cookies.refreshToken : null;
+
   if (!refreshToken) {
     console.log("refreshToken does not exit.");
     return next(
@@ -39,10 +36,21 @@ export const auth = (req: CustomRequest, res: Response, next: NextFunction) => {
   const generateNewToken = async () => {
     let decoded;
     try {
-      decoded = (await jwt.verify(
-        refreshToken,
-        process.env.REFRESHTOKEN_SECRET!
-      )) as { id: string; email: string };
+      decoded = jwt.verify(refreshToken, process.env.REFRESHTOKEN_SECRET!) as {
+        id: string;
+        email: string;
+      };
+      if (!decoded) {
+        return next(
+          errorFun({
+            message: "User id does not exit.",
+            status: 401,
+            code: errorCode.unauthenticated,
+          })
+        );
+      }
+      req.userId = decoded.id;
+      return next();
     } catch (error) {
       return next(
         errorFun({
@@ -74,22 +82,34 @@ export const auth = (req: CustomRequest, res: Response, next: NextFunction) => {
         })
       );
     }
-    const { accessToken: newAccessToken, refreshToken: newRefreshToken } =
-      tokenFun({ id: user.id!, email: user.email });
+    const newAccessToken = jwt.sign(
+      { id: user.id },
+      process.env.ACCESSTOKEN_SECRET!,
+      {
+        expiresIn: 60 * 2 * 1000,
+      }
+    );
+    const newRefreshToken = jwt.sign(
+      { id: user.id, email: user.email },
+      process.env.REFRESHTOKEN_SECRET!,
+      {
+        expiresIn: "30d",
+      }
+    );
     const userData = {
       randomToken: newRefreshToken,
     };
     await updateUser(decoded.id, userData);
+
     res
       .cookie("accessToken", newAccessToken, accessTokenOptions)
       .cookie("refreshToken", newRefreshToken, refreshTokenOptions);
     req.userId = decoded.id;
-    next();
+    return next();
   };
 
   // Before access Token is not expired,
   if (!accessToken) {
-    console.log("accessToken does not exit");
     generateNewToken();
   } else {
     let decoded;
@@ -109,7 +129,9 @@ export const auth = (req: CustomRequest, res: Response, next: NextFunction) => {
       req.userId = decoded.id;
       next();
     } catch (error: any) {
+      console.log("error run ");
       if (error.name === "TokenExpiredError") {
+        console.log("Token is expired.");
         generateNewToken();
       } else {
         return next(

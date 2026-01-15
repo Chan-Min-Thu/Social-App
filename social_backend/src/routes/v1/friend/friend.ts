@@ -1,6 +1,7 @@
 import express from "express";
 import {
-  acceptFriendController,
+  removeFriendshipController,
+  toAcceptFriendController,
   blockFriendController,
   getOtherProfileController,
   getFriendsContorller,
@@ -11,12 +12,15 @@ import {
 
 const router = express.Router();
 
-router.post("/friendRequest", requestFriendController);
-router.post("/friendAccept", acceptFriendController);
-router.post("/friendBlock", blockFriendController);
-router.post("/friendUnblock", unblockFriendController);
+router.post("/friend-request", requestFriendController);
+router.post("/friend-accept", toAcceptFriendController);
+router.post("/friend-block", blockFriendController);
+router.post("/friend-unblock", unblockFriendController);
+router.delete("/friend-remove", removeFriendshipController);
+
 router.get("/otherProfile/:profileId", getOtherProfileController);
 router.get("/friends/:status", getFriendsContorller);
+// router.get("/friends/suggested", getSuggestionFriendController);
 // router.get("/friends/requested", getRequestedFriendsController);
 
 export default router;

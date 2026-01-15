@@ -24,18 +24,18 @@ import { reqBodyErrorFn } from "../../utils/utilFunction/reqBodyError";
 import { UserType } from "../../types/user.type";
 import { PostType } from "../../types/post.type";
 
-export const getAllPostsController = (
-  req: CustomRequest,
-  res: Response,
-  next: NextFunction
-) => {
-  const userId = req.userId;
+// export const getAllPostsController = (
+//   req: CustomRequest,
+//   res: Response,
+//   next: NextFunction
+// ) => {
+//   const userId = req.userId;
 
-  res.status(200).json({
-    userId,
-    message: "All Posts.",
-  });
-};
+//   res.status(200).json({
+//     userId,
+//     message: "All Posts.",
+//   });
+// };
 
 export const createPostController = [
   body("title")

@@ -16,6 +16,7 @@ type State = {
 
 type Action = {
   getUser: (user: UserType) => void;
+  reset: () => void;
 };
 
 const initialState = {
@@ -28,14 +29,13 @@ const useUserStore = create<State & Action>()(
   persist(
     (set) => ({
       ...initialState,
-      getUser: (user: UserType) => {
+      getUser: (user: UserType) =>
         set(() => ({
           user: user,
           isLoading: false,
           error: null,
-        }));
-      },
-      clearUser: () => set(() => initialState),
+        })),
+      reset: () => set(initialState),
     }),
     {
       name: "user",

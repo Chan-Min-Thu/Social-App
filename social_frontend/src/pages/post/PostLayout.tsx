@@ -2,8 +2,8 @@ import { useEffect, type FC } from "react";
 // import { useLoaderData } from "react-router";
 import CreatePost from "./child/CreatePost";
 import Post from "./child/Post";
-import { useInfiniteQuery } from "@tanstack/react-query";
-import { postInfiniteQuery } from "../../api/query";
+import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
+import { postInfiniteQuery, userQuery } from "../../api/query";
 import HydrateFallBack from "../../components/HydrateFallBack";
 import { useInView } from "react-intersection-observer";
 import type { PostType } from "@/types/post.type";
@@ -20,6 +20,8 @@ const PostLayout: FC = () => {
     refetch,
     hasNextPage,
   } = useInfiniteQuery(postInfiniteQuery());
+
+  const { data: user } = useQuery(userQuery());
   // Define the expected type for a page
   type PageType = {
     hasNextPage: boolean;
@@ -53,7 +55,7 @@ const PostLayout: FC = () => {
   }
   return (
     <div className="w-full h-auto mb-10">
-      <CreatePost />
+      <CreatePost user={user.data} />
       {posts && <Post posts={posts} />}
       {hasNextPage ? (
         <div ref={ref} className="w-full flex justify-center">

@@ -45,7 +45,6 @@ export const updateOtp = (id: string, otpData: any) => {
 };
 
 export const getUserById = (id: string) => {
-  console.log("id in auth service:", id);
   return prisma.user.findUnique({
     where: { id },
     select: {

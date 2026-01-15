@@ -1,6 +1,13 @@
-import { Link } from "react-router";
+import type { FC } from "react";
+import { Link, useNavigate } from "react-router";
+import Button from "./Button";
 
-const DropDown = () => {
+type DropDownProps = {
+  onClick: () => void;
+  id: string;
+};
+const DropDown: FC<DropDownProps> = ({ onClick, id }) => {
+  const navigate = useNavigate();
   return (
     <div>
       <details className="dropdown">
@@ -21,11 +28,14 @@ const DropDown = () => {
           </svg>
         </summary>
         <ul className="menu dropdown-content bg-base-100 rounded-box z-1 w-52 p-2 shadow-sm">
-          <li>
-            <Link to="/">View Profile</Link>
+          <li className="m-1">
+            <Button
+              content="View Profile"
+              onClick={() => navigate(`/profile/${id}`)}
+            />
           </li>
-          <li>
-            <button>Remove Friend</button>
+          <li className="m-1">
+            <Button content="Remove Friend" onClick={onClick} />
           </li>
         </ul>
       </details>

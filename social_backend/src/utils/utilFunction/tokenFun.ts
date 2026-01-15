@@ -1,7 +1,9 @@
 import jwt from "jsonwebtoken";
 import { TokenOptionType } from "../../types/general.type";
 
-export const tokenFun = ({ ...data }: { id: string; email: string }) => {
+type TokenInputType = { id: string; email: string };
+
+export const tokenFun = ({ ...data }: TokenInputType) => {
   const accessToken = jwt.sign(
     { id: data.id },
     process.env.ACCESSTOKEN_SECRET!,

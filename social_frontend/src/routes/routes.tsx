@@ -1,4 +1,16 @@
 import { createBrowserRouter, redirect } from "react-router";
+import {
+  confirmAction,
+  loginAction,
+  logoutAction,
+  otpAction,
+  signUpAction,
+} from "../router/action/authAction";
+import {
+  confirmLoader,
+  loginLoader,
+  otpLoader,
+} from "../router/loader/authLoader";
 import AppLayout from "../pages/home/Applayout";
 import Login from "../pages/login/Login";
 import SignupLayout from "../pages/signup/SignupLayout";
@@ -12,22 +24,11 @@ import Friends from "../pages/friend/child/Friends";
 import Requests from "../pages/friend/child/Requests";
 import Sent from "../pages/friend/child/Sent";
 import Suggestions from "../pages/friend/child/Suggestions";
-import {
-  confirmAction,
-  loginAction,
-  logoutAction,
-  otpAction,
-  signUpAction,
-} from "../router/action/authAction";
-import {
-  confirmLoader,
-  loginLoader,
-  otpLoader,
-} from "../router/loader/authLoader";
-// import { postLoader } from "../router/loader/postLoader";
 import ErrorBoundary from "../pages/ErrorBoundary";
 import { postAction } from "../router/action/postAction";
 import HydrateFallBack from "../components/HydrateFallBack";
+import MyProfile from "../pages/profile/MyProfile";
+import FriendProfile from "../pages/profile/child/FriendProfile";
 
 const router = createBrowserRouter([
   {
@@ -63,6 +64,16 @@ const router = createBrowserRouter([
           {
             path: "toadd",
             Component: Suggestions,
+          },
+        ],
+      },
+      {
+        path: "/profile",
+        Component: MyProfile,
+        children: [
+          {
+            path: ":id",
+            Component: FriendProfile,
           },
         ],
       },

@@ -37,7 +37,7 @@ const createComment = (users: User[], posts: Post[]) => {
 };
 
 const users: Prisma.UserCreateInput[] = faker.helpers.multiple(createUser, {
-  count: 10,
+  count: 30,
 });
 
 async function main() {
@@ -50,7 +50,7 @@ async function main() {
   let createdUsers = await prisma.user.findMany();
   await prisma.post.createMany({
     data: faker.helpers.multiple(() => createPost(createdUsers), {
-      count: 50,
+      count: 80,
     }),
   });
   let createdPosts = (await prisma.post.findMany()) as Post[];
@@ -58,7 +58,7 @@ async function main() {
     data: faker.helpers.multiple(
       () => createComment(createdUsers, createdPosts),
       {
-        count: 50,
+        count: 80,
       }
     ),
   });

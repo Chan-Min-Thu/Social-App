@@ -10,8 +10,6 @@ export const loginAction = async ({ request }: ActionFunctionArgs) => {
   const { getUser } = useUserStore.getState();
   try {
     const response = await authApi.post("login", credentials);
-    console.log("authapi with login");
-    console.log("user", response.data.data);
     getUser({
       id: response.data.data.userId,
       email: response.data.data.email,
@@ -31,8 +29,10 @@ export const loginAction = async ({ request }: ActionFunctionArgs) => {
 };
 
 export const logoutAction = async () => {
+  const { reset } = useUserStore.getState();
   try {
     await api.post("logout");
+    reset();
     return redirect("/login");
   } catch (error) {
     console.error("error :", error);

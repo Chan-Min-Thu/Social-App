@@ -1,8 +1,12 @@
 import { useState } from "react";
 import Dialog from "../../../components/Dialog";
 import ImageInput, { type ImageProps } from "../../../components/ImageInput";
+import type { UserType } from "@/types/user.type";
 
-export default function CreatePost() {
+type CreatePostProps = {
+  user: UserType;
+};
+export default function CreatePost({ user }: CreatePostProps) {
   const [image, setImage] = useState<ImageProps[]>([]);
 
   const handleOpenDialog = () => {
@@ -18,7 +22,7 @@ export default function CreatePost() {
         <div className=" flex items-center gap-4 justify-between w-full">
           <div className="avatar">
             <div className="ring-primary ring-offset-base-100 w-8 rounded-full ring-2 ring-offset-2">
-              <img src="https://img.daisyui.com/images/profile/demo/spiderperson@192.webp" />
+              <img src={user.avatarUrl} />
             </div>
           </div>
           <div className="w-full">

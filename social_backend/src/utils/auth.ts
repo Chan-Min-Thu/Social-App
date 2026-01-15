@@ -19,7 +19,7 @@ export const checkUserExit = (user: UserType) => {
 export const checkUserIfNotExit = (user: UserType) => {
   // console.log("checkUserIfNotExit user:", user);
   if (!user) {
-    const error: any = new Error("Your email does not register.");
+    const error: any = new Error("This user does not exit.");
     error.status = 401;
     error.code = errorCode.unauthenticated;
     throw error;

@@ -2,6 +2,7 @@ import { Link, Form } from "react-router";
 import ToggleMode from "./ToggleMode";
 import { BellIcon, HamburgerMenuIcon } from "@radix-ui/react-icons";
 import Drawer from "./Drawer";
+import Button from "./Button";
 
 interface NavbarProps {
   user?: {
@@ -54,9 +55,7 @@ export default function Navbar({ user }: NavbarProps) {
             </li>
             <li className="w-full flex">
               <Form method="post" action="logout" className="w-full flex">
-                <button type="submit" className="w-full">
-                  Logout
-                </button>
+                <Button type="submit" className="w-full" content="Log out" />
               </Form>
             </li>
           </ul>

@@ -1,6 +1,7 @@
 import type { FC } from "react";
-import { Link, useNavigate } from "react-router";
+import { useNavigate } from "react-router";
 import Button from "./Button";
+import DialogBox from "./DialogBox";
 
 type DropDownProps = {
   onClick: () => void;
@@ -10,6 +11,7 @@ const DropDown: FC<DropDownProps> = ({ onClick, id }) => {
   const navigate = useNavigate();
   return (
     <div>
+      <DialogBox onClick={onClick} title="Remove friend" />
       <details className="dropdown">
         <summary className="btn m-1">
           <svg
@@ -30,12 +32,20 @@ const DropDown: FC<DropDownProps> = ({ onClick, id }) => {
         <ul className="menu dropdown-content bg-base-100 rounded-box z-1 w-52 p-2 shadow-sm">
           <li className="m-1">
             <Button
+              type="button"
               content="View Profile"
               onClick={() => navigate(`/profile/${id}`)}
             />
           </li>
           <li className="m-1">
-            <Button content="Remove Friend" onClick={onClick} />
+            <Button
+              type="button"
+              content="Remove Friend"
+              onClick={() => {
+                const modal = document.getElementById("my_modal_1");
+                modal?.showModal();
+              }}
+            />
           </li>
         </ul>
       </details>

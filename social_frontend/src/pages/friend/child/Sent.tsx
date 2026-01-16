@@ -4,6 +4,7 @@ import Profile from "../../../components/Profile";
 import type { ContextType } from "./FriendLayout";
 import type { FriendType } from "@/types/friend.type";
 import { useRemoveFriendship } from "../../../hooks/acceptRequestFriend";
+import DialogBox from "../../../components/DialogBox";
 
 export default function Sent() {
   const { data } = useOutletContext<ContextType>();
@@ -19,18 +20,31 @@ export default function Sent() {
             <div>No Friends Sent.</div>
           ) : (
             data?.map((data: FriendType) => (
-              <div key={data.id} className="flex justify-between w-full">
-                <Profile
-                  imageUrl={data.profile.avatarUrl}
-                  name={data.profile.username}
-                  status="You sent as a friend."
+              <div key={data.profile.id}>
+                <DialogBox
+                  onClick={() => removeMutation(data.profile.id)}
+                  title="Cancle request-friend"
                 />
-                <div className="flex gap-3">
-                  <Button
-                    className="btn-error btn-sm"
-                    content={"Cancle"}
-                    onClick={() => removeMutation(data.addresseeId)}
+                <div
+                  key={data.profile.id}
+                  className="flex justify-between w-full"
+                >
+                  <Profile
+                    imageUrl={data.profile.avatarUrl}
+                    name={data.profile.username}
+                    status="You sent as a friend."
                   />
+                  <div className="flex gap-3">
+                    <Button
+                      type="button"
+                      className="btn-error btn-sm"
+                      content={"Cancle"}
+                      onClick={() => {
+                        const modal = document.getElementById("my_modal_1");
+                        modal?.showModal();
+                      }}
+                    />
+                  </div>
                 </div>
               </div>
             ))

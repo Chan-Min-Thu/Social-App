@@ -8,7 +8,13 @@ export const createPostIcons = [
   },
 ];
 
-export const reactions = ["like", "heart", "care", "angry", "laugh"];
+export const profileButton = [
+  {
+    name: "",
+    icon: ImageIcon,
+    input: true,
+  },
+];
 
 export const generatePosts = Array.from({ length: 10 }, (_, i) => ({
   id: `post_${i + 1}`,
@@ -50,7 +56,7 @@ export const generatePosts = Array.from({ length: 10 }, (_, i) => ({
   ],
   reactions: [
     {
-      type: reactions[i % reactions.length],
+      type: "LOVE",
       author: {
         id: `user_${i + 20}`,
         name: `Reactor ${i + 20}`,

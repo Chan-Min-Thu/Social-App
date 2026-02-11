@@ -2,6 +2,7 @@ import { QueryClient } from "@tanstack/react-query";
 import api, { authApi } from "../api";
 import type { CreateReactionType, ReactionType } from "@/types/reaction.type";
 import type { CommentType } from "@/types/comment.type";
+import type { UpdateProfileParams, UserInfoType } from "@/types/user.type";
 
 export const queryClient = new QueryClient({
   defaultOptions: {
@@ -34,6 +35,20 @@ export const removeFriendship = async (removeFriendshipId: string) =>
   await api
     .delete("friend-remove", { data: { removeFriendshipId } })
     .then((res) => res.data);
+
+export const fetchProfileForMe = async () =>
+  await api.get("/profile/me").then((res) => {
+    return res.data.data;
+  });
+
+export const createProfile = async (profileData: UserInfoType) =>
+  await api.post("/profile", profileData).then((res) => res.data);
+
+export const updateProfile = async ({
+  profileId,
+  userInfo,
+}: UpdateProfileParams) =>
+  await api.patch(`/profile/${profileId}`, userInfo).then((res) => res.data);
 
 export const postQuery = (query: string) => ({
   queryKey: ["posts", query],
@@ -72,6 +87,26 @@ export const deleteReaction = async (reaction: ReactionType) => {
     .then((res) => res.data);
 };
 
+export const uploadProfileImage = async (imageFile: any) => {
+  const formData = new FormData();
+  formData.append("profileImage", imageFile);
+  await api
+    .post("profile/profile-image", formData, {
+      headers: { "content-type": "multipart/form-data" },
+    })
+    .then((res) => res.data);
+};
+
+export const uploadCoverImage = async (imageFile: any) => {
+  const formData = new FormData();
+  formData.append("coverImage", imageFile);
+  await api
+    .post("profile/cover-image", formData, {
+      headers: { "content-type": "multipart/form-data" },
+    })
+    .then((res) => res.data);
+};
+
 export const userQuery = () => ({
   queryKey: ["auth-check"],
   queryFn: fetchUser,
@@ -91,5 +126,12 @@ export const friendQuery = (param: string) => {
   return {
     queryKey: ["friends", param],
     queryFn: fetchFriend(param),
+  };
+};
+
+export const profileForMeQuery = () => {
+  return {
+    queryKey: ["profile", "me"],
+    queryFn: fetchProfileForMe,
   };
 };

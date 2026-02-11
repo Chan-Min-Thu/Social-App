@@ -4,14 +4,27 @@ import { useMutation } from "@tanstack/react-query";
 import { useState } from "react";
 import CommentBox from "./CommentBox";
 import CommentForm from "./CommentForm";
+import { useLocation } from "react-router";
 
 type CommentPropType = {
   comments: CommentType[];
   postId: string;
 };
 export default function Comments({ comments, postId }: CommentPropType) {
+  const location = useLocation();
+  const pathname = location.pathname;
+  const [replybox, setReplybox] = useState<string | null>(null);
+  const { mutate } = useMutation({
+    mutationFn: (data: CommentType) => createComment(data),
+    onSettled: () =>
+      queryClient.invalidateQueries({
+        queryKey:
+          pathname === "/profile" ? ["profile", "me"] : ["posts", "infinite"],
+      }),
+  });
+
   const parentComment = comments.filter(
-    (cm: CommentType) => cm.parentId === null
+    (cm: CommentType) => cm.parentId === null,
   );
   const childComment = comments.reduce<Record<string, CommentType[]>>(
     (acc, comment) => {
@@ -21,16 +34,9 @@ export default function Comments({ comments, postId }: CommentPropType) {
       }
       return acc;
     },
-    {}
+    {},
   );
-  const [replybox, setReplybox] = useState<string | null>(null);
-  const { mutate } = useMutation({
-    mutationFn: (data: CommentType) => createComment(data),
-    onSettled: () =>
-      queryClient.invalidateQueries({
-        queryKey: ["posts", "infinite"],
-      }),
-  });
+
   const onSubmitHandler = (data: CommentType) => {
     mutate({ content: data.content, postId });
   };
@@ -59,7 +65,7 @@ export default function Comments({ comments, postId }: CommentPropType) {
                   comment={com}
                   setReply={() =>
                     setReplybox((prev) =>
-                      prev !== null ? null : String(com.id)
+                      prev !== null ? null : String(com.id),
                     )
                   }
                 />
@@ -72,7 +78,7 @@ export default function Comments({ comments, postId }: CommentPropType) {
                       comment={child}
                       setReply={() =>
                         setReplybox((prev) =>
-                          prev !== null ? null : String(com.id)
+                          prev !== null ? null : String(com.id),
                         )
                       }
                     />

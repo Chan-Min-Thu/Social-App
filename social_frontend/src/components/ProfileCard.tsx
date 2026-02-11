@@ -1,23 +1,65 @@
-const ProfileCard = () => {
+import type { UserProfileType } from "@/types/user.type";
+import ImageInput from "./ImageInput";
+import imageUrl from "../config/imageUrl";
+import p1 from "../assets/no-cover.png";
+import p2 from "../assets/no-profile.png";
+import ProfileCircle from "./ProfileCircle";
+
+type ProfileCardProps = {
+  profile: UserProfileType;
+  postLength?: number;
+  friendLength?: number;
+};
+
+// const imageUrl = import.meta.env.VITE_IMAGE_API_URL;
+const ProfileCard = ({
+  profile,
+  postLength,
+  friendLength,
+}: ProfileCardProps) => {
+  const { coverUrl, avatarUrl, website, username } = profile;
+
+  const profileUrl = imageUrl + "/optimized/" + avatarUrl;
+  const avatarUrlPath = avatarUrl.startsWith("http") ? avatarUrl : profileUrl;
+  const coverImageUrl = imageUrl + "/optimized/" + coverUrl;
   return (
-    <div className="card bg-base-100 w-full h-10/12  shadow-sm relative">
-      <figure className="h-52 w-full">
-        <img
-          src="https://img.daisyui.com/images/stock/photo-1606107557195-0e29a4b5b4aa.webp"
-          alt="Shoes"
-        />
+    <div className="card bg-base-100 w-full h-full   shadow-sm relative">
+      <figure className="lg:h-64 h-64 w-full relative">
+        <img src={coverUrl ? coverImageUrl : p1} alt="cover image" />
+        <div className="absolute bottom-3 z-20 right-6">
+          <ImageInput type="cover" />
+        </div>
       </figure>
-      <div className="absolute -bottom-15 left-3 h-24 flex justify-between flex-col gap-2">
-        <div className="avatar ">
-          <div className="w-24 rounded-full">
-            <img src="https://img.daisyui.com/images/profile/demo/yellingcat@192.webp" />
+
+      <div className="card-body h-72 flex justify-center">
+        <div className="absolute z-10 top-[40%] left-8  ">
+          <ProfileCircle imageUrl={avatarUrlPath} size={"size-24"} />
+          <div className="absolute bottom-2 z-20 -right-3">
+            <ImageInput type="profile" />
           </div>
         </div>
-        <div className="flex h-full items-center">
-          <h1 className="text-lg font-sans">Chan Min Thu</h1>
+        <div className="mt-0.5">
+          <div>
+            <h2 className="card-title">{username}</h2>
+            <span className="text">{website}</span>
+          </div>
+          <div className="divider"></div>
+          <div className="flex justify-start w-64 gap-5">
+            <div className=" text-center flex justify-center flex-col">
+              <h2 className="text-3xl font-bold">{postLength}</h2>
+              <span className="text-xs">Posts</span>
+            </div>
+            <div className=" text-center flex justify-center flex-col">
+              <h2 className="text-3xl font-bold">{friendLength}</h2>
+              <span className="text-xs">Friends</span>
+            </div>
+            <div className=" text-center flex justify-center flex-col">
+              <h2 className="text-3xl font-bold">100</h2>
+              <span className="text-xs">LIKES</span>
+            </div>
+          </div>
         </div>
       </div>
-      <div className="flex h-full items-center"></div>
     </div>
   );
 };

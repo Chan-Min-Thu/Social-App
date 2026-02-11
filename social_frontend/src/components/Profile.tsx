@@ -1,4 +1,5 @@
 import type { FC } from "react";
+import ProfileCircle from "./ProfileCircle";
 
 type ProfileProps = {
   imageUrl: string;
@@ -8,9 +9,7 @@ type ProfileProps = {
 const Profile: FC<ProfileProps> = ({ imageUrl, name, status }) => {
   return (
     <div className="flex">
-      <div className=" rounded-full mr-2">
-        <img className="size-10 rounded-box" src={imageUrl ?? ""} />
-      </div>
+      <ProfileCircle imageUrl={imageUrl} size={"size-10"} />
       <div>
         <div>{name}</div>
         <div className="text-xs uppercase font-semibold opacity-60">

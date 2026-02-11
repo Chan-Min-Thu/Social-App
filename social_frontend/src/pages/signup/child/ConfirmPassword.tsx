@@ -8,6 +8,7 @@ import {
   LockClosedIcon,
 } from "@radix-ui/react-icons";
 import { passwordSchema } from "../../../utils/schema/validationSchemas";
+import Button from "../../../components/Button";
 
 export default function ConfirmPassword() {
   const [visible, setVisible] = useState({ password: false, confirm: false });
@@ -48,13 +49,14 @@ export default function ConfirmPassword() {
                 placeholder="Password"
                 className="focus:outline-none flex-1"
               />
-              <button
+              <Button
                 onClick={() =>
                   setVisible({ ...visible, password: !visible.password })
                 }
+                content=""
               >
                 {visible.password ? <EyeOpenIcon /> : <EyeClosedIcon />}
-              </button>
+              </Button>
             </label>
             <label className="inputbox flex w-full validator">
               <LockClosedIcon />
@@ -66,13 +68,14 @@ export default function ConfirmPassword() {
                 className="focus:outline-none flex-1"
               />
 
-              <button
+              <Button
+                content=""
                 onClick={() =>
                   setVisible({ ...visible, confirm: !visible.confirm })
                 }
               >
                 {visible.confirm ? <EyeOpenIcon /> : <EyeClosedIcon />}
-              </button>
+              </Button>
             </label>
             {errors.confirmPassword ? (
               <div className="validator-hint hidden">
@@ -82,14 +85,15 @@ export default function ConfirmPassword() {
           </div>
           {actionData && <p className="text-error">{actionData.message}</p>}
           {isSubmitting ? (
-            <button className="btn">
+            <Button content="Submitting..." className="btn">
               <span className="loading loading-spinner"></span>
-              Submitting...
-            </button>
+            </Button>
           ) : (
-            <button className="btn btn-primary" type="submit">
-              Confirm Password
-            </button>
+            <Button
+              content="  Confirm Password"
+              className="btn btn-primary"
+              type="submit"
+            />
           )}
         </div>
       </form>

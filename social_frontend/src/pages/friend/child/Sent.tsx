@@ -40,7 +40,9 @@ export default function Sent() {
                       className="btn-error btn-sm"
                       content={"Cancle"}
                       onClick={() => {
-                        const modal = document.getElementById("my_modal_1");
+                        const modal = document.getElementById(
+                          "my_modal_1",
+                        ) as HTMLDialogElement | null;
                         modal?.showModal();
                       }}
                     />

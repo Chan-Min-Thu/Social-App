@@ -43,16 +43,23 @@ export const signUpAction = async ({ request }: ActionFunctionArgs) => {
   const authStore = useAuthStore.getState();
   const formData = await request.formData();
   const credentials = Object.fromEntries(formData);
+  // const { getUser } = useUserStore.getState();
   try {
     const response = await authApi.post("register", credentials);
     if (response.status !== 200) {
       return response.data.message || "Sending OTP failed!";
     }
+    // getUser({
+    //   id: response.data.data.userId,
+    //   email: response.data.data.email,
+    //   username: response.data.data.username,
+    //   avatarUrl: response.data.data.avatarUrl,
+    // });
     //client state management
     authStore.setAuth(
       response?.data.email,
       response?.data.token,
-      SignUpStatus.verify
+      SignUpStatus.verify,
     );
     return redirect("/signup/verify");
   } catch (error) {
@@ -78,7 +85,7 @@ export const otpAction = async ({ request }: ActionFunctionArgs) => {
     authStore.setAuth(
       response?.data.email,
       response?.data.token,
-      SignUpStatus.confirmPassword
+      SignUpStatus.confirmPassword,
     );
     return redirect("/signup/confirm-password");
   } catch (error) {

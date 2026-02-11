@@ -1,14 +1,9 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { EnvelopeClosedIcon } from "@radix-ui/react-icons";
 import { useForm } from "react-hook-form";
-import {
-  Link,
-  useActionData,
-  useNavigate,
-  useNavigation,
-  useSubmit,
-} from "react-router";
+import { Link, useActionData, useNavigation, useSubmit } from "react-router";
 import { emailSchema } from "../../../utils/schema/validationSchemas";
+import Button from "../../../components/Button";
 
 export default function SignUp() {
   const submit = useSubmit();
@@ -21,14 +16,11 @@ export default function SignUp() {
   });
   const navigation = useNavigation();
   const actionData = useActionData();
-  console.log(actionData?.message);
   const isSubmitting = navigation.state === "submitting";
 
   const onSubmitHandler = (data: any) => {
-    console.log(data);
     submit(data, { method: "POST", action: "." });
   };
-  console.log(errors.email);
   return (
     <div className="flex justify-center flex-col w-full gap-4 mb-5">
       <div className="text-center mx-auto flex gap-3 justify-center flex-col">
@@ -59,14 +51,15 @@ export default function SignUp() {
           <div className="text-error p-2 text-sm">{actionData?.message}</div>
         )}
         {isSubmitting ? (
-          <button className="btn btn-primary w-full">
+          <Button className="btn btn-primary w-full" content="Submitting...">
             <span className="loading loading-spinner"></span>
-            Submitting...
-          </button>
+          </Button>
         ) : (
-          <button className="btn btn-primary w-full " type="submit">
-            Get OTP
-          </button>
+          <Button
+            className="btn btn-primary w-full "
+            type="submit"
+            content="Get OTP"
+          />
         )}
       </form>
       <div className="divider"></div>

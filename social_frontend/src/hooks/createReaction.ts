@@ -3,7 +3,12 @@ import { createReaction } from "./../api/query";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 // import type { PostType } from "@/types/post.type";
 
-export const useCreateReaction = ({ postId, type }: CreateReactionType) => {
+export const useCreateReaction = ({
+  postId,
+  type,
+  queryKey,
+}: CreateReactionType) => {
+  console.log("queryKey", queryKey);
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: () => createReaction({ postId, type }),
@@ -34,7 +39,7 @@ export const useCreateReaction = ({ postId, type }: CreateReactionType) => {
     },
     */
     onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: ["posts", "infinite"] });
+      queryClient.invalidateQueries({ queryKey: queryKey });
     },
   });
 };

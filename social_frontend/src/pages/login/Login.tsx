@@ -1,14 +1,15 @@
-import { authSchema } from "../../utils/schema/authSchma";
+import { useForm } from "react-hook-form";
+import { useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { authSchema } from "../../utils/schema/authSchma";
 import {
   EnvelopeClosedIcon,
   EyeClosedIcon,
-  EyeOpenIcon,
   LockClosedIcon,
+  EyeOpenIcon,
 } from "@radix-ui/react-icons";
-import { useState } from "react";
-import { useForm } from "react-hook-form";
 import { Link, useSubmit, useNavigation, useActionData } from "react-router";
+import Button from "../../components/Button";
 
 export default function Login() {
   const [passHidden, setPassHidden] = useState(false);
@@ -27,7 +28,6 @@ export default function Login() {
 
   const actionData = useActionData();
   const onSubmithandler = (data: any) => {
-    // console.log("data", data);
     submit(data, { method: "POST", action: "/login" });
   };
   return (
@@ -96,14 +96,15 @@ export default function Login() {
           )}
 
           {isSubmitting ? (
-            <button className="btn">
+            <Button className="btn" content="Submitting...">
               <span className="loading loading-spinner"></span>
-              Submitting...
-            </button>
+            </Button>
           ) : (
-            <button className="btn btn-primary " type="submit">
-              Log in
-            </button>
+            <Button
+              content="Log in"
+              className="btn btn-primary "
+              type="submit"
+            />
           )}
         </form>
         <div className="divider"></div>

@@ -1,8 +1,10 @@
-import { Link, Form } from "react-router";
+import { Link } from "react-router";
 import ToggleMode from "./ToggleMode";
 import { BellIcon, HamburgerMenuIcon } from "@radix-ui/react-icons";
 import Drawer from "./Drawer";
 import Button from "./Button";
+import p1 from "../assets/no-profile.png";
+import imageUrl from "../config/imageUrl";
 
 interface NavbarProps {
   user?: {
@@ -13,6 +15,7 @@ interface NavbarProps {
   };
 }
 export default function Navbar({ user }: NavbarProps) {
+  const profileUrl = imageUrl + "/optimized/" + user?.avatarUrl;
   return (
     <div className="navbar bg-base-200 shadow-sm px-4 md:px-20 sticky top-0 z-50">
       <div className="flex-1 ml-2">
@@ -22,9 +25,12 @@ export default function Navbar({ user }: NavbarProps) {
       </div>
       <div className="flex gap-4 items-center">
         <ToggleMode />
-        <button className="btn btn-square btn-outline md:flex hidden size-8 rounded-full">
+        <Button
+          className="btn btn-square btn-outline md:flex hidden size-8 rounded-full"
+          content=""
+        >
           <BellIcon className="text-xl text-primary" />
-        </button>
+        </Button>
         <input
           type="text"
           placeholder="Search post or people..."
@@ -37,26 +43,25 @@ export default function Navbar({ user }: NavbarProps) {
             className="btn btn-ghost btn-circle avatar"
           >
             <div className="w-8 rounded-full">
-              <img alt="Tailwind CSS Navbar component" src={user?.avatarUrl} />
+              <img
+                alt="Tailwind CSS Navbar component"
+                src={user?.avatarUrl ? profileUrl : p1}
+              />
             </div>
           </div>
           <ul
             tabIndex={0}
-            className="menu menu-sm dropdown-content bg-base-100 rounded-box z-1 mt-3 w-52 p-2 shadow"
+            className="menu menu-sm dropdown-content bg-base-100 rounded-box z-1 mt-3 w-52 p-2 shadow gap-2"
           >
             <li>
-              <Link to="/profile" className="justify-between">
+              <Link to="/profile" className="text-sm">
                 Profile
-                <span className="badge">{user?.name}</span>
               </Link>
             </li>
             <li>
-              <Link to="/settings">Settings</Link>
-            </li>
-            <li className="w-full flex">
-              <Form method="post" action="logout" className="w-full flex">
-                <Button type="submit" className="w-full" content="Log out" />
-              </Form>
+              <Link to="/settings" className="text-sm">
+                Settings
+              </Link>
             </li>
           </ul>
         </div>

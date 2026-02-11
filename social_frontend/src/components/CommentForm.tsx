@@ -3,6 +3,7 @@ import { commentSchema } from "../utils/schema/commentSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import type { FC } from "react";
 import { useForm } from "react-hook-form";
+import Button from "./Button";
 
 type CommentFormPorps = {
   onSubmitHandler: (data: CommentType) => void;
@@ -33,9 +34,7 @@ const CommentForm: FC<CommentFormPorps> = ({ onSubmitHandler }) => {
           className="input focus:outline-none flex-1"
           placeholder="Please write your comments."
         />
-        <button type="submit" className="btn">
-          Create
-        </button>
+        <Button type="submit" className="btn btn-primary" content="Create" />
       </div>
       {errors.content && (
         <p className="text-error text-sm mt-1">{errors.content.message}</p>

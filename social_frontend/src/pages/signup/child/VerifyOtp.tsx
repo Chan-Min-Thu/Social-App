@@ -3,6 +3,7 @@ import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import OtpInput from "react-otp-input";
 import { otpSchema } from "../../../utils/schema/validationSchemas";
+import Button from "../../../components/Button";
 
 export default function VerifyOtp() {
   const { handleSubmit, control } = useForm({
@@ -54,14 +55,15 @@ export default function VerifyOtp() {
           <div className="my-2 text-error">{actionData?.message}</div>
         )}
         {isSubmitting ? (
-          <button className="btn btn-primary w-full">
+          <Button className="btn btn-primary w-full" content="Submitting...">
             <span className="loading loading-spinner"></span>
-            Submitting...
-          </button>
+          </Button>
         ) : (
-          <button className="btn btn-primary w-full" type="submit">
-            Verify OTP
-          </button>
+          <Button
+            className="btn btn-primary w-full"
+            type="submit"
+            content="Verify OTP"
+          />
         )}
       </form>
       <div className="divider"></div>

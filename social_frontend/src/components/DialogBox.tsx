@@ -25,13 +25,17 @@ const DialogBox: FC<DialogBoxProps> = ({ onClick, title }) => {
                 type="button"
                 content="Cancle"
                 onClick={() => {
-                  document.getElementById("my_modal_1")?.close();
+                  (
+                    document.getElementById(
+                      "my_modal_1",
+                    ) as HTMLDialogElement | null
+                  )?.close();
                 }}
               />
             </form>
           </div>
-          <form method="dialog" className="modal-backdrop">
-            <button>close</button>
+          <form method="dialog" className="modal-backdrop hidden">
+            <button className="btn">Close</button>
           </form>
         </div>
       </dialog>

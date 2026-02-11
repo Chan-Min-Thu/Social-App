@@ -1,9 +1,5 @@
-import {
-  isRouteErrorResponse,
-  Link,
-  useNavigate,
-  useRouteError,
-} from "react-router";
+import Button from "../components/Button";
+import { isRouteErrorResponse, useNavigate, useRouteError } from "react-router";
 
 const ErrorBoundary = () => {
   const navigate = useNavigate();
@@ -17,12 +13,11 @@ const ErrorBoundary = () => {
             {error.status} {error.statusText}
           </h1>
           <p>{error.data}</p>
-          <button
+          <Button
+            content="&larr;Back"
             className="btn btn-outline w-20 h-10"
             onClick={() => navigate(-1)}
-          >
-            &larr;Back
-          </button>
+          />
         </div>
       </div>
     );

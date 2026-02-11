@@ -11,7 +11,6 @@ import type { FriendType } from "@/types/friend.type";
 
 export default function Requests() {
   const { data } = useOutletContext<ContextType>();
-  console.log(data);
   const mutation = useAcceptFriend();
   const { mutate: removeMutation } = useRemoveFriendship("requested");
   return (
@@ -51,7 +50,9 @@ export default function Requests() {
                       className="btn-error btn-sm"
                       content="Remove"
                       onClick={() => {
-                        const modal = document.getElementById("my_modal_1");
+                        const modal = document.getElementById(
+                          "my_modal_1",
+                        ) as HTMLDialogElement | null;
                         modal?.showModal();
                       }}
                     />

@@ -37,7 +37,7 @@ export const createImage = (
   imageData: {
     imageUrl: string;
     postId: string;
-  }[]
+  }[],
 ) => {
   return prisma.image.createMany({
     data: imageData,
@@ -171,4 +171,13 @@ export const getPostsByInfinite = async (options: any) => {
 
 export const countPosts = async () => {
   return prisma.post.count();
+};
+
+export const findPostsByUserId = async (userId: string) => {
+  return prisma.post.findMany({
+    where: {
+      authorId: userId,
+    },
+    select: optionsDefault,
+  });
 };

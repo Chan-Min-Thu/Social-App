@@ -33,7 +33,6 @@ export default function Friend() {
     queryKey: ["friends", status],
     queryFn: () => fetchFriend(status),
   });
-  console.log("friends", friends);
   return (
     <div className="">
       <FriendHeader />

@@ -7,18 +7,21 @@ import {
 } from "@radix-ui/react-icons";
 import type { ImageType, PostType } from "../types/post.type";
 import { formatDistanceToNow } from "date-fns";
-// import { reactionFun } from "../utils/function/reaction";
 import Comments from "./Comments";
-// import type { ReactionType } from "@/types/reaction.type";
 import { useCreateReaction } from "../hooks/createReaction";
 import { useRemoveReaction } from "../hooks/deleteReaction";
+import Button from "./Button";
+import imageUrl from "../config/imageUrl";
+import { useLocation } from "react-router";
+import ProfileCircle from "./ProfileCircle";
 
 type PostCardType = {
   post: PostType;
 };
 
-const imageUrl = import.meta.env.VITE_IMAGE_API_URL;
 const PostCard: FC<PostCardType> = ({ post }) => {
+  const location = useLocation();
+  const pathname = location.pathname;
   const user = JSON.parse(localStorage.getItem("user") as string);
   const userId = user.state.user.id;
   const reaction =
@@ -26,20 +29,30 @@ const PostCard: FC<PostCardType> = ({ post }) => {
     user &&
     post.reactions &&
     post.reactions.find((react) => react?.userId === userId);
+
+  console.log(reaction);
   const { mutate: creatingReaction } = useCreateReaction({
     postId: post!.id,
     type: "LOVE",
+    queryKey:
+      pathname === "/profile" ? ["profile", "me"] : ["posts", "infinite"],
   });
 
   const { mutate: deletingReaction } = useRemoveReaction({
-    ...reaction,
-    postId: post.id,
+    queryKey:
+      pathname === "/profile" ? ["profile", "me"] : ["posts", "infinite"],
   });
 
   const [toShowComment, setToShowComment] = useState<boolean>(false);
   const [isHearted, setIsHearted] = useState<boolean>(false);
   const createdAt = new Date(post.updatedAt);
   const createdTime = formatDistanceToNow(createdAt, { addSuffix: true });
+  const imageUrlPath =
+    post.author &&
+    (post.author.avatarUrl.startsWith("https")
+      ? post.author.avatarUrl
+      : imageUrl + "/optimized/" + post.author.avatarUrl);
+
   const showComments = () => {
     setToShowComment((prev) => !prev);
   };
@@ -50,15 +63,12 @@ const PostCard: FC<PostCardType> = ({ post }) => {
       setIsHearted(false);
     }
   }, [reaction]);
+
   return (
     <div className="card card-border bg-base-100 w-full p-6 my-4 rel relative">
       <div className="flex flex-row gap-2">
         <div className="flex flex-row">
-          <div className="avatar ">
-            <div className="w-12 rounded-full">
-              {post.author && <img src={post.author.avatarUrl} />}
-            </div>
-          </div>
+          <ProfileCircle imageUrl={imageUrlPath!} size={"size-10"} />
           <div className="ml-1">
             <h1 className="text-sm font-bold">{post.author?.username}</h1>
             <span className="text-xs font-extralight">
@@ -89,49 +99,39 @@ const PostCard: FC<PostCardType> = ({ post }) => {
 
       <div className="flex justify-between w-full">
         {isHearted ? (
-          <button
+          <Button
             onClick={() => {
-              console.log("removing reaction");
               deletingReaction({ ...reaction, postId: post!.id });
             }}
-            className=" btn flex flex-row items-center gap-1 text-success"
+            className="flex flex-row items-center gap-1 text-success"
+            content={post.reactions?.length ? "" + post.reactions?.length : "+"}
           >
             <HeartFilledIcon className="size-5" />
-            <span className="text-xs">
-              {post.reactions?.length ? post.reactions?.length : "+"}
-            </span>
-          </button>
+          </Button>
         ) : (
-          <button
+          <Button
             onClick={() => {
               creatingReaction();
             }}
             className=" btn flex flex-row items-center gap-1 text-success"
+            content={post.reactions?.length ? "" + post.reactions?.length : "+"}
           >
             <HeartIcon className=" size-5" />
-
-            <span className="text-xs">
-              {post.reactions?.length ? post.reactions?.length : "+"}
-            </span>
-          </button>
+          </Button>
         )}
-        <button
-          className="btn flex flex-row items-center gap-1"
+        <Button
+          className="flex flex-row items-center gap-1"
           onClick={() => showComments()}
+          content={post.comments?.length ? "" + post.comments?.length : "+"}
         >
           <ChatBubbleIcon className="text-primary" />
-          <span className="text-xs">Comment</span>
-          <span className="text-xs">
-            {post.comments?.length ? post.comments?.length : "+"}
-          </span>
-        </button>
-        <button className="btn flex-row items-center gap-1">
+        </Button>
+        <Button className="btn flex-row items-center gap-1" content="Share">
           <Share1Icon className="text-primary" />
-          <span className="text-xs">Share</span>
-        </button>
+        </Button>
       </div>
       {toShowComment
-        ? post.comments && (
+        ? post?.comments && (
             <Comments comments={post.comments} postId={post.id} />
           )
         : null}

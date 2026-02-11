@@ -1,6 +1,9 @@
 import type { CommentType } from "@/types/comment.type";
 import { HeartIcon } from "@radix-ui/react-icons";
 import { type FC } from "react";
+import Button from "./Button";
+import ProfileCircle from "./ProfileCircle";
+import imageUrl from "../config/imageUrl";
 
 type CommentBoxProps = {
   comment: CommentType;
@@ -8,17 +11,15 @@ type CommentBoxProps = {
 };
 
 const CommentBox: FC<CommentBoxProps> = ({ comment, setReply }) => {
+  const profileUrl = comment.author && (comment.author.avatarUrl as string);
+  const profilePath = profileUrl?.startsWith("https")
+    ? profileUrl
+    : imageUrl + "/optimized/" + profileUrl;
   return (
     <div className="flex gap-2 w-full flex-col">
       <div className="flex gap-2">
         <div>
-          <div className="avatar">
-            <div className="w-8 rounded-full">
-              {comment.author && (
-                <img src={comment?.author?.avatarUrl} alt="comment-photo" />
-              )}
-            </div>
-          </div>
+          <ProfileCircle imageUrl={profilePath} size={"size-9"} />
         </div>
         <div className="flex flex-col gap-2 bg-base-200 w-full pt-2 px-4 pb-4 rounded-xl">
           {comment.author && (
@@ -28,12 +29,15 @@ const CommentBox: FC<CommentBoxProps> = ({ comment, setReply }) => {
         </div>
       </div>
       <div className="ml-11">
-        <button className="mr-2 btn">
+        <Button className="mr-2 btn" content="">
           <HeartIcon className="text-primary" />
-        </button>
-        <button className="btn" onClick={setReply}>
-          Reply
-        </button>
+        </Button>
+
+        <Button
+          content="Reply"
+          onClick={setReply}
+          className="btn btn-primary"
+        />
       </div>
     </div>
   );

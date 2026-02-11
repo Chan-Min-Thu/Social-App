@@ -1,23 +1,21 @@
 import React, { useRef } from "react";
 import { createPostIcons } from "../config/CreatePost";
-import { ImageIcon } from "@radix-ui/react-icons";
+import { CameraIcon } from "@radix-ui/react-icons";
+import Button from "./Button";
+import {
+  useUploadProfileImage,
+  useUploadCoverImage,
+} from "../hooks/uploadImage";
 
-interface ImageInputProps {
-  setImage: React.Dispatch<React.SetStateAction<ImageProps[]>>;
-  handleOnChange?: (files: FileList | null) => void;
-}
+type ImageInputProps = {
+  type: "profile" | "cover";
+};
+export interface ImageProps {}
 
-export interface ImageProps {
-  id: number;
-  file: File;
-  url: string;
-}
-
-export default function ImageInput({
-  setImage,
-  handleOnChange,
-}: ImageInputProps) {
+export default function ImageInput({ type }: ImageInputProps) {
   const inputRef = useRef<HTMLInputElement>(null);
+  const mutationProfile = useUploadProfileImage();
+  const mutationCover = useUploadCoverImage();
 
   const handleInput = (event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
@@ -26,22 +24,15 @@ export default function ImageInput({
     }
   };
 
-  const handleFileChange = () => {
-    if (inputRef.current) {
-      const files = inputRef.current.files || null;
-      if (!files?.length) return;
-      handleOnChange?.(files);
-      const newImages: ImageProps[] = [];
-      Array.from(files).forEach((file) => {
-        if (file.type.startsWith("image/")) {
-          const id = Math.random();
-          const url = URL.createObjectURL(file);
-          newImages.push({ id, file, url });
-        }
-      });
-
-      setImage((prev) => [...prev, ...newImages]);
-      (document.getElementById("my_modal_2") as HTMLDialogElement).showModal();
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (event.target.files && event.target.files.length > 0) {
+      const file = event.target.files[0] || null;
+      if (!file) return;
+      if (type === "cover") {
+        mutationCover.mutate(file);
+        return;
+      }
+      mutationProfile.mutate(file);
     }
   };
 
@@ -52,15 +43,18 @@ export default function ImageInput({
           className="hidden"
           ref={inputRef}
           accept="image/*"
-          multiple
           name="images"
           onChange={handleFileChange}
           type="file"
         />
       )}
-      <button className="btn btn-outline btn-xs" onClick={handleInput}>
-        <ImageIcon className="text-primary" /> {createPostIcons[0].name + "++"}
-      </button>
+      <Button
+        className="btn btn-base-200 btn-xs size-9 btn-circle "
+        content=""
+        onClick={handleInput}
+      >
+        <CameraIcon className="text-sm text-success" />
+      </Button>
     </div>
   );
 }

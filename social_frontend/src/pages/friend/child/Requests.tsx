@@ -1,16 +1,16 @@
 import { useOutletContext } from "react-router";
-import Button from "../../../components/Button";
-import Profile from "../../../components/Profile";
-import type { ContextType } from "./FriendLayout";
-import type { FriendType } from "@/types/friend.type";
 import {
   useAcceptFriend,
   useRemoveFriendship,
 } from "../../../hooks/acceptRequestFriend";
+import Button from "../../../components/Button";
+import Profile from "../../../components/Profile";
+import DialogBox from "../../../components/DialogBox";
+import type { ContextType } from "./FriendLayout";
+import type { FriendType } from "@/types/friend.type";
 
 export default function Requests() {
   const { data } = useOutletContext<ContextType>();
-  console.log(data);
   const mutation = useAcceptFriend();
   const { mutate: removeMutation } = useRemoveFriendship("requested");
   return (
@@ -24,26 +24,39 @@ export default function Requests() {
             <div>No Friend Requests</div>
           ) : (
             data?.map((data: FriendType) => (
-              <div
-                key={data.profile.id}
-                className="flex justify-between w-full"
-              >
-                <Profile
-                  imageUrl={data.profile.avatarUrl}
-                  name={data.profile.username}
-                  status="Request to you."
+              <div>
+                <DialogBox
+                  onClick={() => removeMutation(data.profile.id)}
+                  title="Remove friend"
                 />
-                <div className="flex gap-3">
-                  <Button
-                    className=" btn-success btn-sm"
-                    content="Confirm"
-                    onClick={() => mutation.mutate(data.profile.id)}
+                <div
+                  key={data.profile.id}
+                  className="flex justify-between w-full"
+                >
+                  <Profile
+                    imageUrl={data.profile.avatarUrl}
+                    name={data.profile.username}
+                    status="Request to you."
                   />
-                  <Button
-                    className=" btn-error btn-sm"
-                    content="Remove"
-                    onClick={() => removeMutation(data.profile.id)}
-                  />
+                  <div className="flex gap-3">
+                    <Button
+                      type="button"
+                      className=" btn-success btn-sm"
+                      content="Confirm"
+                      onClick={() => mutation.mutate(data.profile.id)}
+                    />
+                    <Button
+                      type="button"
+                      className="btn-error btn-sm"
+                      content="Remove"
+                      onClick={() => {
+                        const modal = document.getElementById(
+                          "my_modal_1",
+                        ) as HTMLDialogElement | null;
+                        modal?.showModal();
+                      }}
+                    />
+                  </div>
                 </div>
               </div>
             ))

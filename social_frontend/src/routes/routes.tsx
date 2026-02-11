@@ -18,7 +18,7 @@ import SignUp from "../pages/signup/child/SignUp";
 import VerifyOtp from "../pages/signup/child/VerifyOtp";
 import ConfirmPassword from "../pages/signup/child/ConfirmPassword";
 import Friend from "../pages/friend/Friend";
-import Setting from "../pages/setting/Setting";
+import SettingLayout from "../pages/setting/SettingLayout";
 import PostLayout from "../pages/post/PostLayout";
 import Friends from "../pages/friend/child/Friends";
 import Requests from "../pages/friend/child/Requests";
@@ -29,6 +29,9 @@ import { postAction } from "../router/action/postAction";
 import HydrateFallBack from "../components/HydrateFallBack";
 import MyProfile from "../pages/profile/MyProfile";
 import FriendProfile from "../pages/profile/child/FriendProfile";
+import ChangePassword from "../pages/setting/child/ChangePassword";
+import Setting from "../pages/setting/child/Setting";
+import BlockedUsers from "../pages/setting/child/BlockUsers";
 
 const router = createBrowserRouter([
   {
@@ -70,6 +73,8 @@ const router = createBrowserRouter([
       {
         path: "/profile",
         Component: MyProfile,
+        HydrateFallback: HydrateFallBack,
+        ErrorBoundary: ErrorBoundary,
         children: [
           {
             path: ":id",
@@ -79,7 +84,28 @@ const router = createBrowserRouter([
       },
       {
         path: "/settings",
-        Component: Setting,
+        Component: SettingLayout,
+        children: [
+          {
+            index: true,
+            Component: Setting,
+          },
+          {
+            path: "logout",
+            action: logoutAction,
+            loader: () => redirect("/"),
+            HydrateFallback: HydrateFallBack,
+          },
+          {
+            path: "change-password",
+            Component: ChangePassword,
+            HydrateFallback: HydrateFallBack,
+          },
+          {
+            path: "blocked-user",
+            Component: BlockedUsers,
+          },
+        ],
       },
     ],
   },
@@ -90,12 +116,7 @@ const router = createBrowserRouter([
     action: loginAction,
     HydrateFallback: HydrateFallBack,
   },
-  {
-    path: "logout",
-    action: logoutAction,
-    loader: () => redirect("/"),
-    HydrateFallback: HydrateFallBack,
-  },
+
   {
     path: "signup",
     Component: SignupLayout,

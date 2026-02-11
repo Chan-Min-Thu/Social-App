@@ -107,7 +107,7 @@ export const register = [
         // 4.d ) if the same date and also count is 3 times, error return.
         if (isOtp.count === 3) {
           const error: any = new Error(
-            "Otp is allowed to request 3 times pre day,so please try again tomorrow. "
+            "Otp is allowed to request 3 times pre day,so please try again tomorrow. ",
           );
           error.status = 405;
           error.code = errorCode.overLimit;
@@ -125,7 +125,6 @@ export const register = [
         }
       }
     }
-    console.log(message);
     await queue.add("email", {
       type: "email",
       email,
@@ -391,7 +390,7 @@ export const login = [
     //  3. ) User exit but account is freeze , error return
     if (user!.status === "FREEZE") {
       const error: any = new Error(
-        "Your account is Freeze.After 3 days later will open."
+        "Your account is Freeze.After 3 days later will open.",
       );
       error.status = 400;
       error.code = errorCode.accountFreeze;
@@ -463,7 +462,7 @@ export const login = [
 export const logout = async (
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) => {
   const refreshToken = req.cookies ? req.cookies.refreshToken : null;
   if (!refreshToken) {
@@ -476,7 +475,7 @@ export const logout = async (
   try {
     decoded = (await jwt.verify(
       refreshToken,
-      process.env.REFRESHTOKEN_SECRET!
+      process.env.REFRESHTOKEN_SECRET!,
     )) as { id: string; email: string };
   } catch (err) {
     const error: any = new Error("You are unauthenticated.");
@@ -517,7 +516,7 @@ export const logout = async (
 export const authCheck = async (
   req: CustomRequest,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) => {
   const userId = req.userId as string;
 

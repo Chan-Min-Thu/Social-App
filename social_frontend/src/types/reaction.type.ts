@@ -10,4 +10,9 @@ export type ReactionType = {
 export type CreateReactionType = {
   postId: string;
   type: string;
+  queryKey?: string[];
+};
+
+export type RemoveReactionType = {
+  queryKey?: string[];
 };

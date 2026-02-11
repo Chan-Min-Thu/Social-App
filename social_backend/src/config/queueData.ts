@@ -16,3 +16,14 @@ export const profileQueueOptions = (profileImage: any) => {
     quality: 100,
   };
 };
+
+export const coverQueueOptions = (coverImage: any) => {
+  return {
+    type: "image",
+    filePath: coverImage.buffer.toString("base64"),
+    fileName: coverImage.originalname,
+    width: 900,
+    height: 600,
+    quality: 100,
+  };
+};

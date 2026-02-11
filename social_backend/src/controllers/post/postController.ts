@@ -55,8 +55,6 @@ export const createPostController = [
 
     const userId = req.userId as string;
     const { title, content } = req.body;
-    console.log(req.body);
-    console.log("files", req.files);
     const images = req.files;
 
     checkFile(req.files);
@@ -87,13 +85,13 @@ export const createPostController = [
                     type: "exponential", //"fixed"
                     delay: 1000,
                   },
-                }
+                },
               );
               return {
                 imageUrl: `${image.originalname.split(".")[0]}.webp`,
                 postId: createdPost.id,
               };
-            })
+            }),
           )
         : [];
     await createImage(imagesData);
@@ -142,7 +140,7 @@ export const updatePostController = [
             __dirname,
             "../../../",
             "uploads/optimized",
-            imgUrl
+            imgUrl,
           );
           await unlink(imagePath, (err) => {
             if (err) {
@@ -167,10 +165,10 @@ export const updatePostController = [
               __dirname,
               "../../..",
               "uploads/optimized",
-              img.imageUrl
+              img.imageUrl,
             );
             unlink(originalPath, (err) => console.log(err));
-          })
+          }),
         );
       }
     } catch (error) {
@@ -203,13 +201,13 @@ export const updatePostController = [
                     type: "exponential",
                     delay: 1000,
                   },
-                }
+                },
               );
               return {
                 imageUrl: `${image.originalname.split(".")[0]}.webp`,
                 postId: updatedPost.id,
               };
-            })
+            }),
           )
         : [];
 
@@ -247,7 +245,7 @@ export const deletePostController = [
             __dirname,
             "../../../",
             "uploads/images",
-            imgUrl
+            imgUrl,
           );
           await unlink(imagePath, (err) => {
             if (err) {

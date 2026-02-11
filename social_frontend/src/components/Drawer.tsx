@@ -1,4 +1,5 @@
 import { BellIcon } from "@radix-ui/react-icons";
+import Button from "./Button";
 
 export default function Drawer() {
   return (
@@ -16,10 +17,12 @@ export default function Drawer() {
             className="input focus:outline-none w-full md:w-auto"
           />
         </label>
-        <button className="flex gap-2 btn btn-ghost justify-start">
+        <Button
+          className="flex gap-2 btn btn-ghost justify-start"
+          content="Notifications"
+        >
           <BellIcon />
-          <span>Notifications</span>
-        </button>
+        </Button>
       </div>
     </div>
   );

@@ -19,7 +19,7 @@ export default function Suggestions() {
             <div>You don't have suggestions.</div>
           ) : (
             data?.map((data: FriendType) => (
-              <div key={data.id} className="flex justify-between">
+              <div key={data.profile.id} className="flex justify-between">
                 <Profile
                   imageUrl={data.profile.avatarUrl}
                   name={data.profile.username}
@@ -27,6 +27,7 @@ export default function Suggestions() {
                 />
                 <div className="flex gap-3">
                   <Button
+                    type="button"
                     className="btn-error btn-sm"
                     content={"Add Friend"}
                     onClick={() => mutate(data.profile.id)}

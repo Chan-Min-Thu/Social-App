@@ -58,6 +58,8 @@ model Friend {
   addresseeId String
   status      String // pending, accepted, blocked
   createdAt   DateTime @default(now())
+  profile     Profile? @relation(fields: [profileId], references: [id])
+  profileId   String?
 
   @@unique([requesterId, addresseeId])
 }
@@ -74,9 +76,10 @@ model Profile {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-
   // Relations
-  user User @relation(fields: [userId], references: [id])
+  user      User     @relation(fields: [userId], references: [id])
+  friends   Friend[]
+  posts     Post[]
 }
 
 model Otp {
@@ -102,6 +105,8 @@ model Post {
   comments  Comment[]
   reactions Reaction[]
   image     Image[]
+  profile   Profile?   @relation(fields: [profileId], references: [id])
+  profileId String?
 }
 
 model Image {

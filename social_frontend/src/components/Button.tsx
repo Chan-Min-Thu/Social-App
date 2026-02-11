@@ -1,14 +1,30 @@
-import type { FC } from "react";
+import type { FC, ReactElement } from "react";
 
 type ButtonProp = {
   className?: string;
   content: string;
-  onClick?: () => void;
+  children?: ReactElement;
+  type?: "button" | "submit" | "reset";
+  onClick?: (event: any) => void;
+  disabled?: boolean;
 };
 
-const Button: FC<ButtonProp> = ({ className, content, onClick }) => {
+const Button: FC<ButtonProp> = ({
+  className,
+  content,
+  children,
+  onClick,
+  disabled = false,
+  type = "button",
+}) => {
   return (
-    <button className={`btn ${className}`} onClick={onClick}>
+    <button
+      type={type}
+      className={`btn ${className}`}
+      disabled={disabled}
+      onClick={onClick}
+    >
+      {children}
       {content}
     </button>
   );

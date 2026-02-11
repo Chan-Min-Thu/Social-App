@@ -1,9 +1,15 @@
+import { FriendInclude } from "./../../generated/prisma/models/Friend";
 import { XOR } from "./../../generated/prisma/internal/prismaNamespace";
 import { prisma } from "../lib/prisma";
 import { FriendType, ToCoupleFriend } from "../types/friend.type";
 
+const optionProfile = {
+  id: true,
+  username: true,
+  avatarUrl: true,
+};
+
 export const requestedFriend = (friendData: FriendType) => {
-  console.log("requstedFriend", friendData);
   return prisma.friend.create({
     data: { ...friendData, status: "pending" },
   });
@@ -126,19 +132,11 @@ export const getFriendsAcceptedAndPending = (userId: string) => {
       id: true,
       addresseeId: true,
       addressee: {
-        select: {
-          id: true,
-          username: true,
-          avatarUrl: true,
-        },
+        select: optionProfile,
       },
       requesterId: true,
       requester: {
-        select: {
-          id: true,
-          username: true,
-          avatarUrl: true,
-        },
+        select: optionProfile,
       },
     },
   });
@@ -154,19 +152,11 @@ export const getFriends = (userId: string) => {
       id: true,
       addresseeId: true,
       addressee: {
-        select: {
-          id: true,
-          username: true,
-          avatarUrl: true,
-        },
+        select: optionProfile,
       },
       requesterId: true,
       requester: {
-        select: {
-          id: true,
-          username: true,
-          avatarUrl: true,
-        },
+        select: optionProfile,
       },
     },
   });
@@ -180,11 +170,7 @@ export const getRequestedFriends = (userId: string) => {
       addresseeId: true,
       requesterId: true,
       requester: {
-        select: {
-          id: true,
-          avatarUrl: true,
-          username: true,
-        },
+        select: optionProfile,
       },
     },
   });
@@ -221,6 +207,23 @@ export const profileWithFriend = (id: string) => {
       avatarUrl: true,
       friendsInitiated: true,
       friendsReceived: true,
+    },
+  });
+};
+
+export const findFriendsByUserId = (userId: string) => {
+  return prisma.friend.findMany({
+    where: { OR: [{ requesterId: userId }, { addresseeId: userId }] },
+    select: {
+      id: true,
+      addresseeId: true,
+      addressee: {
+        select: optionProfile,
+      },
+      requesterId: true,
+      requester: {
+        select: optionProfile,
+      },
     },
   });
 };

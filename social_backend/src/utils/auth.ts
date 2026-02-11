@@ -17,7 +17,6 @@ export const checkUserExit = (user: UserType) => {
 };
 
 export const checkUserIfNotExit = (user: UserType) => {
-  // console.log("checkUserIfNotExit user:", user);
   if (!user) {
     const error: any = new Error("This user does not exit.");
     error.status = 401;
@@ -28,7 +27,7 @@ export const checkUserIfNotExit = (user: UserType) => {
 
 export const checkOtpErrorIfInSameDate = (
   isSameDate: boolean,
-  error: number
+  error: number,
 ) => {
   if (isSameDate && error === 5) {
     const error: any = new Error("Your otp request is over limited for today.");

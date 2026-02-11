@@ -17,3 +17,19 @@ export const otpSchema = z.object({
 export const emailSchema = z.object({
   email: z.email("Invalid email address"),
 });
+
+export const updatePasswordSchema = z
+  .object({
+    currentPassword: z
+      .string()
+      .min(8, "Password must be at least 8 characters long"),
+    confirmPassword: z
+      .string()
+      .min(8, "Confirm Password must be at least 8 characters long"),
+    newPassword: z
+      .string()
+      .min(8, "Confirm Password must be at least 8 characters long"),
+  })
+  .refine((data) => data.currentPassword === data.confirmPassword, {
+    message: "Passwords do not match",
+  });

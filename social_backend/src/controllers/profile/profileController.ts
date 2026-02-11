@@ -1,22 +1,28 @@
 import { Response, NextFunction } from "express";
+import { unlink } from "fs";
+import path from "path";
 import { body, param } from "express-validator";
+
+import queue from "../../job/queues/queue";
+import {
+  coverQueueOptions,
+  imageQueueOptions,
+  profileQueueOptions,
+} from "../../config/queueData";
+import { errorCode } from "../../config/errorCode";
 import { CustomRequest } from "../../types/req.type";
 import { reqBodyErrorFn } from "../../utils/utilFunction/reqBodyError";
+import { checkAlreadyProfile, checkProfileIfNotExit } from "../../utils/check";
 import {
-  findProfileByUserId,
   findProfileById,
+  findProfileByUserId,
+  findUserById,
+  updateProfileImage,
+  createProfile,
+  updateProfile,
 } from "../../services/profileService";
-import {
-  checkAlreadyProfile,
-  checkCommentIfNotExit,
-  checkProfileIfNotExit,
-} from "../../utils/check";
-import { imageQueueOptions, profileQueueOptions } from "../../config/queueData";
-import { createProfile, updateProfile } from "../../services/profileService";
-import queue from "../../job/queues/queue";
-import path from "path";
-import { errorCode } from "../../config/errorCode";
-import { unlink } from "fs";
+import { findPostsByUserId } from "../../services/postService";
+import { findFriendsByUserId } from "../../services/friendService";
 
 export const createProfileController = [
   body("bio")
@@ -37,10 +43,9 @@ export const createProfileController = [
   body("gender").notEmpty().escape(),
   async (req: CustomRequest, res: Response, next: NextFunction) => {
     if (reqBodyErrorFn(req, next)) return;
-
     const userId = req.userId as string;
-    const profileImage = req.file;
     const { bio, location, website, birthDate, gender } = req.body;
+
     // Check Profile already exit
     const isProfile = await findProfileByUserId(userId!);
     checkAlreadyProfile(isProfile);
@@ -51,30 +56,96 @@ export const createProfileController = [
       location,
       website,
       birthDate,
-      gender,
+      gender: gender.toUpperCase(),
       userId,
     };
 
     const profile = await createProfile(profileData);
-    if (profileImage) {
-      await queue.add(
-        "image",
-        profileQueueOptions(profileImage),
-        imageQueueOptions
-      );
-      const imagery = profileImage.originalname.split(".")[0] + ".webp";
-      const updatedProfile = await updateProfile({
-        id: profile.id,
-        userId: userId,
-        avatarUrl: imagery,
-      });
-      res.status(200).json({
-        message: "Profile successfully created",
-        data: updateProfile,
-      });
-    }
+
+    res.status(200).json({
+      message: "Profile successfully created",
+      data: profile,
+    });
   },
 ];
+
+export const uploadCoverImageController = async (
+  req: CustomRequest,
+  res: Response,
+) => {
+  const userId = req.userId as string;
+  const coverImage = req.file;
+
+  const profileInfo = await findProfileByUserId(userId);
+  checkProfileIfNotExit(profileInfo);
+
+  let info;
+  if (coverImage) {
+    if (profileInfo?.coverUrl) {
+      const oldCoverImagePath = path.join(
+        __dirname,
+        "../../../",
+        "uploads/optimized",
+        profileInfo.coverUrl,
+      );
+      unlink(oldCoverImagePath, (error) => {
+        console.log("Old Profile path is not correct", error);
+      });
+
+      await queue.add(
+        "image",
+        coverQueueOptions(coverImage),
+        imageQueueOptions,
+      );
+    }
+
+    const coverUrl = coverImage.originalname.split(".")[0] + ".webp";
+    info = await updateProfile({ id: "" + profileInfo?.id, coverUrl });
+  }
+  res.status(200).json({
+    message: "You successfully updated.",
+    data: info,
+  });
+};
+
+export const uploadProfileImageController = async (
+  req: CustomRequest,
+  res: Response,
+  next: NextFunction,
+) => {
+  const userId = req.userId as string;
+  const profileImage = req.file;
+  console.log("profileImage", profileImage);
+  const user = await findUserById(userId);
+  let profile;
+  if (profileImage) {
+    if (user?.avatarUrl) {
+      const oldProfileImagePath = path.join(
+        __dirname,
+        "../../../",
+        "uploads/optimized",
+        user?.avatarUrl!,
+      );
+      unlink(oldProfileImagePath, (error) => {
+        console.log("oldProfileImagePath is not correct ", error);
+      });
+    }
+    await queue.add(
+      "image",
+      profileQueueOptions(profileImage),
+      imageQueueOptions,
+    );
+    const imageUrl = profileImage.originalname.split(".")[0] + ".webp";
+    profile = await updateProfileImage({
+      id: user!.id,
+      avatarUrl: imageUrl,
+    });
+  }
+  res.status(200).json({
+    message: "Profile image successfully uploaded.",
+    data: profile,
+  });
+};
 
 export const updateProfileController = [
   param("profileId").isUUID(),
@@ -86,7 +157,6 @@ export const updateProfileController = [
   async (req: CustomRequest, res: Response, next: NextFunction) => {
     if (reqBodyErrorFn(req, next)) return;
     const userId = req.userId as string;
-    const profileImage = req.file;
     const profileId = req.params.profileId as string;
     const { bio, location, website, birthDate, gender } = req.body;
 
@@ -108,86 +178,9 @@ export const updateProfileController = [
         location,
         website,
         birthDate,
-        gender,
+        gender: gender.toUpperCase(),
       };
       profile = await updateProfile(toUpdateData);
-
-      if (profileImage) {
-        if (isProfile?.avatarUrl) {
-          const oldProfileImagePath = path.join(
-            __dirname,
-            "../../../",
-            "uploads/optimized",
-            isProfile?.avatarUrl!
-          );
-          unlink(oldProfileImagePath, (error) => {
-            console.log(error);
-          });
-        }
-        await queue.add(
-          "image",
-          profileQueueOptions(profileImage),
-          imageQueueOptions
-        );
-        const imageUrl = profileImage.originalname.split(".")[0] + ".webp";
-        profile = await updateProfile({
-          id: profileId,
-          userId,
-          avatarUrl: imageUrl,
-        });
-      }
-    }
-
-    res.status(200).json({
-      message: "You successfully updated.",
-      data: profile,
-    });
-  },
-];
-
-export const updateProfileCoverImageController = [
-  param("profileId").isUUID(),
-  async (req: CustomRequest, res: Response, next: NextFunction) => {
-    if (reqBodyErrorFn(req, next)) return;
-    const userId = req.userId as string;
-    const coverImage = req.file;
-    const profileId = req.params.profileId as string;
-
-    const isProfile = await findProfileById(profileId);
-    checkProfileIfNotExit(isProfile);
-
-    let profile;
-    if (isProfile?.userId !== userId) {
-      return next({
-        message: "You cannot updated this profile",
-        status: 403,
-        code: errorCode.unauthenticated,
-      });
-    } else {
-      if (coverImage) {
-        if (isProfile.coverUrl) {
-          const oldProfileImagePath = path.join(
-            __dirname,
-            "../../../",
-            "uploads/optimized",
-            isProfile.coverUrl!
-          );
-          unlink(oldProfileImagePath, (error) => {
-            console.log(error);
-          });
-        }
-        await queue.add(
-          "image",
-          profileQueueOptions(coverImage),
-          imageQueueOptions
-        );
-        const imageUrl = coverImage.originalname.split(".")[0] + ".webp";
-        profile = await updateProfile({
-          id: isProfile.id,
-          userId,
-          coverUrl: imageUrl,
-        });
-      }
     }
 
     res.status(200).json({
@@ -200,15 +193,63 @@ export const updateProfileCoverImageController = [
 export const getProfileForMeController = async (
   req: CustomRequest,
   res: Response,
-  next: NextFunction
 ) => {
   const userId = req.userId;
 
   const user = await findProfileByUserId(userId!);
-  checkProfileIfNotExit(user);
+  const posts = await findPostsByUserId(userId!);
+  const friends = await findFriendsByUserId(userId!);
 
+  const preparedFriends = friends.map((friend) => {
+    const friendUser =
+      friend.requesterId === userId ? friend.addressee : friend.requester;
+    return friendUser;
+  });
+
+  let profileData;
+  if (!user) {
+    const user = await findUserById(userId!);
+    profileData = {
+      profile: {
+        username: user?.username,
+        website: null,
+        avatarUrl: user?.avatarUrl,
+        coverUrl: null,
+      },
+      info: null,
+      friends: preparedFriends.length ? preparedFriends : [],
+      posts: posts,
+    };
+  } else {
+    const { id, bio, location, website, birthDate, coverUrl, gender } = user;
+
+    const { username, avatarUrl } = user?.user;
+
+    const profile = {
+      userId,
+      username,
+      website,
+      avatarUrl,
+      coverUrl,
+    };
+    const info = {
+      bio: bio ?? null,
+      location: location ?? null,
+      birthDate: birthDate ?? null,
+      website: website ?? null,
+      gender: gender ?? null,
+    };
+
+    profileData = {
+      id,
+      profile,
+      info,
+      friends: preparedFriends.length ? preparedFriends : [],
+      posts,
+    };
+  }
   res.status(200).json({
     message: "This is your searched profile",
-    data: user,
+    data: profileData,
   });
 };

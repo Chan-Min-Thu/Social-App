@@ -40,7 +40,6 @@ import { errorFun } from "../../utils/utilFunction/errorFun";
 export const requestFriendController = [
   body("addresseeId").isUUID().withMessage("AddresseeId was wrong."),
   async (req: CustomRequest, res: Response, next: NextFunction) => {
-    console.log(req.body.addresseeId);
     if (reqBodyErrorFn(req, next)) return;
 
     const userId = req.userId as string;
@@ -57,7 +56,7 @@ export const requestFriendController = [
       userId: userId,
       friendId: addresseeId,
     });
-    console.log(isFriend);
+
     checkAlreadyFriend(isFriend);
     const friendRequested = await requestedFriend({
       addresseeId,
@@ -203,7 +202,7 @@ export const getFriendsContorller = [
           const { id, addresseeId, requesterId, requester, addressee } = friend;
           const isProfile = addresseeId === userId ? requester : addressee;
           return { id, profile: isProfile };
-        })
+        }),
       );
     } else if (status === "requested") {
       let friends = await getRequestedFriends(userId);
@@ -211,7 +210,7 @@ export const getFriendsContorller = [
         friends.map(async (friend) => {
           const { id, addresseeId, requesterId, requester } = friend;
           return { id, profile: requester };
-        })
+        }),
       );
     } else if (status === "sent") {
       let friends = await getSentFriends(userId);
@@ -219,22 +218,22 @@ export const getFriendsContorller = [
         friends.map(async (friend) => {
           const { id, addresseeId, requesterId, addressee } = friend;
           return { id, profile: addressee };
-        })
+        }),
       );
     } else if (status === "toadd") {
       let friends = await getFriends(userId);
       let friendIds = await Promise.all(
         friends.map(async (friend) => {
-          const { id, addresseeId, requesterId, requester, addressee } = friend;
+          const { addresseeId, requester, addressee } = friend;
           const isProfile = addresseeId === userId ? requester : addressee;
           return isProfile.id;
-        })
+        }),
       );
       let friendOfFriendsPromises = await Promise.all(
         friendIds.map(async (friendId: string) => {
           const friend = await getFriends(friendId);
           return friend;
-        })
+        }),
       );
       const friendOfFriends = await Promise.all(
         friendOfFriendsPromises?.[0]?.map((friend: FriendType) => {
@@ -243,29 +242,26 @@ export const getFriendsContorller = [
             ? addressee
             : requester;
           return { id, profile };
-        })
+        }),
       );
-      let acceptedAndPendingFriends = await getFriendsAcceptedAndPending(
-        userId
-      );
-      console.log("acceptedAndPendingFriends", acceptedAndPendingFriends);
+      let acceptedAndPendingFriends =
+        await getFriendsAcceptedAndPending(userId);
       let acceptedAndPendingFriendsIds = await Promise.all(
         acceptedAndPendingFriends.map((friend: FriendType) => {
           const { id, requesterId, requester, addresseeId, addressee } = friend;
           const isProfile = addresseeId === userId ? requester : addressee;
           return isProfile.id;
-        })
+        }),
       );
-      // console.log("acceptedAndPendingFriendsIds", acceptedAndPendingFriendsIds);
       const suggestedFriends = friendOfFriends?.filter((friend) =>
         !acceptedAndPendingFriendsIds.includes(friend.profile.id) &&
         friend.profile.id !== userId
           ? friend
-          : undefined
+          : undefined,
       );
+      console.log(suggestedFriends);
       friendsProfiles = suggestedFriends;
     }
-    console.log("friendsProfiles", friendsProfiles);
     res.status(200).json({
       message: `They are ${status} friends.`,
       data: friendsProfiles,
@@ -276,7 +272,6 @@ export const getFriendsContorller = [
 export const removeFriendshipController = [
   body("removeFriendshipId").isUUID(),
   async (req: CustomRequest, res: Response, next: NextFunction) => {
-    console.log(req.body);
     if (reqBodyErrorFn(req.body, next)) return;
 
     const userId = req.userId as string;
@@ -295,13 +290,3 @@ export const removeFriendshipController = [
     });
   },
 ];
-
-export const toAddNewFriendController = async (
-  req: CustomRequest,
-  res: Response,
-  next: NextFunction
-) => {
-  const userId = req.userId as string;
-
-  // const
-};

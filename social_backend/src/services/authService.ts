@@ -1,4 +1,6 @@
+import { ComfirmOtpType } from "./../types/otp.type";
 import { prisma } from "../lib/prisma";
+import { CreateOtpType } from "../types/otp.type";
 
 export const getUserByEmail = (email: string) => {
   if (email) {
@@ -22,16 +24,15 @@ export const createUser = (userData: any) => {
   });
 };
 
-export const createOtp = (otpData: any) => {
-  return prisma.otp.create({
-    data: otpData,
-  });
-};
-
 export const updateUser = (id: string, userData: any) => {
   return prisma.user.update({
     where: { id },
     data: userData,
+  });
+};
+export const createOtp = (otpData: CreateOtpType) => {
+  return prisma.otp.create({
+    data: otpData,
   });
 };
 

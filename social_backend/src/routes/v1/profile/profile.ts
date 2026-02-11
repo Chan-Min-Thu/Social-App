@@ -4,25 +4,23 @@ import {
   createProfileController,
   getProfileForMeController,
   updateProfileController,
-  updateProfileCoverImageController,
+  uploadCoverImageController,
+  uploadProfileImageController,
 } from "../../../controllers/profile/profileController";
 const router = express.Router();
 
+router.post("/profile", createProfileController);
 router.post(
-  "/profile",
-  uploadMemory.single("profilePicture"),
-  createProfileController
+  "/profile/profile-image",
+  uploadMemory.single("profileImage"),
+  uploadProfileImageController,
 );
-router.patch(
-  "/profile/:profileId",
-  uploadMemory.single("profilePicture"),
-  updateProfileController
+router.post(
+  "/profile/cover-image",
+  uploadMemory.single("coverImage"),
+  uploadCoverImageController,
 );
-router.patch(
-  "/profile/cover-photo/:profileId",
-  uploadMemory.single("coverPhoto"),
-  updateProfileCoverImageController
-);
+router.patch("/profile/:profileId", updateProfileController);
 
 router.get("/profile/me", getProfileForMeController);
 

@@ -29,7 +29,7 @@ const whitelist = ["http://localhost:5173"];
 const corsOptions = {
   origin: function (
     origin: any,
-    callback: (err: Error | null, origin?: any) => void
+    callback: (err: Error | null, origin?: any) => void,
   ) {
     if (!origin) return callback(null, true);
     if (whitelist.includes(origin)) {

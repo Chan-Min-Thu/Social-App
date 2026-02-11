@@ -15,7 +15,6 @@ export const checkFile = (file: any) => {
 
 export const checkPostById = (post: PostType) => {
   if (!post) {
-    console.log("post does not exit");
     const error: any = new Error("Your post does not exit.");
     error.status = 400;
     error.code = errorCode.notMatched;
@@ -52,7 +51,6 @@ export const checkReactionById = (reaction: any) => {
 
 export const checkCommentIfNotExit = (comment: CommentType) => {
   if (!comment) {
-    console.log("comment exit.");
     const error: any = new Error("Your comment does not exit.");
     error.status = 400;
     error.code = errorCode.notMatched;
@@ -97,7 +95,7 @@ export const checkBlockRow = (isBlock: any) => {
 };
 
 export const checkAlreadyProfile = (profile: any) => {
-  if (profile?.bio !== undefined) {
+  if (profile?.bio) {
     const error: any = new Error("You have already created your profile.");
     error.status = 400;
     error.code = errorCode.alreadyExit;

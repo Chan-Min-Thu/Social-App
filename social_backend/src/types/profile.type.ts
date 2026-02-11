@@ -15,8 +15,8 @@ export interface ProfileType {
 }
 
 export interface UpdatedProfileType {
-  id?: string;
-  userId: string;
+  id: string;
+  userId?: string;
   bio?: string;
   avatarUrl?: string;
   coverUrl?: string;

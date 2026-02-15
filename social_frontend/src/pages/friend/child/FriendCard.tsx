@@ -17,7 +17,7 @@ const FriendCard = ({ friend }: any) => {
             name={profile.username}
             status="You are friends."
           />
-          <DropDown onClick={removeFriendshipfun} id={friend.id} />
+          <DropDown onClick={removeFriendshipfun} id={friend.profile.id} />
         </li>
       </ul>
     </div>

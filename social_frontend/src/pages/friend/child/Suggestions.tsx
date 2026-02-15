@@ -1,5 +1,5 @@
 import { useOutletContext } from "react-router";
-import type { FriendType } from "@/types/friend.type";
+import type { UserType } from "@/types/user.type";
 import Button from "../../../components/Button";
 import Profile from "../../../components/Profile";
 import type { ContextType } from "./FriendLayout";
@@ -18,11 +18,11 @@ export default function Suggestions() {
           {data?.length === 0 ? (
             <div>You don't have suggestions.</div>
           ) : (
-            data?.map((data: FriendType) => (
-              <div key={data.profile.id} className="flex justify-between">
+            data?.map((data: UserType) => (
+              <div key={data.id} className="flex justify-between">
                 <Profile
-                  imageUrl={data.profile.avatarUrl}
-                  name={data.profile.username}
+                  imageUrl={data.avatarUrl}
+                  name={data.username}
                   status="Suggestions Friends."
                 />
                 <div className="flex gap-3">
@@ -30,7 +30,7 @@ export default function Suggestions() {
                     type="button"
                     className="btn-error btn-sm"
                     content={"Add Friend"}
-                    onClick={() => mutate(data.profile.id)}
+                    onClick={() => mutate(data.id)}
                   />
                 </div>
               </div>

@@ -533,3 +533,25 @@ export const authCheck = async (
     },
   });
 };
+
+export const updatePassword = [
+  body("oldPassword")
+    .notEmpty()
+    .trim()
+    .matches("^[0-9]+[a-z0-9]?$")
+    .isLength({ min: 10, max: 16 })
+    .withMessage("Your password was wrong."),
+  body("newPassword")
+    .notEmpty()
+    .trim()
+    .matches("^[0-9]+[a-z0-9]?$")
+    .isLength({ min: 10, max: 16 })
+    .withMessage("Your password does not fixed."),
+  async (req: CustomRequest, res: Response, next: NextFunction) => {
+    const userId = req.userId as string;
+
+    res.status(200).json({
+      message: "You successfully updated your password.",
+    });
+  },
+];

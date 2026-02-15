@@ -42,8 +42,11 @@ const DropDown: FC<DropDownProps> = ({ onClick, id }) => {
               type="button"
               content="Remove Friend"
               onClick={() => {
-                const modal = document.getElementById("my_modal_1");
-                modal?.showModal();
+                (
+                  document.getElementById(
+                    "my_modal_1",
+                  ) as HTMLDialogElement | null
+                )?.showModal();
               }}
             />
           </li>

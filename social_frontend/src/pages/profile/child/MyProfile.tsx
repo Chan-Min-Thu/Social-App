@@ -1,12 +1,12 @@
 import { useQuery } from "@tanstack/react-query";
-import ProfileInfo from "../../components/ProfileInfo";
-import ProfileCard from "../../components/ProfileCard";
-import FriendsCard from "../../components/FriendsCard";
-import EmptyFriendCard from "../../components/EmptyFriendCard";
-import EmptyProfileCard from "../../components/EmptyProfileCard";
-import { profileForMeQuery } from "../../api/query";
-import HydrateFallBack from "../../components/HydrateFallBack";
-import Post from "../post/child/Post";
+import ProfileInfo from "../../../components/ProfileInfo";
+import ProfileCard from "../../../components/ProfileCard";
+import FriendsCard from "../../../components/FriendsCard";
+import EmptyFriendCard from "../../../components/EmptyFriendCard";
+import EmptyProfileCard from "../../../components/EmptyProfileCard";
+import HydrateFallBack from "../../../components/HydrateFallBack";
+import { profileForMeQuery } from "../../../api/query";
+import Post from "../../post/child/Post";
 
 const MyProfile = () => {
   const { data, isLoading } = useQuery(profileForMeQuery());

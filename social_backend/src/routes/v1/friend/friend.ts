@@ -18,7 +18,7 @@ router.post("/friend-block", blockFriendController);
 router.post("/friend-unblock", unblockFriendController);
 router.delete("/friend-remove", removeFriendshipController);
 
-router.get("/otherProfile/:profileId", getOtherProfileController);
+router.get("/otherProfile/:friendId", getOtherProfileController);
 router.get("/friends/:status", getFriendsContorller);
 // router.get("/friends/suggested", getSuggestionFriendController);
 // router.get("/friends/requested", getRequestedFriendsController);

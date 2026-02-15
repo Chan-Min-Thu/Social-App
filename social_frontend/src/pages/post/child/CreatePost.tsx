@@ -4,22 +4,29 @@ import ImagesInput, { type ImageProps } from "../../../components/ImagesInput";
 import type { UserType } from "@/types/user.type";
 import Button from "../../../components/Button";
 import imageUrl from "../../../config/imageUrl";
+import ProfileCircle from "../../../components/ProfileCircle";
 
 type CreatePostProps = {
   user: UserType;
 };
 export default function CreatePost({ user }: CreatePostProps) {
   const [image, setImage] = useState<ImageProps[]>([]);
-
+  const profileUrl = user.avatarUrl.startsWith("https")
+    ? user.avatarUrl
+    : imageUrl + "/optimized/" + user.avatarUrl;
   return (
     <div className="card bg-base-100 w-full shadow-sm">
       <div className="card-body">
         <div className=" flex items-center gap-4 justify-between w-full">
-          <div className="avatar">
+          {/* <div className="avatar">
             <div className="ring-primary ring-offset-base-100 w-8 rounded-full ring-2 ring-offset-2">
-              <img src={imageUrl + "/optimized/" + user.avatarUrl} />
+              <img src={} />
             </div>
-          </div>
+          </div> */}
+          <ProfileCircle
+            imageUrl={profileUrl}
+            size="size-8 ring-primary ring-offset-base-100 ring-2 ring-offset-2"
+          />
           <div className="w-full">
             <Button
               className="btn btn-ghost w-full justify-start text-sm font-medium"

@@ -27,11 +27,12 @@ import Suggestions from "../pages/friend/child/Suggestions";
 import ErrorBoundary from "../pages/ErrorBoundary";
 import { postAction } from "../router/action/postAction";
 import HydrateFallBack from "../components/HydrateFallBack";
-import MyProfile from "../pages/profile/MyProfile";
+import MyProfile from "../pages/profile/child/MyProfile";
 import FriendProfile from "../pages/profile/child/FriendProfile";
 import ChangePassword from "../pages/setting/child/ChangePassword";
 import Setting from "../pages/setting/child/Setting";
 import BlockedUsers from "../pages/setting/child/BlockUsers";
+import ProfileLayout from "../pages/profile/ProfileLayout";
 
 const router = createBrowserRouter([
   {
@@ -72,12 +73,16 @@ const router = createBrowserRouter([
       },
       {
         path: "/profile",
-        Component: MyProfile,
+        Component: ProfileLayout,
         HydrateFallback: HydrateFallBack,
         ErrorBoundary: ErrorBoundary,
         children: [
           {
-            path: ":id",
+            index: true,
+            Component: MyProfile,
+          },
+          {
+            path: ":userId",
             Component: FriendProfile,
           },
         ],

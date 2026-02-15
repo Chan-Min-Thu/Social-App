@@ -5,6 +5,7 @@ import Drawer from "./Drawer";
 import Button from "./Button";
 import p1 from "../assets/no-profile.png";
 import imageUrl from "../config/imageUrl";
+import ProfileCircle from "./ProfileCircle";
 
 interface NavbarProps {
   user?: {
@@ -15,7 +16,9 @@ interface NavbarProps {
   };
 }
 export default function Navbar({ user }: NavbarProps) {
-  const profileUrl = imageUrl + "/optimized/" + user?.avatarUrl;
+  const profileUrl = user?.avatarUrl.startsWith("https")
+    ? user.avatarUrl
+    : imageUrl + "/optimized/" + user?.avatarUrl;
   return (
     <div className="navbar bg-base-200 shadow-sm px-4 md:px-20 sticky top-0 z-50">
       <div className="flex-1 ml-2">
@@ -42,12 +45,7 @@ export default function Navbar({ user }: NavbarProps) {
             role="button"
             className="btn btn-ghost btn-circle avatar"
           >
-            <div className="w-8 rounded-full">
-              <img
-                alt="Tailwind CSS Navbar component"
-                src={user?.avatarUrl ? profileUrl : p1}
-              />
-            </div>
+            <ProfileCircle imageUrl={profileUrl} size="size-8" />
           </div>
           <ul
             tabIndex={0}

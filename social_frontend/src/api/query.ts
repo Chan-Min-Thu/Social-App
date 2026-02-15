@@ -41,6 +41,11 @@ export const fetchProfileForMe = async () =>
     return res.data.data;
   });
 
+export const fetchProfieForOtherFriend = async (friendId: string) => {
+  const res = await api.get(`/otherProfile/${friendId}`);
+  return res.data;
+};
+
 export const createProfile = async (profileData: UserInfoType) =>
   await api.post("/profile", profileData).then((res) => res.data);
 

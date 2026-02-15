@@ -1,12 +1,12 @@
-import type { FriendType } from "@/types/friend.type";
+import type { UserType } from "@/types/user.type";
 import { Outlet } from "react-router";
 
-export type ContextType = { data: FriendType[] | null };
+export type ContextType = { data: UserType[] | null };
 
 export default function FriendLayout({
   friends,
 }: {
-  friends: FriendType[] | null;
+  friends: UserType[] | null;
 }) {
   const contextValue: ContextType = { data: friends };
   return (

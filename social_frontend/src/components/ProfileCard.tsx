@@ -9,6 +9,7 @@ type ProfileCardProps = {
   profile: UserProfileType;
   postLength?: number;
   friendLength?: number;
+  isFriendProfile: boolean;
 };
 
 // const imageUrl = import.meta.env.VITE_IMAGE_API_URL;
@@ -16,27 +17,33 @@ const ProfileCard = ({
   profile,
   postLength,
   friendLength,
+  isFriendProfile,
 }: ProfileCardProps) => {
   const { coverUrl, avatarUrl, website, username } = profile;
 
   const profileUrl = imageUrl + "/optimized/" + avatarUrl;
   const avatarUrlPath = avatarUrl.startsWith("http") ? avatarUrl : profileUrl;
   const coverImageUrl = imageUrl + "/optimized/" + coverUrl;
+  console.log(coverImageUrl);
   return (
     <div className="card bg-base-100 w-full h-full   shadow-sm relative">
       <figure className="lg:h-64 h-64 w-full relative">
         <img src={coverUrl ? coverImageUrl : p1} alt="cover image" />
-        <div className="absolute bottom-3 z-20 right-6">
-          <ImageInput type="cover" />
-        </div>
+        {!isFriendProfile && (
+          <div className="absolute bottom-3 z-20 right-6">
+            <ImageInput type="cover" />
+          </div>
+        )}
       </figure>
 
       <div className="card-body h-72 flex justify-center">
         <div className="absolute z-10 top-[40%] left-8  ">
           <ProfileCircle imageUrl={avatarUrlPath} size={"size-24"} />
-          <div className="absolute bottom-2 z-20 -right-3">
-            <ImageInput type="profile" />
-          </div>
+          {!isFriendProfile && (
+            <div className="absolute bottom-2 z-20 -right-3">
+              <ImageInput type="profile" />
+            </div>
+          )}
         </div>
         <div className="mt-0.5">
           <div>

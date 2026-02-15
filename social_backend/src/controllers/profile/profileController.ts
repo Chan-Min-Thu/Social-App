@@ -194,11 +194,14 @@ export const getProfileForMeController = async (
   req: CustomRequest,
   res: Response,
 ) => {
-  const userId = req.userId;
+  const userId = req.userId as string;
 
-  const user = await findProfileByUserId(userId!);
-  const posts = await findPostsByUserId(userId!);
-  const friends = await findFriendsByUserId(userId!);
+  const [userProfile, posts, friends, baseUser] = await Promise.all([
+    findProfileByUserId(userId),
+    findPostsByUserId(userId),
+    findFriendsByUserId(userId),
+    findUserById(userId),
+  ]);
 
   const preparedFriends = friends.map((friend) => {
     const friendUser =
@@ -207,13 +210,12 @@ export const getProfileForMeController = async (
   });
 
   let profileData;
-  if (!user) {
-    const user = await findUserById(userId!);
+  if (!userProfile) {
     profileData = {
       profile: {
-        username: user?.username,
+        username: baseUser?.username,
         website: null,
-        avatarUrl: user?.avatarUrl,
+        avatarUrl: baseUser?.avatarUrl,
         coverUrl: null,
       },
       info: null,
@@ -221,9 +223,10 @@ export const getProfileForMeController = async (
       posts: posts,
     };
   } else {
-    const { id, bio, location, website, birthDate, coverUrl, gender } = user;
+    const { id, bio, location, website, birthDate, coverUrl, gender } =
+      userProfile;
 
-    const { username, avatarUrl } = user?.user;
+    const { username, avatarUrl } = userProfile?.user;
 
     const profile = {
       userId,
@@ -233,6 +236,7 @@ export const getProfileForMeController = async (
       coverUrl,
     };
     const info = {
+      id: id,
       bio: bio ?? null,
       location: location ?? null,
       birthDate: birthDate ?? null,

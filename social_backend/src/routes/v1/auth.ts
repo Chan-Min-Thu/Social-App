@@ -6,6 +6,7 @@ import {
   login,
   logout,
   authCheck,
+  updatePassword,
 } from "../../controllers/authController";
 import { auth } from "../../middlewares/auth";
 
@@ -17,4 +18,5 @@ router.post("/confirm-password", confirmPassword);
 router.post("/login", login);
 router.post("/logout", logout);
 router.get("/auth-check", auth, authCheck);
+router.post("/update-password", auth, updatePassword);
 export default router;

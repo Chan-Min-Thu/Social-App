@@ -7,10 +7,11 @@ import Dialog from "./Dialog";
 
 type ProfileInfoProps = {
   info: UserInfoType;
-  id: string;
+  id?: string;
+  isFriendProfile: boolean;
 };
 
-const ProfileInfo = ({ info, id }: ProfileInfoProps) => {
+const ProfileInfo = ({ info, id, isFriendProfile }: ProfileInfoProps) => {
   const { bio, birthDate, location, gender } = info;
   const dateObj = new Date(birthDate);
   const genderText =
@@ -20,15 +21,17 @@ const ProfileInfo = ({ info, id }: ProfileInfoProps) => {
       <div className="card-body flex gap-4 items-start ">
         <div className="flex justify-between w-full">
           <h2 className="card-title pb-4">Profile Information</h2>
-          <Button
-            content="Update"
-            className="btn-primary btn-sm"
-            onClick={() => {
-              (
-                document.getElementById("my_modal_2") as HTMLDialogElement
-              ).showModal();
-            }}
-          />
+          {!isFriendProfile && (
+            <Button
+              content="Update"
+              className="btn-primary btn-sm"
+              onClick={() => {
+                (
+                  document.getElementById("my_modal_2") as HTMLDialogElement
+                ).showModal();
+              }}
+            />
+          )}
         </div>
 
         <p className=" text-lg">{bio}</p>

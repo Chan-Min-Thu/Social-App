@@ -4,9 +4,13 @@ import {
   blockYourAccount,
   deleteBlockUser,
   deleteFriendship,
+  findFriendsByUserId,
+  findFriendshipWithThisId,
+  getAcceptedAndPendingFriends,
   getFriendRequest,
   getFriends,
   getFriendsAcceptedAndPending,
+  getOtherUser,
   getSentFriends,
   profileWithFriend,
 } from "./../../services/friendService";
@@ -33,9 +37,14 @@ import {
   checkAlreadyRequest,
 } from "../../utils/check";
 import { reqBodyErrorFn } from "../../utils/utilFunction/reqBodyError";
-import { findProfileByUserId } from "../../services/profileService";
+import {
+  findProfileByUserId,
+  findUserById,
+} from "../../services/profileService";
 import { UserType } from "../../types/user.type";
 import { errorFun } from "../../utils/utilFunction/errorFun";
+import { findPostsByUserId } from "../../services/postService";
+import { compareSync } from "bcrypt";
 
 export const requestFriendController = [
   body("addresseeId").isUUID().withMessage("AddresseeId was wrong."),
@@ -154,33 +163,76 @@ export const unblockFriendController = [
 ];
 
 export const getOtherProfileController = [
-  param("profileId").isUUID(),
+  param("friendId").isUUID(),
   async (req: CustomRequest, res: Response, next: NextFunction) => {
-    const userId = req.userId as string;
+    if (reqBodyErrorFn(req, next)) return;
 
-    const profileId = req.params.profileId as string;
-    const isBlock = await blockYourAccount({ userId, profileId });
-    let user;
-    if (isBlock !== null) {
-      return next({
-        message: "You can't see this profile",
-        status: 400,
-        code: errorCode.forbidden,
-      });
-    } else {
-      if (userId !== profileId) {
-        user = await findProfileByUserId(profileId);
-      } else {
-        return next({
-          message: "This is your profile. Please go to /profile/me",
-          status: 400,
-          code: errorCode.invalid,
-        });
-      }
+    const { userId } = req; // Your ID
+    const { friendId } = req.params; // The ID of the profile you are visiting
+
+    // 1. Block Check
+    const isBlock = await blockYourAccount({ userId: userId!, friendId });
+    if (isBlock) {
+      return next({ message: "You can't see this profile", status: 403 });
     }
+
+    // 2. Self-View Check
+    if (userId === friendId) {
+      return res
+        .status(302)
+        .json({ message: "Redirecting to your own profile" });
+    }
+
+    // 3. Parallel Fetch
+    const [userProfile, posts, friends, baseUser] = await Promise.all([
+      findProfileByUserId(friendId),
+      findPostsByUserId(friendId),
+      findFriendsByUserId(friendId),
+      findFriendshipWithThisId(String(userId)),
+    ]);
+
+    const targetFriendProfile = baseUser
+      .map((user) =>
+        user.addressee.id === userId ? user.requester : user.addressee,
+      )
+      .find((fri) => fri.id === friendId);
+
+    if (!baseUser) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // 4. Correct Friend Mapping (Relative to the profile owner)
+    const preparedFriends = friends.map((friend) => {
+      const friendUser =
+        friend.requesterId === friendId ? friend.addressee : friend.requester;
+      return friendUser;
+    });
+    // 5. Unified Data Construction
+    const profileData = {
+      id: userProfile?.id || null,
+      profile: {
+        userId: friendId, // Use friendId here!
+        username: userProfile?.user?.username || targetFriendProfile?.username,
+        avatarUrl:
+          userProfile?.user?.avatarUrl || targetFriendProfile?.avatarUrl,
+        website: userProfile?.website || null,
+        coverUrl: userProfile?.coverUrl || null,
+      },
+      info: userProfile
+        ? {
+            bio: userProfile.bio || null,
+            location: userProfile.location || null,
+            birthDate: userProfile.birthDate || null,
+            gender: userProfile.gender || null,
+          }
+        : null,
+      friends: preparedFriends,
+      posts: posts || [],
+    };
+    // console.log("profileData", profileData);
     res.status(200).json({
-      message: "This is your searched profile",
-      data: user,
+      message: "Profile retrieved successfully",
+      data: profileData,
     });
   },
 ];
@@ -221,47 +273,52 @@ export const getFriendsContorller = [
         }),
       );
     } else if (status === "toadd") {
-      let friends = await getFriends(userId);
-      let friendIds = await Promise.all(
-        friends.map(async (friend) => {
-          const { addresseeId, requester, addressee } = friend;
-          const isProfile = addresseeId === userId ? requester : addressee;
-          return isProfile.id;
-        }),
-      );
-      let friendOfFriendsPromises = await Promise.all(
-        friendIds.map(async (friendId: string) => {
-          const friend = await getFriends(friendId);
-          return friend;
-        }),
-      );
-      const friendOfFriends = await Promise.all(
-        friendOfFriendsPromises?.[0]?.map((friend: FriendType) => {
-          const { id, requesterId, requester, addresseeId, addressee } = friend;
-          const profile = friendIds.includes(requesterId)
-            ? addressee
-            : requester;
-          return { id, profile };
-        }),
-      );
-      let acceptedAndPendingFriends =
-        await getFriendsAcceptedAndPending(userId);
-      let acceptedAndPendingFriendsIds = await Promise.all(
-        acceptedAndPendingFriends.map((friend: FriendType) => {
-          const { id, requesterId, requester, addresseeId, addressee } = friend;
-          const isProfile = addresseeId === userId ? requester : addressee;
-          return isProfile.id;
-        }),
-      );
-      const suggestedFriends = friendOfFriends?.filter((friend) =>
-        !acceptedAndPendingFriendsIds.includes(friend.profile.id) &&
-        friend.profile.id !== userId
-          ? friend
-          : undefined,
-      );
-      console.log(suggestedFriends);
-      friendsProfiles = suggestedFriends;
+      //1. Get current friends and pending fri to avoid  suggessting them
+      const exitingRelations = await getAcceptedAndPendingFriends(userId);
+      const excluedIds = new Set([
+        userId,
+        ...exitingRelations.map((f) =>
+          f.addresseeId === userId ? f.requesterId : f.addresseeId,
+        ),
+      ]);
+
+      const friends = await getFriends(userId);
+
+      if (!friends.length) {
+        //To get generla user if no friends yet
+        friendsProfiles = await getOtherUser(userId, Array.from(excluedIds));
+      } else {
+        //3. Get Ids of current friends
+        const friendsIds = friends.map((f) =>
+          f.addresseeId === userId ? f.requesterId : f.addresseeId,
+        );
+
+        //4. Get all friends of Friends in parallel
+
+        const friendsOfFriendsNested = await Promise.all(
+          friendsIds.map((id) => getFriends(id)),
+        );
+
+        const suggestionMap = new Map();
+
+        friendsOfFriendsNested.flat().forEach((record) => {
+          //Determine who is friends of friend
+          const potentialFriend = friendsIds.includes(record.requesterId)
+            ? record.addressee
+            : record.requester;
+
+          if (!excluedIds.has(potentialFriend.id)) {
+            suggestionMap.set(potentialFriend.id, potentialFriend);
+          }
+        });
+        if (!Array.from(suggestionMap.values()).length) {
+          friendsProfiles = await getOtherUser(userId, Array.from(excluedIds));
+        } else {
+          friendsProfiles = Array.from(suggestionMap.values());
+        }
+      }
     }
+    console.log("friendsProfiles", friendsProfiles);
     res.status(200).json({
       message: `They are ${status} friends.`,
       data: friendsProfiles,

@@ -73,7 +73,11 @@ export const findProfileById = (id: string) => {
 };
 
 export const findUserById = (id: string) => {
-  return prisma.user.findUnique({ where: { id } });
+  console.log(id);
+  return prisma.user.findUnique({
+    where: { id },
+    select: { id: true, username: true, avatarUrl: true },
+  });
 };
 
 export const updateProfileImage = ({

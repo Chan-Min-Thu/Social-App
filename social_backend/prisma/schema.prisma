@@ -1,22 +1,15 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
-  provider = "prisma-client-js"
+  provider = "prisma-client"
   output   = "../generated/prisma"
 }
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
 }
 
 model User {
   id               String      @id @default(uuid())
-  username         String? // kyaw1 // aung2
+  username         String?
   email            String      @unique @db.VarChar(41)
   avatarUrl        String?
   passwordHash     String
@@ -26,40 +19,38 @@ model User {
   errorCount       Int         @default(0) @db.SmallInt
   createdAt        DateTime    @default(now())
   updatedAt        DateTime    @updatedAt
-  posts            Post[]
+  blockedIds       BlockUser[] @relation("BlockedIds")
+  blockerIds       BlockUser[] @relation("BlockerIds")
   comments         Comment[]
+  friendsReceived  Friend[]    @relation("FriendsReceived")
+  friendsInitiated Friend[]    @relation("FriendsInitiated")
+  receivedMessages Message[]   @relation("ReceivedMessages")
+  sentMessages     Message[]   @relation("SentMessages")
+  posts            Post[]
+  Profile          Profile?
   reactions        Reaction[]
   stories          Story[]
-  sentMessages     Message[]   @relation("SentMessages")
-  receivedMessages Message[]   @relation("ReceivedMessages")
-  followedBy       User[]      @relation("UserFollows")
-  following        User[]      @relation("UserFollows")
-  friendsInitiated Friend[]    @relation("FriendsInitiated")
-  friendsReceived  Friend[]    @relation("FriendsReceived")
-  blockerIds       BlockUser[] @relation("BlockerIds") // This user blocks other users 
-  blockedIds       BlockUser[] @relation("BlockedIds") // This user is blocked by other users 
-  Profile          Profile?
+  User_A           User[]      @relation("UserFollows")
+  User_B           User[]      @relation("UserFollows")
 }
 
 model BlockUser {
   id        String   @id @default(uuid())
-  blockerId String // block လုပ်တဲ့ user id
-  blocker   User     @relation("BlockerIds", fields: [blockerId], references: [id])
-  blockedId String // block ခံရတဲ့ user id
-  blocked   User     @relation("BlockedIds", fields: [blockedId], references: [id])
+  blockerId String
+  blockedId String
   createdAt DateTime @default(now())
+  blocked   User     @relation("BlockedIds", fields: [blockedId], references: [id])
+  blocker   User     @relation("BlockerIds", fields: [blockerId], references: [id])
 }
 
 model Friend {
   id          String   @id @default(uuid())
-  requester   User     @relation("FriendsInitiated", fields: [requesterId], references: [id])
   requesterId String
-  addressee   User     @relation("FriendsReceived", fields: [addresseeId], references: [id])
   addresseeId String
-  status      String // pending, accepted, blocked
+  status      String
   createdAt   DateTime @default(now())
-  profile     Profile? @relation(fields: [profileId], references: [id])
-  profileId   String?
+  addressee   User     @relation("FriendsReceived", fields: [addresseeId], references: [id])
+  requester   User     @relation("FriendsInitiated", fields: [requesterId], references: [id])
 
   @@unique([requesterId, addresseeId])
 }
@@ -67,19 +58,15 @@ model Friend {
 model Profile {
   id        String   @id @default(uuid())
   userId    String   @unique
-  bio       String   @db.Text
+  bio       String
   coverUrl  String?
   location  String
   website   String
   birthDate DateTime
   gender    Gender
-
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  // Relations
   user      User     @relation(fields: [userId], references: [id])
-  friends   Friend[]
-  posts     Post[]
 }
 
 model Otp {
@@ -88,8 +75,8 @@ model Otp {
   otp           String
   rememberToken String
   verifyToken   String?
-  count         Int      @default(0) @db.SmallInt()
-  error         Int      @default(0) @db.SmallInt()
+  count         Int      @default(0) @db.SmallInt
+  error         Int      @default(0) @db.SmallInt
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
 }
@@ -100,22 +87,20 @@ model Post {
   content   String
   createdAt DateTime   @default(now())
   updatedAt DateTime   @updatedAt
-  author    User       @relation(fields: [authorId], references: [id])
   authorId  String
   comments  Comment[]
-  reactions Reaction[]
   image     Image[]
-  profile   Profile?   @relation(fields: [profileId], references: [id])
-  profileId String?
+  author    User       @relation(fields: [authorId], references: [id])
+  reactions Reaction[]
 }
 
 model Image {
   id        String   @id @default(uuid())
   imageUrl  String
   postId    String
-  post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
 }
 
 model Comment {
@@ -123,14 +108,14 @@ model Comment {
   content   String
   createdAt DateTime   @default(now())
   updatedAt DateTime   @updatedAt
-  author    User       @relation(fields: [authorId], references: [id])
   authorId  String
-  post      Post       @relation(fields: [postId], references: [id])
   postId    String
-  reaction  Reaction[]
   parentId  String?
+  author    User       @relation(fields: [authorId], references: [id])
   parent    Comment?   @relation("CommentReplies", fields: [parentId], references: [id], onDelete: Cascade)
   replies   Comment[]  @relation("CommentReplies")
+  post      Post       @relation(fields: [postId], references: [id])
+  reaction  Reaction[]
 }
 
 model Story {
@@ -138,23 +123,33 @@ model Story {
   imageUrl  String
   createdAt DateTime   @default(now())
   expiresAt DateTime
-  author    User       @relation(fields: [authorId], references: [id])
   authorId  String
   reaction  Reaction[]
+  author    User       @relation(fields: [authorId], references: [id])
 }
 
 model Reaction {
   id        String       @id @default(uuid())
   type      ReactionType
   createdAt DateTime     @default(now())
-  user      User         @relation(fields: [userId], references: [id])
   userId    String
-  post      Post?        @relation(fields: [postId], references: [id])
   postId    String?
-  comment   Comment?     @relation(fields: [commentId], references: [id])
   commentId String?
-  Story     Story?       @relation(fields: [storyId], references: [id])
   storyId   String?
+  comment   Comment?     @relation(fields: [commentId], references: [id])
+  post      Post?        @relation(fields: [postId], references: [id])
+  Story     Story?       @relation(fields: [storyId], references: [id])
+  user      User         @relation(fields: [userId], references: [id])
+}
+
+model Message {
+  id         String   @id @default(uuid())
+  content    String
+  createdAt  DateTime @default(now())
+  senderId   String
+  receiverId String
+  receiver   User     @relation("ReceivedMessages", fields: [receiverId], references: [id])
+  sender     User     @relation("SentMessages", fields: [senderId], references: [id])
 }
 
 enum ReactionType {
@@ -171,14 +166,4 @@ enum Gender {
   MALE
   FEMALE
   OTHER
-}
-
-model Message {
-  id         String   @id @default(uuid())
-  content    String
-  createdAt  DateTime @default(now())
-  sender     User     @relation("SentMessages", fields: [senderId], references: [id])
-  senderId   String
-  receiver   User     @relation("ReceivedMessages", fields: [receiverId], references: [id])
-  receiverId String
 }

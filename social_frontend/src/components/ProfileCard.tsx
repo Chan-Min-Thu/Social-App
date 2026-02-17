@@ -20,10 +20,10 @@ const ProfileCard = ({
   isFriendProfile,
 }: ProfileCardProps) => {
   const { coverUrl, avatarUrl, website, username } = profile;
-
+  console.log("imageUrl",imageUrl)
   const profileUrl = imageUrl + "/optimized/" + avatarUrl;
   const avatarUrlPath = avatarUrl.startsWith("http") ? avatarUrl : profileUrl;
-  const coverImageUrl = imageUrl + "/optimized/" + coverUrl;
+  const coverImageUrl = imageUrl  + coverUrl;
   console.log(coverImageUrl);
   return (
     <div className="card bg-base-100 w-full h-full   shadow-sm relative">

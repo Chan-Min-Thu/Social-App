@@ -308,7 +308,7 @@ export const getPostByInfiniteScrollController = [
         code: errorCode.invalid,
       });
     }
-
+    
     const userId = req.userId;
     const { lastCursor, take, skip } = req.query;
     const user = (await getUserById(userId!)) as UserType;

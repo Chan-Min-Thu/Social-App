@@ -6,14 +6,14 @@ type TokenInputType = { id: string; email: string };
 export const tokenFun = ({ ...data }: TokenInputType) => {
   const accessToken = jwt.sign(
     { id: data.id },
-    process.env.ACCESSTOKEN_SECRET!,
+    process.env.ACCESS_TOKEN_SECRET!,
     {
       expiresIn: 60 * 2 * 1000,
     }
   );
   const refreshToken = jwt.sign(
     { id: data.id, email: data.email },
-    process.env.REFRESHTOKEN_SECRET!,
+    process.env.REFRESH_TOKEN_SECRET!,
     {
       expiresIn: "30d",
     }

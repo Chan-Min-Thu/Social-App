@@ -475,7 +475,7 @@ export const logout = async (
   try {
     decoded = (await jwt.verify(
       refreshToken,
-      process.env.REFRESHTOKEN_SECRET!,
+      process.env.REFRESH_TOKEN_SECRET!,
     )) as { id: string; email: string };
   } catch (err) {
     const error: any = new Error("You are unauthenticated.");

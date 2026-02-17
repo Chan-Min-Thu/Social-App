@@ -1,8 +1,10 @@
-import { Status } from "./../generated/prisma/enums";
-import { PrismaClient, Prisma } from "../generated/prisma/client";
+import { Prisma,PrismaClient } from "../generated/prisma/client";
+
+// import { PrismaClient, Prisma } from "../generated/prisma/client";
 import bcrypt from "bcrypt";
 import { faker } from "@faker-js/faker";
-import { Post, User } from "../generated/prisma";
+// import { Post, Status, User } from "../generated/prisma";
+import { Post,Status,User } from "../generated/prisma/client";
 
 const prisma = new PrismaClient();
 

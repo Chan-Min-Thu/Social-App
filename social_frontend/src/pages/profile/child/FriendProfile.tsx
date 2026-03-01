@@ -12,12 +12,12 @@ import HydrateFallBack from "../../../components/HydrateFallBack";
 const FriendProfile = () => {
   const isFriendProfile = true;
   let param = useParams();
-  const userId = param.userId as string;
-
+  const friendId = param.userId as string;
   const { data, isPending } = useQuery({
-    queryKey: ["otherProfile", userId],
-    queryFn: () => fetchProfieForOtherFriend(userId),
-    enabled: !!userId,
+    queryKey: ["otherProfile", friendId],
+    queryFn: () => fetchProfieForOtherFriend(friendId),
+    enabled: !!friendId,
+  
   });
 
   if (isPending) {

@@ -1,16 +1,13 @@
-import type { CreateReactionType } from "@/types/reaction.type";
-import { createReaction } from "./../api/query";
+import type { CreateBlockType } from "@/types/user.type";
+import { createBlockUser } from "./../api/query";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 // import type { PostType } from "@/types/post.type";
 
-export const useCreateReaction = ({
-  postId,
-  type,
-  queryKey,
-}: CreateReactionType) => {
+export const useCreateBlockUser = ({
+  friendId,status}:CreateBlockType) => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: () => createReaction({ postId, type }),
+    mutationFn: () => createBlockUser(friendId),
     /*
     onMutate: () => {
       const queryKey = ["posts", "infinite"];
@@ -38,7 +35,7 @@ export const useCreateReaction = ({
     },
     */
     onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: queryKey });
+      queryClient.invalidateQueries({ queryKey: ["friends",status] });
     },
   });
 };

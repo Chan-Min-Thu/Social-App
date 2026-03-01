@@ -6,7 +6,7 @@ type FriendsCardProps = {
   isFriendProfile: boolean;
 };
 const FriendsCard = ({ friends, isFriendProfile }: FriendsCardProps) => {
-  console.log("friends", friends);
+  
   return (
     <div className="card bg-base-100 w-full h-full  shadow-sm relative">
       <div className="card-body flex items-start justify-between flex-row ">

@@ -11,7 +11,6 @@ type UpdateProfileProps = {
 };
 
 const UpdateProfile = ({ data, profileId }: UpdateProfileProps) => {
-  console.log("profileId in UpdateProfile:", profileId);
   const mutation = useUpdateProfile();
   const normalizeGender = (
     gender: string | undefined,

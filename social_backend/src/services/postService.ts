@@ -1,3 +1,4 @@
+import { skip } from "node:test";
 import { prisma as PrismaClient } from "../lib/prisma";
 import { PostType, UpdatedPost } from "../types/post.type";
 
@@ -113,6 +114,7 @@ const optionsDefault = {
   id: true,
   title: true,
   content: true,
+  createdAt: true,
   updatedAt: true,
   author: {
     select: {
@@ -154,20 +156,21 @@ const optionsDefault = {
 export const getPostsByInfinite = async (options: any) => {
   if (options.cursor.id) {
     return prisma.post.findMany({
-      ...options,
+      cursor: { id: options.cursor.id },
+      skip: 1,
+      take: options.take,
       select: optionsDefault,
-      orderBy: { createdAt: "asc" },
+      orderBy: [{ createdAt: "desc" }, { id: "desc" }],
     });
   }
   return prisma.post.findMany({
     take: options.take,
     skip: 0,
     select: optionsDefault,
-    orderBy: {
-      createdAt: "asc",
-    },
+    orderBy: [{ createdAt: "desc" }, { id: "desc" }],
   });
 };
+
 
 export const countPosts = async () => {
   return prisma.post.count();

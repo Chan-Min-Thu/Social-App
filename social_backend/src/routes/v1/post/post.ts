@@ -6,7 +6,7 @@ import {
   getPostByIdController,
   getPostByInfiniteScrollController,
 } from "../../../controllers/post/postController";
-import upload, { uploadMemory } from "../../../middlewares/uploadFile";
+import { uploadMemory } from "../../../middlewares/uploadFile";
 
 const router = express.Router();
 

@@ -54,6 +54,7 @@ export const getUserById = (id: string) => {
       username: true,
       avatarUrl: true,
       randomToken: true,
+      passwordHash:true,
     },
   });
 };

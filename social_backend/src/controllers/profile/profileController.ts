@@ -23,6 +23,8 @@ import {
 } from "../../services/profileService";
 import { findPostsByUserId } from "../../services/postService";
 import { findFriendsByUserId } from "../../services/friendService";
+import { checkUserExit } from "../../utils/auth";
+import { updateUser } from "../../services/authService";
 
 export const createProfileController = [
   body("bio")
@@ -65,6 +67,46 @@ export const createProfileController = [
     res.status(200).json({
       message: "Profile successfully created",
       data: profile,
+    });
+  },
+];
+
+export const createProfileNameController = [
+  body("username")
+    .trim()
+    .notEmpty()
+    .escape()
+    .isLength({ min: 3 })
+    .withMessage("Username must fill, it's not optional."),
+  async (req: CustomRequest, res: Response, next: NextFunction) => {
+    if (reqBodyErrorFn(req, next)) return;
+    const userId = req.userId as string;
+    const username = req.body.username;
+    const avatarImage = req.file;
+    const foundUser = await findUserById(userId);
+    if (foundUser?.username) {
+      return next({
+        message: "You cannot updated this profile",
+        status: 403,
+        code: errorCode.alreadyExit,
+      });
+    }
+    let avatarUrl;
+    if (avatarImage) {
+      await queue.add(
+        "image",
+        coverQueueOptions(avatarImage),
+        imageQueueOptions,
+      );
+
+      avatarUrl = avatarImage.originalname.split(".")[0] + ".webp";
+    }
+
+    const user = await updateUser(userId, { username, avatarUrl });
+
+    return res.status(200).json({
+      message: "Your username successfully added.",
+      data: user,
     });
   },
 ];
@@ -115,7 +157,6 @@ export const uploadProfileImageController = async (
 ) => {
   const userId = req.userId as string;
   const profileImage = req.file;
-  console.log("profileImage", profileImage);
   const user = await findUserById(userId);
   let profile;
   if (profileImage) {

@@ -3,6 +3,7 @@ import api, { authApi } from "../api";
 import type { CreateReactionType, ReactionType } from "@/types/reaction.type";
 import type { CommentType } from "@/types/comment.type";
 import type { UpdateProfileParams, UserInfoType } from "@/types/user.type";
+import type { UpdatePasswordType } from "@/types/updatePassword.type";
 
 export const queryClient = new QueryClient({
   defaultOptions: {
@@ -30,6 +31,10 @@ export const acceptedFriend = async (requesterId: string) =>
 
 export const requestedFriend = async (addresseeId: string) =>
   await api.post(`friend-request`, { addresseeId }).then((res) => res.data);
+
+export const unblockFriend = async(friendId:string)=> await api.post("friend-unblock",{blockedId:friendId}).then(res=> res.data)
+
+export const fetchBlockedFriends = async () => await api.get("friend-block").then((res) => res.data);
 
 export const removeFriendship = async (removeFriendshipId: string) =>
   await api
@@ -60,6 +65,11 @@ export const postQuery = (query: string) => ({
   queryFn: () => fetchPosts(query),
 });
 
+export const blockedFriendsQuery = () => ({
+  queryKey: ["blocked-friends"],
+  queryFn: () => fetchBlockedFriends(),
+});
+
 export const postByIdQuery = (param: string) => ({
   queryKey: ["posts", param],
   queryFn: () => fetchPostById(param),
@@ -82,6 +92,17 @@ export const createReaction = async ({ postId, type }: CreateReactionType) => {
     });
 };
 
+export const createBlockUser = async (friendId: string) => {
+  console.log(friendId);
+  await api
+    .post("/friend-block", { blockedId: friendId })
+    .then((res) => res.data)
+    .catch((err) => console.error("Error creating block action:", err));
+};
+
+export const updatePassword = async (data: UpdatePasswordType) => {
+  await api.post("/update-password", data).then((res) => res.data);
+};
 export const createComment = async (comment: CommentType) => {
   await api.post(`comments`, comment).then((res: any) => res.data);
 };

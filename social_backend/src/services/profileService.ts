@@ -73,7 +73,6 @@ export const findProfileById = (id: string) => {
 };
 
 export const findUserById = (id: string) => {
-  console.log(id);
   return prisma.user.findUnique({
     where: { id },
     select: { id: true, username: true, avatarUrl: true },

@@ -1,7 +1,7 @@
 import p1 from "../assets/no-profile.png";
 
 type ProfileCircleType = {
-  imageUrl: string;
+  imageUrl: string | null;
   size: string;
 };
 

@@ -1,16 +1,11 @@
-import type { CreateReactionType } from "@/types/reaction.type";
-import { createReaction } from "./../api/query";
+import { unblockFriend } from "./../api/query";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 // import type { PostType } from "@/types/post.type";
 
-export const useCreateReaction = ({
-  postId,
-  type,
-  queryKey,
-}: CreateReactionType) => {
+export const useUnblockUser = () => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: () => createReaction({ postId, type }),
+    mutationFn: (friendId:string) => unblockFriend(friendId),
     /*
     onMutate: () => {
       const queryKey = ["posts", "infinite"];
@@ -38,7 +33,7 @@ export const useCreateReaction = ({
     },
     */
     onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: queryKey });
+      queryClient.invalidateQueries({ queryKey: ["blocked-friends"] });
     },
   });
 };

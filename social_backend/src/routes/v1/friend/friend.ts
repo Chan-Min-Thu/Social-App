@@ -7,6 +7,7 @@ import {
   getFriendsContorller,
   requestFriendController,
   unblockFriendController,
+  getBlockUserController,
   // getRequestedFriendsController,
 } from "../../../controllers/friend/friendController";
 
@@ -18,6 +19,7 @@ router.post("/friend-block", blockFriendController);
 router.post("/friend-unblock", unblockFriendController);
 router.delete("/friend-remove", removeFriendshipController);
 
+router.get("/friend-block",getBlockUserController);
 router.get("/otherProfile/:friendId", getOtherProfileController);
 router.get("/friends/:status", getFriendsContorller);
 // router.get("/friends/suggested", getSuggestionFriendController);

@@ -11,9 +11,9 @@ type CreatePostProps = {
 };
 export default function CreatePost({ user }: CreatePostProps) {
   const [image, setImage] = useState<ImageProps[]>([]);
-  const profileUrl = user.avatarUrl.startsWith("https")
-    ? user.avatarUrl
-    : imageUrl + "/optimized/" + user.avatarUrl;
+  const profileUrl = user.avatarUrl?.startsWith("https")
+    ? user?.avatarUrl
+    : imageUrl + user?.avatarUrl;
   return (
     <div className="card bg-base-100 w-full shadow-sm">
       <div className="card-body">
@@ -24,7 +24,7 @@ export default function CreatePost({ user }: CreatePostProps) {
             </div>
           </div> */}
           <ProfileCircle
-            imageUrl={profileUrl}
+            imageUrl={!user.avatarUrl?.length ? null : profileUrl}
             size="size-8 ring-primary ring-offset-base-100 ring-2 ring-offset-2"
           />
           <div className="w-full">

@@ -2,16 +2,19 @@ import type { FC } from "react";
 import { useNavigate } from "react-router";
 import Button from "./Button";
 import DialogBox from "./DialogBox";
+import BlockDialogBox from "./BlockDialogBox";
 
 type DropDownProps = {
-  onClick: () => void;
+  onRemoveFriend: () => void;
+  onCreateBlockUser:()=>void;
   id: string;
 };
-const DropDown: FC<DropDownProps> = ({ onClick, id }) => {
+const DropDown: FC<DropDownProps> = ({ onRemoveFriend,onCreateBlockUser, id }) => {
   const navigate = useNavigate();
   return (
     <div>
-      <DialogBox onClick={onClick} title="Remove friend" />
+      <DialogBox onClick={onRemoveFriend} title="Remove friend" />
+      <BlockDialogBox onClick={onCreateBlockUser} title="Block friend" />
       <details className="dropdown">
         <summary className="btn m-1">
           <svg
@@ -45,6 +48,19 @@ const DropDown: FC<DropDownProps> = ({ onClick, id }) => {
                 (
                   document.getElementById(
                     "my_modal_1",
+                  ) as HTMLDialogElement | null
+                )?.showModal();
+              }}
+            />
+          </li>
+           <li className="m-1">
+            <Button
+              type="button"
+              content="Block Friend"
+              onClick={() => {
+                (
+                  document.getElementById(
+                    "my_modal_2",
                   ) as HTMLDialogElement | null
                 )?.showModal();
               }}

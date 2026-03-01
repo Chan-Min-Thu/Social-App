@@ -1,12 +1,22 @@
-import { Prisma,PrismaClient } from "../generated/prisma/client";
 
+import { Status } from "./../generated/prisma/enums";
+import { PrismaClient, Prisma } from "../generated/prisma/client";
+import { PrismaPg } from "@prisma/adapter-pg";
+import bcrypt from "bcrypt";
+import { faker } from "@faker-js/faker";
+import { Post, User } from "../generated/prisma";
+import "dotenv/config";
+import { Prisma,PrismaClient } from "../generated/prisma/client";
 // import { PrismaClient, Prisma } from "../generated/prisma/client";
 import bcrypt from "bcrypt";
 import { faker } from "@faker-js/faker";
 // import { Post, Status, User } from "../generated/prisma";
 import { Post,Status,User } from "../generated/prisma/client";
 
-const prisma = new PrismaClient();
+
+const connectionString = `${process.env.DATABASE_URL}`;
+const adapter = new PrismaPg({ connectionString });
+const prisma = new PrismaClient({ adapter });
 
 const createUser = (): Prisma.UserCreateInput => {
   return {

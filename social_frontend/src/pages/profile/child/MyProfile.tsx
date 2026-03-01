@@ -21,6 +21,10 @@ const MyProfile = () => {
       <ProfileCard
         profile={profile}
         postLength={posts?.length ?? 0}
+
+        friendLength={friends?.length ?? 0} isFriendProfile={false}      />
+      {info?.bio ? <ProfileInfo info={info} id={id} isFriendProfile={false} /> : <EmptyProfileCard isFriendProfile={false} />}
+      {friends.length ? <FriendsCard friends={friends} isFriendProfile={false} /> : <EmptyFriendCard />}
         friendLength={friends?.length ?? 0}
         isFriendProfile={false}
       />

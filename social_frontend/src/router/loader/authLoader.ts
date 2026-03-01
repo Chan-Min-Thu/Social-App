@@ -33,3 +33,12 @@ export const confirmLoader = async () => {
   }
   return null;
 };
+
+
+export const userProfileLoader = async ()=>{
+  const authStore = await useAuthStore.getState();
+  if(authStore.status !== SignUpStatus.userProfile){
+    return redirect("/signup")
+  }
+  return null;
+}

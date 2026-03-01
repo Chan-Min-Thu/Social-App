@@ -17,11 +17,11 @@ const PostLayout: FC = () => {
     isError,
     error,
     fetchNextPage,
-    refetch,
     hasNextPage,
   } = useInfiniteQuery(postInfiniteQuery());
 
   const { data: user } = useQuery(userQuery());
+
   // Define the expected type for a page
   type PageType = {
     hasNextPage: boolean;
@@ -33,11 +33,10 @@ const PostLayout: FC = () => {
   };
 
   useEffect(() => {
-    const lastCursor = data?.pages[0].newCursor;
-    if (inView) {
-      fetchNextPage(lastCursor);
+    if (inView && hasNextPage) {
+      fetchNextPage();
     }
-  }, [inView, fetchNextPage, hasNextPage, refetch]);
+  }, [inView, fetchNextPage, hasNextPage]);
 
   const posts =
     data && data?.pages.flatMap((page: PageType) => page.data || []);

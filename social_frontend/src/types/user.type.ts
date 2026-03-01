@@ -1,4 +1,5 @@
 export type Gender = "MALE" | "FEMALE" | "OTHER";
+
 export type UserType = {
   id: string;
   username: string;
@@ -25,3 +26,13 @@ export type UpdateProfileParams = {
   profileId: string;
   userInfo: UserInfoType;
 };
+
+export type SentFriendType ={
+  id:string;
+  profile:UserType;
+}
+
+export type CreateBlockType ={
+  friendId:string;
+  status?:string;
+}

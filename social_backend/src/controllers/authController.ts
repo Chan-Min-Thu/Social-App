@@ -327,7 +327,7 @@ export const confirmPassword = [
 
     // const accessToken = jwt.sign(
     //   accessTokenPayload,
-    //   process.env.ACCESSTOKEN_SECRET!,
+    //   process.env.ACCESS_TOKEN_SECRET!,
     //   {
     //     expiresIn: "15m",
     //   }
@@ -550,7 +550,33 @@ export const updatePassword = [
   async (req: CustomRequest, res: Response, next: NextFunction) => {
     const userId = req.userId as string;
 
-    res.status(200).json({
+    const oldPassword = req.body.oldPassword;
+    const newPassword = req.body.newPassword;
+
+    // 1. Find User
+    const user = (await getUserById(userId)) as UserType;
+
+    // 2. Hash Compared password
+    const isMatchedOldPassword = await bcrypt.compare(
+      oldPassword,
+      user?.passwordHash,
+    );
+
+    if (!isMatchedOldPassword) {
+      const error: any = new Error("Your old password was wrong.");
+      error.status = 401;
+      error.code = errorCode.notMatched;
+      return next(error);
+    }
+
+    // 3. if is Matched old password , hash to new password.
+
+    const salt = await bcrypt.genSalt(10);
+    const newPasswordHash = await bcrypt.hash(newPassword, salt);
+
+    await updateUser(userId, { passwordHash: newPasswordHash });
+
+    return res.status(200).json({
       message: "You successfully updated your password.",
     });
   },

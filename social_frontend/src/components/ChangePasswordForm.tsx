@@ -2,20 +2,17 @@ import { useState } from "react";
 import { LockIcon } from "./icons/LockIcon";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useActionData, useNavigation, useSubmit } from "react-router";
+import { useNavigation } from "react-router";
 import { updatePasswordSchema } from "../utils/schema/validationSchemas";
-import {
-  EyeClosedIcon,
-  EyeOpenIcon,
-  LockClosedIcon,
-} from "@radix-ui/react-icons";
+import { EyeClosedIcon, EyeOpenIcon } from "@radix-ui/react-icons";
 import Button from "./Button";
+import { useUpdatePassword } from "../hooks/updatePassword";
 
 const ChangePasswordForm = () => {
   const [visible, setVisible] = useState({
     currentPassword: false,
-    confirmPassword: false,
     newPassword: false,
+    newConfirmPassword: false,
   });
   const {
     register,
@@ -24,13 +21,16 @@ const ChangePasswordForm = () => {
   } = useForm({
     resolver: zodResolver(updatePasswordSchema),
   });
-  const submit = useSubmit();
-  const actionData = useActionData();
+
+  const { mutate } = useUpdatePassword();
+
+  // const actionData = useActionData();
   const navigation = useNavigation();
   const isSubmitting = navigation.state === "submitting";
 
+
   const onSubmitHandler = (data: any) => {
-    // submit(data, { method: "post", action: "." });
+    mutate(data)
   };
   return (
     <div className="card bg-base-100 w-full h-full p-5  shadow-sm mt-6 relative">
@@ -43,92 +43,98 @@ const ChangePasswordForm = () => {
           <span className="text-xs">Update your account password.</span>
         </div>
       </div>
-      <form onSubmit={handleSubmit(onSubmitHandler)}>
-        {" "}
-        <div className="flex flex-col justify-center gap-2 mt-8">
-          <div className="flex gap-5 justify-center flex-col">
-            <label className="inputbox w-full flex validator">
-              <input
-                id="password"
-                type={visible.currentPassword ? "text" : "password"}
-                {...register("currentPassword", { required: true })}
-                placeholder="Current Password"
-                className="focus:outline-none flex-1 pl-5"
-              />
-              <Button
-                onClick={() =>
-                  setVisible({
-                    ...visible,
-                    currentPassword: !visible.currentPassword,
-                  })
-                }
-                content=""
-              >
-                {visible.currentPassword ? <EyeOpenIcon /> : <EyeClosedIcon />}
-              </Button>
-            </label>
-            <label className="inputbox flex w-full validator">
-              <input
-                type={visible.confirmPassword ? "text" : "password"}
-                id="confirmPassword"
-                {...register("confirmPassword", { required: true })}
-                placeholder="Confirm password"
-                className="focus:outline-none flex-1 pl-5"
-              />
+      <form
+        onSubmit={handleSubmit(onSubmitHandler)}
+        className="flex gap-5 flex-col mt-5"
+      >
+        <label className="inputbox w-full flex validator">
+          <input
+            type={visible.currentPassword ? "text" : "password"}
+            {...register("currentPassword", {
+              required: "Current Password is required.",
+            })}
+            placeholder="Current Password"
+            className="focus:outline-none flex-1 pl-5"
+          />
 
-              <Button
-                content=""
-                onClick={() =>
-                  setVisible({
-                    ...visible,
-                    confirmPassword: !visible.confirmPassword,
-                  })
-                }
-                className=""
-              >
-                {visible.confirmPassword ? <EyeOpenIcon /> : <EyeClosedIcon />}
-              </Button>
-            </label>
-            <label className="inputbox flex w-full validator">
-              <input
-                type={visible.confirmPassword ? "text" : "password"}
-                id="newPassword"
-                {...register("newPassword", { required: true })}
-                placeholder="New password"
-                className="focus:outline-none flex-1 pl-5"
-              />
-
-              <Button
-                content=""
-                onClick={() =>
-                  setVisible({
-                    ...visible,
-                    newPassword: !visible.newPassword,
-                  })
-                }
-              >
-                {visible.newPassword ? <EyeOpenIcon /> : <EyeClosedIcon />}
-              </Button>
-            </label>
-            {errors.confirmPassword ? (
-              <div className="validator-hint hidden">
-                {errors.confirmPassword.message}
-              </div>
-            ) : null}
+          <Button
+            onClick={() =>
+              setVisible({
+                ...visible,
+                currentPassword: !visible.currentPassword,
+              })
+            }
+            content=""
+          >
+            {visible.currentPassword ? <EyeOpenIcon /> : <EyeClosedIcon />}
+          </Button>
+        </label>
+        {errors.currentPassword && (
+          <div className="text-error">
+            {errors.currentPassword.message}
           </div>
-          {actionData && <p className="text-error">{actionData.message}</p>}
-          {isSubmitting ? (
-            <Button content="Submitting..." className="btn ">
-              <span className="loading loading-spinner"></span>
-            </Button>
-          ) : (
-            <Button
-              content="  Confirm Password"
-              className="btn btn-primary mt-5"
-              type="submit"
-            />
-          )}
-        </div>
+        )}
+        <label className="inputbox flex w-full validator">
+          <input
+            type={visible.newPassword ? "text" : "password"}
+            {...register("newPassword", {
+              required: "Confirm Password is required.",
+            })}
+            placeholder="New Password"
+            className="focus:outline-none flex-1 pl-5"
+          />
+
+          <Button
+            content=""
+            onClick={() =>
+              setVisible({
+                ...visible,
+                newPassword: !visible.newPassword,
+              })
+            }
+            className=""
+          >
+            {visible.newPassword ? <EyeOpenIcon /> : <EyeClosedIcon />}
+          </Button>
+        </label>
+        {errors.newPassword && (
+          <div className="text-error">
+            {errors.newPassword.message}
+          </div>
+        )}
+        <label className="inputbox flex w-full validator">
+          <input
+            type={visible.newConfirmPassword ? "text" : "password"}
+            {...register("newConfirmPassword", {
+              required: "New confirm Password is required.",
+            })}
+            placeholder="New Confrim Password"
+            className="focus:outline-none flex-1 pl-5"
+          />
+          <Button
+            content=""
+            onClick={() =>
+              setVisible({
+                ...visible,
+                newConfirmPassword: !visible.newConfirmPassword,
+              })
+            }
+          >
+            {visible.newConfirmPassword ? <EyeOpenIcon /> : <EyeClosedIcon />}
+          </Button>
+        </label>
+        {errors.newConfirmPassword ? (
+          <div className="text-error">
+            {errors.newConfirmPassword.message}
+          </div>
+        ) : null}
+       {errors && <div className="text-error">{errors.root?.message}</div>}
+        <Button
+          type="submit"
+          disabled={isSubmitting}
+          className="btn btn-primary mt-2"
+          content={isSubmitting ? "Updating Password..." : "Update Password"}
+        />
       </form>
     </div>
   );

@@ -7,7 +7,7 @@ export const useRemoveReaction = ({ queryKey }: RemoveReactionType) => {
   return useMutation({
     mutationFn: (reaction: ReactionType) => deleteReaction(reaction),
     onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: queryKey });
+      queryClient.invalidateQueries({ queryKey });
     },
   });
 };

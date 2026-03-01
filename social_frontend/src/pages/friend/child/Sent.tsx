@@ -2,13 +2,16 @@ import { useOutletContext } from "react-router";
 import Button from "../../../components/Button";
 import Profile from "../../../components/Profile";
 import type { ContextType } from "./FriendLayout";
-import type { FriendType } from "@/types/friend.type";
+import type {SentFriendType} from "../../../types/user.type"
 import { useRemoveFriendship } from "../../../hooks/acceptRequestFriend";
 import DialogBox from "../../../components/DialogBox";
 
+
 export default function Sent() {
   const { data } = useOutletContext<ContextType>();
+  const sentData = data as SentFriendType[] | null;
   const { mutate: removeMutation } = useRemoveFriendship("sent");
+
   return (
     <div className="w-full my-4">
       <ul className="list bg-base-100 rounded-box shadow-md m-2">
@@ -16,10 +19,10 @@ export default function Sent() {
           Sent Requests.
         </li>
         <li className="list-row flex flex-col">
-          {data?.length === 0 ? (
+          {sentData?.length === 0 ? (
             <div>No Friends Sent.</div>
           ) : (
-            data?.map((data: FriendType) => (
+            sentData?.map((data: SentFriendType) => (
               <div key={data.profile.id}>
                 <DialogBox
                   onClick={() => removeMutation(data.profile.id)}
@@ -27,7 +30,7 @@ export default function Sent() {
                 />
                 <div
                   key={data.profile.id}
-                  className="flex justify-between w-full"
+                  className="flex justify-between w-full gap-3"
                 >
                   <Profile
                     imageUrl={data.profile.avatarUrl}

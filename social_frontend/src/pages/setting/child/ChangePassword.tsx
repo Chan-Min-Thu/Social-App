@@ -4,7 +4,7 @@ import ChangePasswordForm from "../../../components/ChangePasswordForm";
 
 const ChangePassword = () => {
   return (
-    <div className="w-full">
+    <div className="">
       <Link
         to="/settings"
         className="flex gap-2 flex-row items-center hover:bg-success w-fit p-1 rounded-xl"

@@ -28,7 +28,7 @@ const SettingCard = () => {
           </svg>
         </div>
         <div>
-          <h2 className="text-xl font-bold">Settings</h2>
+          <h2 className="text-xl font-medium">Settings</h2>
           <p className="text-xs">Manage your account preferences</p>
         </div>
       </div>

@@ -9,7 +9,6 @@ const CreateProfile = () => {
   const {
     handleSubmit,
     register,
-
     formState: { errors, isSubmitting },
     reset,
   } = useForm({
@@ -26,7 +25,7 @@ const CreateProfile = () => {
 
   const onSubmithandler = (data: any) => {
     // Build FormData including files stored in selectedImage state
-    // const formData = new FormData();
+  
     mutation.mutate(data);
     reset();
     (document.getElementById("my_modal_2") as HTMLDialogElement).close();

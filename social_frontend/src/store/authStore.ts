@@ -6,6 +6,7 @@ export const SignUpStatus = {
   otp: "otp",
   verify: "verify",
   confirmPassword: "confirm-password",
+  userProfile:"userProfile",
   reset: "reset",
   none: "none",
 } as const;

@@ -5,11 +5,13 @@ import {
   logoutAction,
   otpAction,
   signUpAction,
+  userProfileAction,
 } from "../router/action/authAction";
 import {
   confirmLoader,
   loginLoader,
   otpLoader,
+  userProfileLoader,
 } from "../router/loader/authLoader";
 import AppLayout from "../pages/home/Applayout";
 import Login from "../pages/login/Login";
@@ -33,6 +35,7 @@ import ChangePassword from "../pages/setting/child/ChangePassword";
 import Setting from "../pages/setting/child/Setting";
 import BlockedUsers from "../pages/setting/child/BlockUsers";
 import ProfileLayout from "../pages/profile/ProfileLayout";
+import UserProfile from "@/pages/signup/child/UserProfile";
 
 const router = createBrowserRouter([
   {
@@ -145,6 +148,13 @@ const router = createBrowserRouter([
         loader: confirmLoader,
         action: confirmAction,
       },
+      {
+        path: "user-profile",
+        Component: UserProfile,
+        loader: userProfileLoader,
+        action: userProfileAction,
+      },
+      
     ],
   },
 ]);

@@ -14,7 +14,7 @@ const CommentBox: FC<CommentBoxProps> = ({ comment, setReply }) => {
   const profileUrl = comment.author && (comment.author.avatarUrl as string);
   const profilePath = profileUrl?.startsWith("https")
     ? profileUrl
-    : imageUrl + "/optimized/" + profileUrl;
+    : imageUrl + profileUrl;
   return (
     <div className="flex gap-2 w-full flex-col">
       <div className="flex gap-2">

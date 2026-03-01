@@ -12,7 +12,7 @@ import { useCreateReaction } from "../hooks/createReaction";
 import { useRemoveReaction } from "../hooks/deleteReaction";
 import Button from "./Button";
 import imageUrl from "../config/imageUrl";
-import { useLocation } from "react-router";
+import { useLocation, useParams } from "react-router";
 import ProfileCircle from "./ProfileCircle";
 
 type PostCardType = {
@@ -21,26 +21,36 @@ type PostCardType = {
 
 const PostCard: FC<PostCardType> = ({ post }) => {
   const location = useLocation();
+  const param = useParams();
+  const friendId = param?.userId as string;
+
   const pathname = location.pathname;
   const user = JSON.parse(localStorage.getItem("user") as string);
-  const userId = user.state.user.id;
+  const userId = user.state.user?.id;
   const reaction =
     post &&
     user &&
     post.reactions &&
     post.reactions.find((react) => react?.userId === userId);
 
-  console.log(reaction);
   const { mutate: creatingReaction } = useCreateReaction({
-    postId: post!.id,
+    postId: post!.id as string,
     type: "LOVE",
     queryKey:
-      pathname === "/profile" ? ["profile", "me"] : ["posts", "infinite"],
+      pathname.length > 10
+        ? ["otherProfile", friendId]
+        : pathname === "/profile"
+          ? ["profile", "me"]
+          : ["posts", "infinite"],
   });
 
   const { mutate: deletingReaction } = useRemoveReaction({
     queryKey:
-      pathname === "/profile" ? ["profile", "me"] : ["posts", "infinite"],
+       pathname.length > 10
+        ? ["otherProfile", friendId]
+        : pathname === "/profile"
+          ? ["profile", "me"]
+          : ["posts", "infinite"],
   });
 
   const [toShowComment, setToShowComment] = useState<boolean>(false);
@@ -49,9 +59,9 @@ const PostCard: FC<PostCardType> = ({ post }) => {
   const createdTime = formatDistanceToNow(createdAt, { addSuffix: true });
   const imageUrlPath =
     post.author &&
-    (post.author.avatarUrl.startsWith("https")
+    (post?.author?.avatarUrl?.startsWith("https")
       ? post.author.avatarUrl
-      : imageUrl + "/optimized/" + post.author.avatarUrl);
+      : imageUrl + post.author.avatarUrl);
 
   const showComments = () => {
     setToShowComment((prev) => !prev);
@@ -86,11 +96,7 @@ const PostCard: FC<PostCardType> = ({ post }) => {
         <div className={`grid grid-cols-${post.image.length} gap-1`}>
           {post.image?.map((img: ImageType) => (
             <figure key={img.id}>
-              <img
-                src={imageUrl + "/optimized/" + img.imageUrl}
-                alt="Shoes"
-                className="w-96"
-              />
+              <img src={imageUrl + img.imageUrl} alt="Shoes" className="w-96" />
             </figure>
           ))}
         </div>
@@ -132,7 +138,7 @@ const PostCard: FC<PostCardType> = ({ post }) => {
       </div>
       {toShowComment
         ? post?.comments && (
-            <Comments comments={post.comments} postId={post.id} />
+            <Comments comments={post.comments} postId={post.id as string} />
           )
         : null}
     </div>

@@ -35,7 +35,7 @@ export const auth = async (
   const generateNewToken = async () => {
     let decoded;
     try {
-      decoded = jwt.verify(refreshToken, process.env.REFRESHTOKEN_SECRET!) as {
+      decoded = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET!) as {
         id: string;
         email: string;
       };
@@ -83,14 +83,14 @@ export const auth = async (
     }
     const newAccessToken = jwt.sign(
       { id: user.id },
-      process.env.ACCESSTOKEN_SECRET!,
+      process.env.ACCESS_TOKEN_SECRET!,
       {
         expiresIn: 60 * 2 * 1000,
       },
     );
     const newRefreshToken = jwt.sign(
       { id: user.id, email: user.email },
-      process.env.REFRESHTOKEN_SECRET!,
+      process.env.REFRESH_TOKEN_SECRET!,
       {
         expiresIn: "30d",
       },
@@ -113,7 +113,7 @@ export const auth = async (
   } else {
     let decoded;
     try {
-      decoded = jwt.verify(accessToken, process.env.ACCESSTOKEN_SECRET!) as {
+      decoded = jwt.verify(accessToken, process.env.ACCESS_TOKEN_SECRET!) as {
         id: string;
       };
       if (!decoded) {

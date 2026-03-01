@@ -5,8 +5,10 @@ import {
   deleteBlockUser,
   deleteFriendship,
   findFriendsByUserId,
+  findFriendshipBlocked,
   findFriendshipWithThisId,
   getAcceptedAndPendingFriends,
+  getBlockUser,
   getFriendRequest,
   getFriends,
   getFriendsAcceptedAndPending,
@@ -119,12 +121,11 @@ export const blockFriendController = [
     let friendship;
     if (isFriend!.id) {
       await createBlockUser({ blockerId: userId, blockedId });
-
       friendship = await updatedFriend({ id: isFriend!.id, status: "blocked" });
     }
     res.status(200).json({
-      message: "Accepted Friend.",
-      data: { friend: friendship },
+      message: "Blocked  this friend.",
+      data: friendship,
     });
   },
 ];
@@ -135,7 +136,8 @@ export const unblockFriendController = [
     if (reqBodyErrorFn(req, next)) return;
     const userId = req.userId;
     const { blockedId } = req.body;
-    const isFriend = (await findFriendship({
+    console.log(blockedId);
+    const isFriend = (await findFriendshipBlocked({
       userId: String(userId),
       friendId: blockedId,
     })) as FriendType;
@@ -156,11 +158,28 @@ export const unblockFriendController = [
       });
     }
     res.status(200).json({
-      message: "Accepted Friend.",
+      message: "Unblocked friend.",
       data: friendship,
     });
   },
 ];
+
+export const getBlockUserController = async (
+  req: CustomRequest,
+  res: Response,
+  next: NextFunction,
+) => {
+  const userId = req.userId as string;
+  const blockedUserRelations = await getBlockUser(userId);
+  const blockedUserProfiles = blockedUserRelations.map((profile: any) =>
+    profile.addressee.id === userId ? profile.requester : profile.addressee,
+  );
+  console.log(blockedUserProfiles);
+  res.status(200).json({
+    message: "You are blocked users.",
+    data: blockedUserProfiles,
+  });
+};
 
 export const getOtherProfileController = [
   param("friendId").isUUID(),
@@ -229,7 +248,7 @@ export const getOtherProfileController = [
       friends: preparedFriends,
       posts: posts || [],
     };
-    // console.log("profileData", profileData);
+
     res.status(200).json({
       message: "Profile retrieved successfully",
       data: profileData,
@@ -318,7 +337,7 @@ export const getFriendsContorller = [
         }
       }
     }
-    console.log("friendsProfiles", friendsProfiles);
+
     res.status(200).json({
       message: `They are ${status} friends.`,
       data: friendsProfiles,

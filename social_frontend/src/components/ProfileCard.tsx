@@ -2,7 +2,6 @@ import type { UserProfileType } from "@/types/user.type";
 import ImageInput from "./ImageInput";
 import imageUrl from "../config/imageUrl";
 import p1 from "../assets/no-cover.png";
-import p2 from "../assets/no-profile.png";
 import ProfileCircle from "./ProfileCircle";
 
 type ProfileCardProps = {
@@ -21,10 +20,9 @@ const ProfileCard = ({
 }: ProfileCardProps) => {
   const { coverUrl, avatarUrl, website, username } = profile;
 
-  const profileUrl = imageUrl + "/optimized/" + avatarUrl;
-  const avatarUrlPath = avatarUrl.startsWith("http") ? avatarUrl : profileUrl;
-  const coverImageUrl = imageUrl + "/optimized/" + coverUrl;
-  console.log(coverImageUrl);
+  const profileUrl = imageUrl  + avatarUrl;
+  const avatarUrlPath = avatarUrl?.startsWith("http") ? avatarUrl : profileUrl;
+  const coverImageUrl = imageUrl  + coverUrl;
   return (
     <div className="card bg-base-100 w-full h-full   shadow-sm relative">
       <figure className="lg:h-64 h-64 w-full relative">
@@ -38,7 +36,7 @@ const ProfileCard = ({
 
       <div className="card-body h-72 flex justify-center">
         <div className="absolute z-10 top-[40%] left-8  ">
-          <ProfileCircle imageUrl={avatarUrlPath} size={"size-24"} />
+          <ProfileCircle imageUrl={!avatarUrl?.length ? null:avatarUrlPath} size={"size-24"} />
           {!isFriendProfile && (
             <div className="absolute bottom-2 z-20 -right-3">
               <ImageInput type="profile" />
@@ -47,7 +45,7 @@ const ProfileCard = ({
         </div>
         <div className="mt-0.5">
           <div>
-            <h2 className="card-title">{username}</h2>
+            <h2 className="card-title">{username ?? "No-name"}</h2>
             <span className="text">{website}</span>
           </div>
           <div className="divider"></div>

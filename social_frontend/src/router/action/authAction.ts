@@ -97,6 +97,7 @@ export const otpAction = async ({ request }: ActionFunctionArgs) => {
 
 export const confirmAction = async ({ request }: ActionFunctionArgs) => {
   const authStore = useAuthStore.getState();
+
   const formData = await request.formData();
   const password = formData.get("password");
   const credentials = {
@@ -109,6 +110,41 @@ export const confirmAction = async ({ request }: ActionFunctionArgs) => {
     if (response.status !== 200) {
       return response.data.message || "Regristration failed!";
     }
+    authStore.setAuth(
+      response?.data.email,
+      response?.data.token,
+      SignUpStatus.userProfile,
+    );
+
+    return redirect("/signup/user-profile");
+  } catch (error) {
+    if (error instanceof AxiosError) {
+      return error.response?.data || { error: "Registration failed!" };
+    } else throw error;
+  }
+};
+
+export const userProfileAction = async ({ request }: ActionFunctionArgs) => {
+  const authStore = useAuthStore.getState();
+  const { getUser } = useUserStore.getState();
+  const formData = await request.formData();
+  try {
+    const response = await api.post("profile/user-profile", formData,{
+      headers:{
+        "Content-Type": "multipart/form-data"
+      }
+    });
+    if (response.status !== 200) {
+      return response.data.message || "Registeration of profile failed";
+    }
+    console.log("response from user profile api", response.data.data.id);
+
+    getUser({
+      id: response.data.data.id,
+      email: response.data.data.email,
+      username: response.data.data.username,
+      avatarUrl: response.data.data.avatarUrl,
+    });
     authStore.clearAuth();
     return redirect("/");
   } catch (error) {

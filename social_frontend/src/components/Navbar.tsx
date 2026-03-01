@@ -16,9 +16,9 @@ interface NavbarProps {
   };
 }
 export default function Navbar({ user }: NavbarProps) {
-  const profileUrl = user?.avatarUrl.startsWith("https")
+  const profileUrl = user?.avatarUrl?.startsWith("https")
     ? user.avatarUrl
-    : imageUrl + "/optimized/" + user?.avatarUrl;
+    : imageUrl + user?.avatarUrl;
   return (
     <div className="navbar bg-base-200 shadow-sm px-4 md:px-20 sticky top-0 z-50">
       <div className="flex-1 ml-2">

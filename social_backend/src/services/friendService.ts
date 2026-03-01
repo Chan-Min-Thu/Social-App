@@ -110,9 +110,23 @@ export const findFriendship = ({
         { requesterId: userId, addresseeId: friendId },
         { requesterId: friendId, addresseeId: userId },
       ],
+      status: "accepted",
     },
   });
 };
+
+export const findFriendshipBlocked = ({userId,friendId}:{userId:string,friendId:string})=>{
+  return prisma.friend.findFirst({
+   where: {
+      OR: [
+        { requesterId: userId, addresseeId: friendId },
+        { requesterId: friendId, addresseeId: userId },
+      ],
+      status: "blocked",
+    },
+  })
+}
+
 export const blockYourAccount = ({ userId, friendId }: any) => {
   return prisma.blockUser.findFirst({
     where: {
@@ -158,6 +172,23 @@ export const getFriends = (userId: string) => {
       requesterId: true,
       requester: {
         select: { ...optionProfile },
+      },
+    },
+  });
+};
+
+export const getBlockUser = (userId: string) => {
+  return prisma.friend.findMany({
+    where: {
+      OR: [{ requesterId: userId }, { addresseeId: userId }],
+      status: "blocked",
+    },
+    select: {
+      requester: {
+        select: optionProfile,
+      },
+      addressee: {
+        select: optionProfile,
       },
     },
   });

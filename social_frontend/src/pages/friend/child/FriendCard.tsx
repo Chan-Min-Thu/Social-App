@@ -1,10 +1,12 @@
 import { useRemoveFriendship } from "../../../hooks/acceptRequestFriend";
 import DropDown from "../../../components/DropDown";
 import Profile from "../../../components/Profile";
+import { useCreateBlockUser } from "../../../hooks/createBlockUser";
 
 const FriendCard = ({ friend }: any) => {
   const { profile } = friend;
   const { mutate: removeMutation } = useRemoveFriendship("accepted");
+  const {mutate:createBlockUserMutation} = useCreateBlockUser({friendId:profile.id,status:"accepted"})
   const removeFriendshipfun = () => {
     removeMutation(profile.id);
   };
@@ -17,7 +19,7 @@ const FriendCard = ({ friend }: any) => {
             name={profile.username}
             status="You are friends."
           />
-          <DropDown onClick={removeFriendshipfun} id={friend.profile.id} />
+          <DropDown onRemoveFriend={removeFriendshipfun} onCreateBlockUser={createBlockUserMutation} id={friend.profile.id} />
         </li>
       </ul>
     </div>

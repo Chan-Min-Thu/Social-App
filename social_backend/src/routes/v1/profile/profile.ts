@@ -2,6 +2,7 @@ import express from "express";
 import { uploadMemory } from "../../../middlewares/uploadFile";
 import {
   createProfileController,
+  createProfileNameController,
   getProfileForMeController,
   updateProfileController,
   uploadCoverImageController,
@@ -10,11 +11,13 @@ import {
 const router = express.Router();
 
 router.post("/profile", createProfileController);
+router.post("/profile/user-profile",uploadMemory.single("profileImage"),createProfileNameController);
 router.post(
   "/profile/profile-image",
   uploadMemory.single("profileImage"),
   uploadProfileImageController,
 );
+
 router.post(
   "/profile/cover-image",
   uploadMemory.single("coverImage"),

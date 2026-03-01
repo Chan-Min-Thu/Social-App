@@ -308,7 +308,7 @@ export const getPostByInfiniteScrollController = [
         code: errorCode.invalid,
       });
     }
-
+    
     const userId = req.userId;
     const { lastCursor, take, skip } = req.query;
     const user = (await getUserById(userId!)) as UserType;
@@ -332,7 +332,7 @@ export const getPostByInfiniteScrollController = [
       posts?.pop();
     }
 
-    const newCursor = posts!.length > 0 ? posts![posts!.length - 1].id : null;
+    const newCursor = posts!.length > 0 ? posts![posts!.length - 1].id : null;  
     res.status(200).json({
       message: "Infinite posts successfully got.",
       length: posts?.length,

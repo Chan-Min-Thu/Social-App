@@ -22,6 +22,9 @@ const ProfileCard = ({
 
   const profileUrl = imageUrl  + avatarUrl;
   const avatarUrlPath = avatarUrl?.startsWith("http") ? avatarUrl : profileUrl;
+
+  const profileUrl = imageUrl + avatarUrl;
+  const avatarUrlPath = avatarUrl.startsWith("http") ? avatarUrl : profileUrl;
   const coverImageUrl = imageUrl  + coverUrl;
   return (
     <div className="card bg-base-100 w-full h-full   shadow-sm relative">

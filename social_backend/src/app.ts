@@ -58,6 +58,7 @@ app
   })
   .use(express.static("uploads"));
 
+app.use("/api/v1", express.static("uploads"));
 app.use("/api/v1", healthRoute);
 app.use("/api/v1", authRoute);
 app.use("/api/v1", auth, postRoute);

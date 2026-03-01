@@ -46,7 +46,6 @@ import {
 import { UserType } from "../../types/user.type";
 import { errorFun } from "../../utils/utilFunction/errorFun";
 import { findPostsByUserId } from "../../services/postService";
-import { compareSync } from "bcrypt";
 
 export const requestFriendController = [
   body("addresseeId").isUUID().withMessage("AddresseeId was wrong."),
@@ -294,6 +293,7 @@ export const getFriendsContorller = [
     } else if (status === "toadd") {
       //1. Get current friends and pending fri to avoid  suggessting them
       const exitingRelations = await getAcceptedAndPendingFriends(userId);
+      console.log("exitingRelations ,", exitingRelations)
       const excluedIds = new Set([
         userId,
         ...exitingRelations.map((f) =>

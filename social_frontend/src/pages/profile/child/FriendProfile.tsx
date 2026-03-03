@@ -1,13 +1,13 @@
 import { useParams } from "react-router";
 import { useQuery } from "@tanstack/react-query";
-import { fetchProfieForOtherFriend } from "../../../api/query";
-import Post from "../../../pages/post/child/Post";
-import ProfileInfo from "../../../components/ProfileInfo";
-import EmptyProfileCard from "../../../components/EmptyProfileCard";
-import EmptyFriendCard from "../../../components/EmptyFriendCard";
-import FriendsCard from "../../../components/FriendsCard";
-import ProfileCard from "../../../components/ProfileCard";
-import HydrateFallBack from "../../../components/HydrateFallBack";
+import { fetchProfieForOtherFriend } from "@/api/query";
+import Post from "@/pages/post/child/Post";
+import ProfileInfo from "@/components/ProfileInfo";
+import EmptyProfileCard from "@/components/EmptyProfileCard";
+import EmptyFriendCard from "@/components/EmptyFriendCard";
+import FriendsCard from "@/components/FriendsCard";
+import ProfileCard from "@/components/ProfileCard";
+import HydrateFallBack from "@/components/HydrateFallBack";
 
 const FriendProfile = () => {
   const isFriendProfile = true;

@@ -1,5 +1,5 @@
-import { errorCode } from "../config/errorCode";
-import { UserType } from "../types/user.type";
+import { errorCode } from "@/config/errorCode";
+import { UserType } from "@/types/user.type";
 
 /*
  checkOtpErrorIfInSameDate,

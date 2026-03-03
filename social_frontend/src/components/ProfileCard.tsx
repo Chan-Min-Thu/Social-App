@@ -1,8 +1,9 @@
+import imageUrl from "@/config/imageUrl";
+import { getProfileImageUrl } from "@/utils/profileUrl";
+import p1 from "@/assets/no-cover.png";
+import ImageInput from "@/components/ImageInput";
+import ProfileCircle from "@/components/ProfileCircle";
 import type { UserProfileType } from "@/types/user.type";
-import ImageInput from "./ImageInput";
-import imageUrl from "../config/imageUrl";
-import p1 from "../assets/no-cover.png";
-import ProfileCircle from "./ProfileCircle";
 
 type ProfileCardProps = {
   profile: UserProfileType;
@@ -20,9 +21,9 @@ const ProfileCard = ({
 }: ProfileCardProps) => {
   const { coverUrl, avatarUrl, website, username } = profile;
 
-  const profileUrl = imageUrl  + avatarUrl;
-  const avatarUrlPath = avatarUrl?.startsWith("http") ? avatarUrl : profileUrl;
+  const avatarUrlPath = getProfileImageUrl(avatarUrl);
   const coverImageUrl = imageUrl  + coverUrl;
+
   return (
     <div className="card bg-base-100 w-full h-full   shadow-sm relative">
       <figure className="lg:h-64 h-64 w-full relative">
@@ -36,7 +37,7 @@ const ProfileCard = ({
 
       <div className="card-body h-72 flex justify-center">
         <div className="absolute z-10 top-[40%] left-8  ">
-          <ProfileCircle imageUrl={!avatarUrl?.length ? null:avatarUrlPath} size={"size-24"} />
+          <ProfileCircle imageUrl={avatarUrlPath} size={"size-24"} />
           {!isFriendProfile && (
             <div className="absolute bottom-2 z-20 -right-3">
               <ImageInput type="profile" />

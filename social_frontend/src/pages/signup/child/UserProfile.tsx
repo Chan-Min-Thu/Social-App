@@ -1,7 +1,7 @@
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
 import { useActionData, useNavigation, useSubmit } from "react-router";
-import { userProfileSchema } from "../../../utils/schema/validationSchemas";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { userProfileSchema } from "@/utils/schema/validationSchemas";
 import Button from "@/components/Button";
 
 export default function UserProfile() {

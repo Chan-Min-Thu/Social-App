@@ -1,19 +1,17 @@
 import { useState } from "react";
-import Dialog from "../../../components/Dialog";
-import ImagesInput, { type ImageProps } from "../../../components/ImagesInput";
+import { getProfileImageUrl } from "@/utils/profileUrl";
+import Dialog from "@/components/Dialog";
+import Button from "@/components/Button";
+import ProfileCircle from "@/components/ProfileCircle";
+import ImagesInput, { type ImageProps } from "@/components/ImagesInput";
 import type { UserType } from "@/types/user.type";
-import Button from "../../../components/Button";
-import imageUrl from "../../../config/imageUrl";
-import ProfileCircle from "../../../components/ProfileCircle";
 
 type CreatePostProps = {
   user: UserType;
 };
 export default function CreatePost({ user }: CreatePostProps) {
   const [image, setImage] = useState<ImageProps[]>([]);
-  const profileUrl = user.avatarUrl?.startsWith("https")
-    ? user?.avatarUrl
-    : imageUrl + user?.avatarUrl;
+  const profileUrl = getProfileImageUrl(user.avatarUrl)
   return (
     <div className="card bg-base-100 w-full shadow-sm">
       <div className="card-body">

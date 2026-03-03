@@ -2,7 +2,7 @@ import express from "express";
 import {
   createReactionController,
   updateReactionController,
-} from "../../../controllers/reaction/reactionController";
+} from "@/controllers/reaction/reactionController";
 
 const router = express.Router();
 

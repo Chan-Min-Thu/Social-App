@@ -6,16 +6,16 @@ import cors from "cors";
 import morgan from "morgan";
 import cookieParser from "cookie-parser";
 
-import { limiter } from "./middlewares/rateLimiter";
-import authRoute from "./routes/v1/auth";
-import postRoute from "./routes/v1/post/post";
-import reactionRoute from "./routes/v1/reaction/reaction";
-import commentRoute from "./routes/v1/comment/comment";
-import friendRoute from "./routes/v1/friend/friend";
-import profileRoute from "./routes/v1/profile/profile";
-import healthRoute from "./routes/v1/health";
-import { auth } from "./middlewares/auth";
-import { ErrorType } from "./types/error.type";
+import authRoute from "@/routes/v1/auth";
+import postRoute from "@/routes/v1/post/post";
+import reactionRoute from "@/routes/v1/reaction/reaction";
+import commentRoute from "@/routes/v1/comment/comment";
+import friendRoute from "@/routes/v1/friend/friend";
+import profileRoute from "@/routes/v1/profile/profile";
+import healthRoute from "@/routes/v1/health";
+import { limiter } from "@/middlewares/rateLimiter";
+import { auth } from "@/middlewares/auth";
+import { ErrorType } from "@/types/error.type";
 // You don't need to change imports in this file — change how TypeScript is compiled / run.
 // Recommended options (change tsconfig.json / package.json or your runtime):
 // 1) Compile to CommonJS and run the compiled output with Node:
@@ -58,6 +58,7 @@ app
   })
   .use(express.static("uploads"));
 
+app.use("/api/v1", express.static("uploads"));
 app.use("/api/v1", healthRoute);
 app.use("/api/v1", authRoute);
 app.use("/api/v1", auth, postRoute);

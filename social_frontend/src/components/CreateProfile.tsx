@@ -1,8 +1,8 @@
-import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { profileInfoSchema } from "../utils/schema/ProfileInfoSchema";
-import { useCreateProfile } from "../hooks/createUserInfo";
-import Button from "./Button";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { profileInfoSchema } from "@/utils/schema/ProfileInfoSchema";
+import { useCreateProfile } from "@/hooks/createUserInfo";
+import Button from "@/components/Button";
 
 const CreateProfile = () => {
   const mutation = useCreateProfile();
@@ -21,11 +21,9 @@ const CreateProfile = () => {
       birthDate: "2025-06-15",
     },
   });
-  //   const submit = useSubmit();
 
   const onSubmithandler = (data: any) => {
     // Build FormData including files stored in selectedImage state
-  
     mutation.mutate(data);
     reset();
     (document.getElementById("my_modal_2") as HTMLDialogElement).close();

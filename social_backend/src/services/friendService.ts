@@ -1,8 +1,5 @@
-import { FriendInclude } from "./../../generated/prisma/models/Friend";
-import { XOR } from "./../../generated/prisma/internal/prismaNamespace";
 import { prisma } from "../lib/prisma";
-import { FriendType, ToCoupleFriend } from "../types/friend.type";
-import { userInfo } from "node:os";
+import { FriendType, ToCoupleFriend } from "@/types/friend.type";
 
 const optionProfile = {
   id: true,
@@ -193,14 +190,15 @@ export const getBlockUser = (userId: string) => {
     },
   });
 };
+
 export const getAcceptedAndPendingFriends = (userId: string) => {
   return prisma.friend.findMany({
     where: {
       OR: [{ requesterId: userId }, { addresseeId: userId }],
-      NOT: { status: "blocked" },
     },
   });
 };
+
 export const getRequestedFriends = (userId: string) => {
   return prisma.friend.findMany({
     where: { addresseeId: userId, status: "pending" },

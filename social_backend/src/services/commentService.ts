@@ -1,5 +1,5 @@
 import { prisma } from "../lib/prisma";
-import { CommentType } from "../types/comment.type";
+import { CommentType } from "@/types/comment.type";
 
 export const createComment = (commentData: CommentType) => {
   const { content, authorId, postId, parentId } = commentData;

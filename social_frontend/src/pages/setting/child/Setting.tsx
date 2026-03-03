@@ -1,4 +1,4 @@
-import SettingCard from "../../../components/SettingCard";
+import SettingCard from "@/components/SettingCard";
 
 const Setting = () => {
   return (

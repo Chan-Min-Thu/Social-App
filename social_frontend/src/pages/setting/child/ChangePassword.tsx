@@ -1,6 +1,6 @@
 import { Link } from "react-router";
-import { ChevronLeftIcon } from "../../../components/icons/ChevronLeftIcon";
-import ChangePasswordForm from "../../../components/ChangePasswordForm";
+import { ChevronLeftIcon } from "@/components/icons/ChevronLeftIcon";
+import ChangePasswordForm from "@/components/ChangePasswordForm";
 
 const ChangePassword = () => {
   return (

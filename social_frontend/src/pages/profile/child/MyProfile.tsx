@@ -1,12 +1,12 @@
 import { useQuery } from "@tanstack/react-query";
-import ProfileInfo from "../../../components/ProfileInfo";
-import ProfileCard from "../../../components/ProfileCard";
-import FriendsCard from "../../../components/FriendsCard";
-import EmptyFriendCard from "../../../components/EmptyFriendCard";
-import EmptyProfileCard from "../../../components/EmptyProfileCard";
-import HydrateFallBack from "../../../components/HydrateFallBack";
-import { profileForMeQuery } from "../../../api/query";
-import Post from "../../post/child/Post";
+import { profileForMeQuery } from "@/api/query";
+import Post from "@/pages/post/child/Post";
+import ProfileInfo from "@/components/ProfileInfo";
+import ProfileCard from "@/components/ProfileCard";
+import FriendsCard from "@/components/FriendsCard";
+import EmptyFriendCard from "@/components/EmptyFriendCard";
+import EmptyProfileCard from "@/components/EmptyProfileCard";
+import HydrateFallBack from "@/components/HydrateFallBack";
 
 const MyProfile = () => {
   const { data, isLoading } = useQuery(profileForMeQuery());
@@ -21,9 +21,12 @@ const MyProfile = () => {
       <ProfileCard
         profile={profile}
         postLength={posts?.length ?? 0}
-        friendLength={friends?.length ?? 0} isFriendProfile={false}      />
-      {info?.bio ? <ProfileInfo info={info} id={id} isFriendProfile={false} /> : <EmptyProfileCard isFriendProfile={false} />}
-      {friends.length ? <FriendsCard friends={friends} isFriendProfile={false} /> : <EmptyFriendCard />}
+        friendLength={friends?.length ?? 0}
+        isFriendProfile={false}
+      />
+      {info?.bio ? <ProfileInfo info={info} id={id} isFriendProfile={false}/> : <EmptyProfileCard isFriendProfile={false} />}
+      {friends.length ? <FriendsCard friends={friends} isFriendProfile={false}/> : <EmptyFriendCard />}
+
       <h1 className="text-xl font-bold my-2">Posts</h1>
       {posts.length && <Post posts={posts} />}
     </div>

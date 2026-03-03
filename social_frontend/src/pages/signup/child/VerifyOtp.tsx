@@ -1,9 +1,9 @@
 import { Link, useActionData, useNavigation, useSubmit } from "react-router";
+import OtpInput from "react-otp-input";
 import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import OtpInput from "react-otp-input";
-import { otpSchema } from "../../../utils/schema/validationSchemas";
-import Button from "../../../components/Button";
+import { otpSchema } from "@/utils/schema/validationSchemas";
+import Button from "@/components/Button";
 
 export default function VerifyOtp() {
   const { handleSubmit, control } = useForm({

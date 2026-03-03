@@ -1,10 +1,10 @@
 import { useNavigate } from "react-router";
-import Button from "./Button";
-import { BlockedUserIcon } from "./icons/BlockedUserIcon";
-import { ChevronIcon } from "./icons/ChevronIcon";
-import { HelpIcon } from "./icons/HelpIcon";
-import { LockIcon } from "./icons/LockIcon";
-import { PrivacyIcon } from "./icons/PrivacyIcon";
+import Button from "@/components/Button";
+import { BlockedUserIcon } from "@/components/icons/BlockedUserIcon";
+import { ChevronIcon } from "@/components/icons/ChevronIcon";
+import { HelpIcon } from "@/components/icons/HelpIcon";
+import { LockIcon } from "@/components/icons/LockIcon";
+import { PrivacyIcon } from "@/components/icons/PrivacyIcon";
 
 const settingNavs = [
   {

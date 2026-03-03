@@ -1,7 +1,9 @@
 import { Response, NextFunction } from "express";
 import { body, param, query, validationResult } from "express-validator";
+import path from "path";
+import { unlink } from "fs";
 import sanitizeHtml from "sanitize-html";
-import { CustomRequest } from "../../types/req.type";
+import { getUserById } from "@/services/authService";
 import {
   countPosts,
   createImage,
@@ -12,30 +14,15 @@ import {
   getPostByIdWithRelation,
   getPostsByInfinite,
   updatePost,
-} from "../../services/postService";
-import { checkFile, checkPostById } from "../../utils/check";
-import path from "path";
-import { unlink } from "fs";
-import { errorCode } from "../../config/errorCode";
-import { getUserById } from "../../services/authService";
-import { checkUserIfNotExit } from "../../utils/auth";
-import queue from "../../job/queues/queue";
-import { reqBodyErrorFn } from "../../utils/utilFunction/reqBodyError";
-import { UserType } from "../../types/user.type";
-import { PostType } from "../../types/post.type";
-
-// export const getAllPostsController = (
-//   req: CustomRequest,
-//   res: Response,
-//   next: NextFunction
-// ) => {
-//   const userId = req.userId;
-
-//   res.status(200).json({
-//     userId,
-//     message: "All Posts.",
-//   });
-// };
+} from "@/services/postService";
+import queue from "@/job/queues/queue";
+import { checkFile, checkPostById } from "@/utils/check";
+import { errorCode } from "@/config/errorCode";
+import { checkUserIfNotExit } from "@/utils/auth";
+import { reqBodyErrorFn } from "@/utils/utilFunction/reqBodyError";
+import { CustomRequest } from "@/types/req.type";
+import { UserType } from "@/types/user.type";
+import { PostType } from "@/types/post.type";
 
 export const createPostController = [
   body("title")
@@ -52,11 +39,9 @@ export const createPostController = [
     .withMessage("Your content does not match."),
   async (req: CustomRequest, res: Response, next: NextFunction) => {
     if (reqBodyErrorFn(req, next)) return;
-
     const userId = req.userId as string;
     const { title, content } = req.body;
     const images = req.files;
-
     checkFile(req.files);
 
     const createdPost = await createPost({

@@ -5,7 +5,7 @@
   "module": "commonjs",
   "scripts": {
     "test": "jest",
-    "dev": "nodemon src/index.ts",
+    "dev": "nodemon --exec ts-node -r tsconfig-paths/register src/index.ts",
     "work": "nodemon src/job/workers/worker.ts",
     "build": "tsx -p .",
     "start": "node dist/index.js"
@@ -15,7 +15,7 @@
   "description": "",
   "dependencies": {
     "@prisma/adapter-pg": "^7.1.0",
-    "@prisma/client": "6.19",
+    "@prisma/client": "^7.4.0",
     "@types/cookie-parser": "^1.4.9",
     "@types/cors": "^2.8.19",
     "@types/morgan": "^1.9.10",
@@ -56,10 +56,11 @@
     "@types/supertest": "^6.0.3",
     "jest": "^30.0.5",
     "jest-environment-node": "^30.0.5",
-    "prisma": "6.19",
+    "prisma": "^7.4.0",
     "supertest": "^7.1.4",
     "ts-jest": "^29.4.1",
     "ts-node": "^10.9.2",
+    "tsconfig-paths": "^4.2.0",
     "tsx": "^4.21.0",
     "typescript": "^5.9.3"
   },

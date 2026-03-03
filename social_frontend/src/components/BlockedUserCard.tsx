@@ -1,9 +1,9 @@
-import { BlockedUserIcon } from "./icons/BlockedUserIcon";
-import Profile from "./Profile";
-import Button from "./Button";
+import { useUnblockUser } from "@/hooks/unblockFriend";
+import Profile from "@/components/Profile";
+import Button from "@/components/Button";
+import DialogBox from "@/components/DialogBox";
 import type { UserType } from "@/types/user.type";
-import DialogBox from "./DialogBox";
-import { useUnblockUser } from "../hooks/unblockFriend";
+import { BlockedUserIcon } from "./icons/BlockedUserIcon";
 
 type BlockedUserCardProps = {
   data: UserType[];

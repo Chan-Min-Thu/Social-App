@@ -1,20 +1,19 @@
 import { Response, NextFunction } from "express";
 import { body, param } from "express-validator";
 import sanitizeHtml from "sanitize-html";
-import { CustomRequest } from "../../types/req.type";
-import { errorCode } from "../../config/errorCode";
-import { getPostById } from "../../services/postService";
+import { checkCommentIfNotExit, checkPostById } from "@/utils/check";
+import { reqBodyErrorFn } from "@/utils/utilFunction/reqBodyError";
+import { errorCode } from "@/config/errorCode";
+import { getPostById } from "@/services/postService";
 import {
   createComment,
   deleteComment,
   getCommentById,
   updateComment,
-} from "../../services/commentService";
-import { checkCommentIfNotExit, checkPostById } from "../../utils/check";
-import { reqBodyErrorFn } from "../../utils/utilFunction/reqBodyError";
-import { PostType } from "../../types/post.type";
-import { CommentType } from "../../types/comment.type";
-import { crossOriginOpenerPolicy } from "helmet";
+} from "@/services/commentService";
+import { CustomRequest } from "@/types/req.type";
+import { PostType } from "@/types/post.type";
+import { CommentType } from "@/types/comment.type";
 
 export const createCommentController = [
   body("content")

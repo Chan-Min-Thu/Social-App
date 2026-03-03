@@ -1,6 +1,5 @@
-import { skip } from "node:test";
 import { prisma as PrismaClient } from "../lib/prisma";
-import { PostType, UpdatedPost } from "../types/post.type";
+import { PostType } from "@/types/post.type";
 
 const prisma = PrismaClient.$extends({
   result: {

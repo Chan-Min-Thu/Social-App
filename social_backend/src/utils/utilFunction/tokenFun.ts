@@ -1,5 +1,5 @@
 import jwt from "jsonwebtoken";
-import { TokenOptionType } from "../../types/general.type";
+import { TokenOptionType } from "@/types/general.type";
 
 type TokenInputType = { id: string; email: string };
 

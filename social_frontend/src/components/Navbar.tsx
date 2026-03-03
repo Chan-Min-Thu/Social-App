@@ -1,11 +1,10 @@
 import { Link } from "react-router";
-import ToggleMode from "./ToggleMode";
 import { BellIcon, HamburgerMenuIcon } from "@radix-ui/react-icons";
-import Drawer from "./Drawer";
-import Button from "./Button";
-import p1 from "../assets/no-profile.png";
-import imageUrl from "../config/imageUrl";
-import ProfileCircle from "./ProfileCircle";
+import { getProfileImageUrl } from "@/utils/profileUrl";
+import ToggleMode from "@/components/ToggleMode";
+import Drawer from "@/components/Drawer";
+import Button from "@/components/Button";
+import ProfileCircle from "@/components/ProfileCircle";
 
 interface NavbarProps {
   user?: {
@@ -16,9 +15,7 @@ interface NavbarProps {
   };
 }
 export default function Navbar({ user }: NavbarProps) {
-  const profileUrl = user?.avatarUrl?.startsWith("https")
-    ? user.avatarUrl
-    : imageUrl + user?.avatarUrl;
+  const profileUrl = getProfileImageUrl(user?.avatarUrl ?? null) 
   return (
     <div className="navbar bg-base-200 shadow-sm px-4 md:px-20 sticky top-0 z-50">
       <div className="flex-1 ml-2">

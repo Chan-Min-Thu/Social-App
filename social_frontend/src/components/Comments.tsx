@@ -1,10 +1,10 @@
-import { createComment, queryClient } from "../api/query";
-import type { CommentType } from "../types/comment.type";
-import { useMutation } from "@tanstack/react-query";
 import { useState } from "react";
-import CommentBox from "./CommentBox";
-import CommentForm from "./CommentForm";
 import { useLocation } from "react-router";
+import { useMutation } from "@tanstack/react-query";
+import { createComment, queryClient } from "@/api/query";
+import type { CommentType } from "@/types/comment.type";
+import CommentBox from "@/components/CommentBox";
+import CommentForm from "@/components/CommentForm";
 
 type CommentPropType = {
   comments: CommentType[];

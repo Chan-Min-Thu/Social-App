@@ -1,6 +1,6 @@
 import { Request, NextFunction } from "express";
 import { validationResult } from "express-validator";
-import { errorCode } from "../../config/errorCode";
+import { errorCode } from "@/config/errorCode";
 
 export const reqBodyErrorFn = (req: Request, next: NextFunction) => {
   const errors = validationResult(req).array({ onlyFirstError: true });

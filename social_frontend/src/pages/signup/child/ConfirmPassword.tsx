@@ -1,14 +1,14 @@
 import { useState } from "react";
-import { useForm } from "react-hook-form";
 import { Link, useActionData, useNavigation, useSubmit } from "react-router";
+import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
   EyeClosedIcon,
   EyeOpenIcon,
   LockClosedIcon,
 } from "@radix-ui/react-icons";
-import { passwordSchema } from "../../../utils/schema/validationSchemas";
-import Button from "../../../components/Button";
+import { passwordSchema } from "@/utils/schema/validationSchemas";
+import Button from "@/components/Button";
 
 export default function ConfirmPassword() {
   const [visible, setVisible] = useState({ password: false, confirm: false });

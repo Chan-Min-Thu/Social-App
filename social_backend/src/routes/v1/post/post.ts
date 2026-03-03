@@ -1,12 +1,12 @@
 import express from "express";
+import { uploadMemory } from "@/middlewares/uploadFile";
 import {
   createPostController,
   updatePostController,
   deletePostController,
   getPostByIdController,
   getPostByInfiniteScrollController,
-} from "../../../controllers/post/postController";
-import { uploadMemory } from "../../../middlewares/uploadFile";
+} from "@/controllers/post/postController";
 
 const router = express.Router();
 

@@ -1,15 +1,15 @@
-import { useForm } from "react-hook-form";
 import { useState } from "react";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { authSchema } from "../../utils/schema/authSchma";
+import { Link, useSubmit, useNavigation, useActionData } from "react-router";
+import { useForm } from "react-hook-form";
 import {
   EnvelopeClosedIcon,
   EyeClosedIcon,
   LockClosedIcon,
   EyeOpenIcon,
 } from "@radix-ui/react-icons";
-import { Link, useSubmit, useNavigation, useActionData } from "react-router";
-import Button from "../../components/Button";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { authSchema } from "@/utils/schema/authSchma";
+import Button from "@/components/Button";
 
 export default function Login() {
   const [passHidden, setPassHidden] = useState(false);

@@ -1,5 +1,5 @@
 import { type LoaderFunction } from "react-router";
-import api from "../../api/index";
+import api from "@/api/index";
 
 export const postLoader: LoaderFunction = async () => {
   try {

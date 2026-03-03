@@ -36,3 +36,8 @@ export type CreateBlockType ={
   friendId:string;
   status?:string;
 }
+
+export type RequestFriendType = {
+  id:string;
+  profile:UserType;
+}

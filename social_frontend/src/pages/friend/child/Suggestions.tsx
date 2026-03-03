@@ -1,9 +1,10 @@
 import { useOutletContext } from "react-router";
 import type { UserType } from "@/types/user.type";
-import Button from "../../../components/Button";
-import Profile from "../../../components/Profile";
-import type { ContextType } from "./FriendLayout";
-import { useAddFriend } from "../../../hooks/acceptRequestFriend";
+import { useAddFriend } from "@/hooks/acceptRequestFriend";
+import type { ContextType } from "@/pages/friend/child/FriendLayout";
+import Button from "@/components/Button";
+import Profile from "@/components/Profile";
+import imageUrl from "@/config/imageUrl";
 
 export default function Suggestions() {
   const { data } = useOutletContext<ContextType>();
@@ -21,7 +22,7 @@ export default function Suggestions() {
             data?.map((data: UserType) => (
               <div key={data.id} className="flex justify-between">
                 <Profile
-                  imageUrl={data.avatarUrl}
+                  imageUrl={data.avatarUrl.startsWith("http") ? data.avatarUrl : (imageUrl + data.avatarUrl)}
                   name={data.username}
                   status="Suggestions Friends."
                 />

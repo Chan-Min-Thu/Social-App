@@ -1,8 +1,8 @@
-import { redirect, type ActionFunctionArgs } from "react-router";
-import api, { authApi } from "../../api/index";
 import { AxiosError } from "axios";
-import useAuthStore, { SignUpStatus } from "../../store/authStore";
-import useUserStore from "../../store/userStore";
+import { redirect, type ActionFunctionArgs } from "react-router";
+import api, { authApi } from "@/api/index";
+import useAuthStore, { SignUpStatus } from "@/store/authStore";
+import useUserStore from "@/store/userStore";
 
 export const loginAction = async ({ request }: ActionFunctionArgs) => {
   const formData = await request.formData();

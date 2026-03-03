@@ -1,4 +1,4 @@
-import p1 from "../assets/no-profile.png";
+import p1 from "@/assets/no-profile.png";
 
 type ProfileCircleType = {
   imageUrl: string | null;

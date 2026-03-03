@@ -1,18 +1,7 @@
 import { Response, NextFunction } from "express";
+import { body, param } from "express-validator";
 import { unlink } from "fs";
 import path from "path";
-import { body, param } from "express-validator";
-
-import queue from "../../job/queues/queue";
-import {
-  coverQueueOptions,
-  imageQueueOptions,
-  profileQueueOptions,
-} from "../../config/queueData";
-import { errorCode } from "../../config/errorCode";
-import { CustomRequest } from "../../types/req.type";
-import { reqBodyErrorFn } from "../../utils/utilFunction/reqBodyError";
-import { checkAlreadyProfile, checkProfileIfNotExit } from "../../utils/check";
 import {
   findProfileById,
   findProfileByUserId,
@@ -20,11 +9,21 @@ import {
   updateProfileImage,
   createProfile,
   updateProfile,
-} from "../../services/profileService";
-import { findPostsByUserId } from "../../services/postService";
-import { findFriendsByUserId } from "../../services/friendService";
-import { checkUserExit } from "../../utils/auth";
-import { updateUser } from "../../services/authService";
+} from "@/services/profileService";
+import { findPostsByUserId } from "@/services/postService";
+import { findFriendsByUserId } from "@/services/friendService";
+import { updateUser } from "@/services/authService";
+import queue from "@/job/queues/queue";
+import {
+  coverQueueOptions,
+  imageQueueOptions,
+  profileQueueOptions,
+} from "@/config/queueData";
+import { errorCode } from "@/config/errorCode";
+import { reqBodyErrorFn } from "@/utils/utilFunction/reqBodyError";
+import { checkAlreadyProfile, checkProfileIfNotExit } from "@/utils/check";
+import { CustomRequest } from "@/types/req.type";
+
 
 export const createProfileController = [
   body("bio")

@@ -1,17 +1,9 @@
-/*
-import { useEffect, useState } from "react";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import { postSchema } from "../utils/schema/postSchema";
-import ImagesInput,
-import { useSubmit } from "react-router";
-*/
-import { type ImageProps } from "./ImagesInput";
 import { Cross1Icon } from "@radix-ui/react-icons";
-import Button from "./Button";
-import CreatePost from "./CreatePost";
-import CreateProfile from "./CreateProfile";
-import UpdateProfile from "./UpdateProfile";
+import { type ImageProps } from "@/components/ImagesInput";
+import Button from "@/components/Button";
+import CreatePost from "@/components/CreatePost";
+import CreateProfile from "@/components/CreateProfile";
+import UpdateProfile from "@/components/UpdateProfile";
 import type { UserInfoType } from "@/types/user.type";
 
 interface DialogProps {

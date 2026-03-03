@@ -1,4 +1,4 @@
-import { GroupPersonIcon } from "./icons/GroupPersonIcon";
+import { GroupPersonIcon } from "@/components/icons/GroupPersonIcon";
 
 export default function FriendHeader() {
   return (

@@ -1,8 +1,8 @@
-import { useQuery } from "@tanstack/react-query";
 import { Outlet } from "react-router";
-import Navbar from "../../components/Navbar";
-import FooterMenu from "../../components/FooterMenu";
-import { userQuery } from "../../api/query";
+import { useQuery } from "@tanstack/react-query";
+import { userQuery } from "@/api/query";
+import Navbar from "@/components/Navbar";
+import FooterMenu from "@/components/FooterMenu";
 
 export default function Applayout() {
   const { data } = useQuery(userQuery());

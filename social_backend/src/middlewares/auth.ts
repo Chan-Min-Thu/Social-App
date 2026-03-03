@@ -1,17 +1,15 @@
-import { getUserById, updateUser } from "./../services/authService";
 import { Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
-import { CustomRequest } from "../types/req.type";
-import { errorCode } from "../config/errorCode";
-import { checkUserIfNotExit } from "../utils/auth";
-import { errorFun } from "../utils/utilFunction/errorFun";
+import { getUserById, updateUser } from "@/services/authService";
+import { errorCode } from "@/config/errorCode";
+import { checkUserIfNotExit } from "@/utils/auth";
+import { errorFun } from "@/utils/utilFunction/errorFun";
 import {
   accessTokenOptions,
   refreshTokenOptions,
-  tokenFun,
-} from "../utils/utilFunction/tokenFun";
-import { UserType } from "../types/user.type";
-import { emit } from "node:process";
+} from "@/utils/utilFunction/tokenFun";
+import { CustomRequest } from "@/types/req.type";
+import { UserType } from "@/types/user.type";
 
 export const auth = async (
   req: CustomRequest,

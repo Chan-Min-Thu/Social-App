@@ -2,17 +2,19 @@ import { useOutletContext } from "react-router";
 import {
   useAcceptFriend,
   useRemoveFriendship,
-} from "../../../hooks/acceptRequestFriend";
-import Button from "../../../components/Button";
-import Profile from "../../../components/Profile";
-import DialogBox from "../../../components/DialogBox";
-import type { ContextType } from "./FriendLayout";
-import type { FriendType } from "@/types/friend.type";
+} from "@/hooks/acceptRequestFriend";
+import type { ContextType } from "@/pages/friend/child/FriendLayout";
+import Button from "@/components/Button";
+import Profile from "@/components/Profile";
+import DialogBox from "@/components/DialogBox";
+import { getProfileImageUrl } from "@/utils/profileUrl";
+import type { RequestFriendType } from "@/types/user.type";
 
 export default function Requests() {
   const { data } = useOutletContext<ContextType>();
   const mutation = useAcceptFriend();
   const { mutate: removeMutation } = useRemoveFriendship("requested");
+  console.log(data);
   return (
     <div className="w-full my-4">
       <ul className="list bg-base-100 rounded-box shadow-md m-2">
@@ -21,9 +23,9 @@ export default function Requests() {
         </li>
         <li className="list-row flex flex-col">
           {data?.length === 0 ? (
-            <div>No Friend Requests</div>
-          ) : (
-            data?.map((data: FriendType) => (
+              <div>No Friend Requests</div>
+            ) : (
+              (data as unknown as RequestFriendType[])?.map((data:RequestFriendType) => (
               <div>
                 <DialogBox
                   onClick={() => removeMutation(data.profile.id)}
@@ -34,7 +36,7 @@ export default function Requests() {
                   className="flex justify-between w-full"
                 >
                   <Profile
-                    imageUrl={data.profile.avatarUrl}
+                    imageUrl={getProfileImageUrl(data.profile.avatarUrl)}
                     name={data.profile.username}
                     status="Request to you."
                   />

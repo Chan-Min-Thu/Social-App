@@ -1,9 +1,9 @@
-import type { CommentType } from "@/types/comment.type";
-import { HeartIcon } from "@radix-ui/react-icons";
 import { type FC } from "react";
-import Button from "./Button";
-import ProfileCircle from "./ProfileCircle";
-import imageUrl from "../config/imageUrl";
+import { HeartIcon } from "@radix-ui/react-icons";
+import { getProfileImageUrl } from "@/utils/profileUrl";
+import Button from "@/components/Button";
+import ProfileCircle from "@/components/ProfileCircle";
+import type { CommentType } from "@/types/comment.type";
 
 type CommentBoxProps = {
   comment: CommentType;
@@ -12,9 +12,7 @@ type CommentBoxProps = {
 
 const CommentBox: FC<CommentBoxProps> = ({ comment, setReply }) => {
   const profileUrl = comment.author && (comment.author.avatarUrl as string);
-  const profilePath = profileUrl?.startsWith("https")
-    ? profileUrl
-    : imageUrl + profileUrl;
+  const profilePath = getProfileImageUrl(profileUrl || null) 
   return (
     <div className="flex gap-2 w-full flex-col">
       <div className="flex gap-2">

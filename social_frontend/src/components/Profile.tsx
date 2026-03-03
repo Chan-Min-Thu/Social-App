@@ -1,8 +1,8 @@
 import type { FC } from "react";
-import ProfileCircle from "./ProfileCircle";
+import ProfileCircle from "@/components/ProfileCircle";
 
 type ProfileProps = {
-  imageUrl: string;
+  imageUrl: string | null;
   name?: string;
   status?: string;
 };

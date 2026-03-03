@@ -1,8 +1,8 @@
-import { PrismaClient, Prisma } from "../generated/prisma/client";
 import { PrismaPg } from "@prisma/adapter-pg";
 import bcrypt from "bcrypt";
 import { faker } from "@faker-js/faker";
 import "dotenv/config";
+import { PrismaClient, Prisma } from "../generated/prisma/client";
 import { Post,Status,User } from "../generated/prisma/client";
 
 const connectionString = `${process.env.DATABASE_URL}`;

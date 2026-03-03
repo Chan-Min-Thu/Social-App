@@ -24,9 +24,8 @@ const MyProfile = () => {
         friendLength={friends?.length ?? 0}
         isFriendProfile={false}
       />
-      {info?.bio ? <ProfileInfo info={info} id={id} isFriendProfile={false}/> : <EmptyProfileCard isFriendProfile={false} />}
-      {friends.length ? <FriendsCard friends={friends} isFriendProfile={false}/> : <EmptyFriendCard />}
-
+      {info?.bio ? <ProfileInfo info={info} id={id} isFriendProfile={false} /> : <EmptyProfileCard isFriendProfile={false} />}
+      {friends.length ? <FriendsCard friends={friends} isFriendProfile={false} /> : <EmptyFriendCard />}
       <h1 className="text-xl font-bold my-2">Posts</h1>
       {posts.length && <Post posts={posts} />}
     </div>

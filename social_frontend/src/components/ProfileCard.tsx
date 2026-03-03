@@ -23,7 +23,6 @@ const ProfileCard = ({
 
   const avatarUrlPath = getProfileImageUrl(avatarUrl);
   const coverImageUrl = imageUrl  + coverUrl;
-
   return (
     <div className="card bg-base-100 w-full h-full   shadow-sm relative">
       <figure className="lg:h-64 h-64 w-full relative">

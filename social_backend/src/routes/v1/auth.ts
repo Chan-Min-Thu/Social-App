@@ -7,8 +7,8 @@ import {
   logout,
   authCheck,
   updatePassword,
-} from "../../controllers/authController";
-import { auth } from "../../middlewares/auth";
+} from "@/controllers/authController";
+import { auth } from "@/middlewares/auth";
 
 const router = express.Router();
 

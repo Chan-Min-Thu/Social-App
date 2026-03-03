@@ -1,8 +1,8 @@
 import type { FC } from "react";
 import { useNavigate } from "react-router";
-import Button from "./Button";
-import DialogBox from "./DialogBox";
-import BlockDialogBox from "./BlockDialogBox";
+import Button from "@/components/Button";
+import DialogBox from "@/components/DialogBox";
+import BlockDialogBox from "@/components/BlockDialogBox";
 
 type DropDownProps = {
   onRemoveFriend: () => void;

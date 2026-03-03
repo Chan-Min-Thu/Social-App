@@ -1,7 +1,7 @@
 import { AxiosError } from "axios";
-import { authApi } from "../../api/index";
 import { redirect } from "react-router";
-import useAuthStore, { SignUpStatus } from "../../store/authStore";
+import { authApi } from "@/api/index";
+import useAuthStore, { SignUpStatus } from "@/store/authStore";
 
 export const loginLoader = async () => {
   try {

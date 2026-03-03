@@ -1,6 +1,5 @@
-import { ComfirmOtpType } from "./../types/otp.type";
 import { prisma } from "../lib/prisma";
-import { CreateOtpType } from "../types/otp.type";
+import { CreateOtpType } from "@/types/otp.type";
 
 export const getUserByEmail = (email: string) => {
   if (email) {

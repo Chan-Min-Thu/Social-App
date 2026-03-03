@@ -1,6 +1,6 @@
 import { type FC } from "react";
-import type { PostType } from "../../../types/post.type";
-import PostCard from "../../../components/PostCard";
+import type { PostType } from "@/types/post.type";
+import PostCard from "@/components/PostCard";
 
 type PostPropsType = {
   posts: PostType[];

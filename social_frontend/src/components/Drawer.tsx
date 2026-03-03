@@ -1,5 +1,5 @@
 import { BellIcon } from "@radix-ui/react-icons";
-import Button from "./Button";
+import Button from "@/components/Button";
 
 export default function Drawer() {
   return (

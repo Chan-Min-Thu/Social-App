@@ -1,6 +1,6 @@
+import { useState } from "react";
 import { NavLink } from "react-router";
 import { GearIcon, HomeIcon, PersonIcon } from "@radix-ui/react-icons";
-import { useState } from "react";
 
 export default function FooterMenu() {
   const [onMuserHover, setOnMouseHover] = useState(false);

@@ -1,8 +1,8 @@
-import { errorCode } from "../config/errorCode";
-import { CommentType } from "../types/comment.type";
-import { FriendType } from "../types/friend.type";
-import { PostType } from "../types/post.type";
-import { ReactionType } from "../types/reaction.type";
+import { errorCode } from "@/config/errorCode";
+import { CommentType } from "@/types/comment.type";
+import { FriendType } from "@/types/friend.type";
+import { PostType } from "@/types/post.type";
+import { ReactionType } from "@/types/reaction.type";
 
 export const checkFile = (file: any) => {
   if (!file) {

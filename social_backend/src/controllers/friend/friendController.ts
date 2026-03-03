@@ -1,4 +1,6 @@
-import { FriendType } from "./../../types/friend.type";
+import { NextFunction, Response } from "express";
+import { body, param } from "express-validator";
+import { getUserById } from "@/services/authService";
 import {
   acceptedFriend,
   blockYourAccount,
@@ -9,18 +11,10 @@ import {
   findFriendshipWithThisId,
   getAcceptedAndPendingFriends,
   getBlockUser,
-  getFriendRequest,
   getFriends,
-  getFriendsAcceptedAndPending,
   getOtherUser,
   getSentFriends,
-  profileWithFriend,
-} from "./../../services/friendService";
-import { NextFunction, Response } from "express";
-import { body, param } from "express-validator";
-import { CustomRequest } from "../../types/req.type";
-import { errorCode } from "../../config/errorCode";
-import { getUserById } from "../../services/authService";
+} from "@/services/friendService";
 import {
   requestedFriend,
   updatedFriend,
@@ -30,22 +24,23 @@ import {
   getRequestedFriends,
   alreadyAcceptedFriend,
   alreadyRequestToBeFriend,
-} from "../../services/friendService";
-import { checkUserIfNotExit } from "../../utils/auth";
+} from "@/services/friendService";
+import { findProfileByUserId } from "@/services/profileService";
+import { findPostsByUserId } from "@/services/postService";
+import { errorCode } from "@/config/errorCode";
+import { checkUserIfNotExit } from "@/utils/auth";
 import {
   checkIsFriend,
   checkAlreadyFriend,
   checkBlockRow,
   checkAlreadyRequest,
-} from "../../utils/check";
-import { reqBodyErrorFn } from "../../utils/utilFunction/reqBodyError";
-import {
-  findProfileByUserId,
-  findUserById,
-} from "../../services/profileService";
-import { UserType } from "../../types/user.type";
-import { errorFun } from "../../utils/utilFunction/errorFun";
-import { findPostsByUserId } from "../../services/postService";
+} from "@/utils/check";
+import { reqBodyErrorFn } from "@/utils/utilFunction/reqBodyError";
+import { errorFun } from "@/utils/utilFunction/errorFun";
+import { CustomRequest } from "@/types/req.type";
+import { UserType } from "@/types/user.type";
+import { FriendType } from "@/types/friend.type";
+
 
 export const requestFriendController = [
   body("addresseeId").isUUID().withMessage("AddresseeId was wrong."),

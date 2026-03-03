@@ -1,6 +1,6 @@
 import { Form } from "react-router";
-import Button from "./Button";
-import SettingNavCard from "./SettingNavCard";
+import Button from "@/components/Button";
+import SettingNavCard from "@/components/SettingNavCard";
 
 const SettingCard = () => {
   return (

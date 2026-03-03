@@ -1,5 +1,7 @@
-import type { UserType } from "@/types/user.type";
 import { Link } from "react-router";
+import type { UserType } from "@/types/user.type";
+import { getProfileImageUrl } from "@/utils/profileUrl";
+import p1 from "@/assets/no-cover.png";
 
 type FriendsCardProps = {
   friends: UserType[];
@@ -26,7 +28,7 @@ const FriendsCard = ({ friends, isFriendProfile }: FriendsCardProps) => {
             >
               <div className="avatar">
                 <div className="w-24 rounded-full">
-                  <img src={fri.avatarUrl} />
+                  <img src={getProfileImageUrl(fri.avatarUrl) || p1} />
                 </div>
               </div>
               <h1>{fri.username}</h1>

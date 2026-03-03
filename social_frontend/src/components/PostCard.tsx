@@ -1,19 +1,19 @@
 import { useEffect, useState, type FC } from "react";
+import { useLocation, useParams } from "react-router";
+import { formatDistanceToNow } from "date-fns";
 import {
   ChatBubbleIcon,
   HeartFilledIcon,
   Share1Icon,
   HeartIcon,
 } from "@radix-ui/react-icons";
-import type { ImageType, PostType } from "../types/post.type";
-import { formatDistanceToNow } from "date-fns";
-import Comments from "./Comments";
-import { useCreateReaction } from "../hooks/createReaction";
-import { useRemoveReaction } from "../hooks/deleteReaction";
-import Button from "./Button";
-import imageUrl from "../config/imageUrl";
-import { useLocation, useParams } from "react-router";
-import ProfileCircle from "./ProfileCircle";
+import { useCreateReaction } from "@/hooks/createReaction";
+import { useRemoveReaction } from "@/hooks/deleteReaction";
+import imageUrl from "@/config/imageUrl";
+import Comments from "@/components/Comments";
+import Button from "@/components/Button";
+import ProfileCircle from "@/components/ProfileCircle";
+import type { ImageType, PostType } from "@/types/post.type";
 
 type PostCardType = {
   post: PostType;

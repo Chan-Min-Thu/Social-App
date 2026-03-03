@@ -1,11 +1,11 @@
-import { postSchema } from "../utils/schema/postSchema";
-import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
 import { useSubmit } from "react-router";
-import type { ImageProps } from "./ImagesInput";
-import ImagesInput from "./ImagesInput";
-import Button from "./Button";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { postSchema } from "@/utils/schema/postSchema";
+import type { ImageProps } from "@/components/ImagesInput";
+import ImagesInput from "@/components/ImagesInput";
+import Button from "@/components/Button";
 
 type CreatePostProps = {
   image: ImageProps[] | [];

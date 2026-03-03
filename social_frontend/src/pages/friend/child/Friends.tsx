@@ -1,6 +1,6 @@
 import { useOutletContext } from "react-router";
-import FriendCard from "./FriendCard";
-import type { ContextType } from "./FriendLayout";
+import type { ContextType } from "@/pages/friend/child/FriendLayout";
+import FriendCard from "@/pages/friend/child/FriendCard";
 
 export default function Friends() {
   const { data } = useOutletContext<ContextType>();

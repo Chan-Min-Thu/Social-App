@@ -1,26 +1,26 @@
 import { NextFunction, Response } from "express";
-import { body, param, validationResult } from "express-validator";
-import { CustomRequest } from "../../types/req.type";
-import { errorCode } from "../../config/errorCode";
-import { getUserById } from "../../services/authService";
-import { getPostById } from "../../services/postService";
-import {
-  checkPostById,
-  checkReactionById,
-  checkReactionExit,
-} from "../../utils/check";
-import { checkUserIfNotExit } from "./../../utils/auth";
+import { body, param } from "express-validator";
+import { getUserById } from "@/services/authService";
 import {
   createReaction,
   deleteReaction,
   getReactionById,
   getReactionByUserIdAndPostId,
   updateReaction,
-} from "../../services/reactionService";
-import { reqBodyErrorFn } from "../../utils/utilFunction/reqBodyError";
-import { UserType } from "../../types/user.type";
-import { PostType } from "../../types/post.type";
-import { ReactionType } from "../../types/reaction.type";
+} from "@/services/reactionService";
+import { getPostById } from "@/services/postService";
+import { errorCode } from "@/config/errorCode";
+import {
+  checkPostById,
+  checkReactionById,
+  checkReactionExit,
+} from "@/utils/check";
+import { checkUserIfNotExit } from "@/utils/auth";
+import { reqBodyErrorFn } from "@/utils/utilFunction/reqBodyError";
+import { CustomRequest } from "@/types/req.type";
+import { UserType } from "@/types/user.type";
+import { PostType } from "@/types/post.type";
+import { ReactionType } from "@/types/reaction.type";
 
 const reaction = {
   LOVE: "LOVE",

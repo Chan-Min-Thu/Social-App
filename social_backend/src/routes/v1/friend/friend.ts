@@ -9,7 +9,7 @@ import {
   unblockFriendController,
   getBlockUserController,
   // getRequestedFriendsController,
-} from "../../../controllers/friend/friendController";
+} from "@/controllers/friend/friendController";
 
 const router = express.Router();
 

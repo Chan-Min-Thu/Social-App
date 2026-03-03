@@ -1,15 +1,13 @@
 import { useEffect, type FC } from "react";
-// import { useLoaderData } from "react-router";
-import CreatePost from "./child/CreatePost";
-import Post from "./child/Post";
 import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
-import { postInfiniteQuery, userQuery } from "../../api/query";
-import HydrateFallBack from "../../components/HydrateFallBack";
 import { useInView } from "react-intersection-observer";
+import { postInfiniteQuery, userQuery } from "@/api/query";
+import CreatePost from "@/pages/post/child/CreatePost";
+import Post from "@/pages/post/child/Post";
+import HydrateFallBack from "@/components/HydrateFallBack";
 import type { PostType } from "@/types/post.type";
 
 const PostLayout: FC = () => {
-  // const { posts } = useLoaderData();
   const { ref, inView } = useInView({ threshold: 0 });
   const {
     data,

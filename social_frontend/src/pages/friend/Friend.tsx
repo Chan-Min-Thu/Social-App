@@ -1,8 +1,8 @@
 import { NavLink, useLocation } from "react-router";
 import { useQuery } from "@tanstack/react-query";
-import { fetchFriend } from "../../api/query";
-import FriendHeader from "../../components/FriendHeader";
-import FriendLayout from "./child/FriendLayout";
+import { fetchFriend } from "@/api/query";
+import FriendLayout from "@/pages/friend/child/FriendLayout";
+import FriendHeader from "@/components/FriendHeader";
 
 type friendNav = {
   to: string;

@@ -1,12 +1,12 @@
 import { useState } from "react";
-import { LockIcon } from "./icons/LockIcon";
+import { useNavigation } from "react-router";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useNavigation } from "react-router";
-import { updatePasswordSchema } from "../utils/schema/validationSchemas";
 import { EyeClosedIcon, EyeOpenIcon } from "@radix-ui/react-icons";
-import Button from "./Button";
-import { useUpdatePassword } from "../hooks/updatePassword";
+import { useUpdatePassword } from "@/hooks/updatePassword";
+import { updatePasswordSchema } from "@/utils/schema/validationSchemas";
+import { LockIcon } from "@/components/icons/LockIcon";
+import Button from "@/components/Button";
 
 const ChangePasswordForm = () => {
   const [visible, setVisible] = useState({

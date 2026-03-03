@@ -1,9 +1,9 @@
-import type { CommentType } from "@/types/comment.type";
-import { commentSchema } from "../utils/schema/commentSchema";
-import { zodResolver } from "@hookform/resolvers/zod";
 import type { FC } from "react";
 import { useForm } from "react-hook-form";
-import Button from "./Button";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { commentSchema } from "@/utils/schema/commentSchema";
+import Button from "@/components/Button";
+import type { CommentType } from "@/types/comment.type";
 
 type CommentFormPorps = {
   onSubmitHandler: (data: CommentType) => void;

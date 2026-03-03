@@ -1,8 +1,8 @@
-import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { profileInfoSchema } from "../utils/schema/ProfileInfoSchema";
-import { useCreateProfile, useUpdateProfile } from "../hooks/createUserInfo";
-import Button from "./Button";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { profileInfoSchema } from "@/utils/schema/ProfileInfoSchema";
+import { useUpdateProfile } from "@/hooks/createUserInfo";
+import Button from "@/components/Button";
 import type { UserInfoType } from "@/types/user.type";
 
 type UpdateProfileProps = {

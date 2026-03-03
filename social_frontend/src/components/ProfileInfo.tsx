@@ -1,9 +1,9 @@
 import type { UserInfoType } from "@/types/user.type";
-import Button from "./Button";
-import { PersonIcon } from "./icons/PersonIcon";
-import { LocationIcon } from "./icons/LocationIcon";
-import { CalendarIcon } from "./icons/CalendarIcon";
-import Dialog from "./Dialog";
+import { PersonIcon } from "@/components/icons/PersonIcon";
+import { LocationIcon } from "@/components/icons/LocationIcon";
+import { CalendarIcon } from "@/components/icons/CalendarIcon";
+import Button from "@/components/Button";
+import Dialog from "@/components/Dialog";
 
 type ProfileInfoProps = {
   info: UserInfoType;

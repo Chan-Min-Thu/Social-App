@@ -1,6 +1,6 @@
 import nodemailer from "nodemailer";
 import "dotenv/config";
-import { EmailData } from "../types/general.type";
+import { EmailData } from "@/types/general.type";
 // Create a test account or replace with real credentials.
 const transporter = nodemailer.createTransport({
   service: "gmail",

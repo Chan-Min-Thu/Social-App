@@ -1,6 +1,5 @@
 import { prisma } from "../lib/prisma";
-import { FriendType, ToCoupleFriend } from "../types/friend.type";
-import { userInfo } from "node:os";
+import { FriendType, ToCoupleFriend } from "@/types/friend.type";
 
 const optionProfile = {
   id: true,
@@ -191,6 +190,7 @@ export const getBlockUser = (userId: string) => {
     },
   });
 };
+
 export const getAcceptedAndPendingFriends = (userId: string) => {
   return prisma.friend.findMany({
     where: {

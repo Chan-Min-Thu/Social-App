@@ -1,16 +1,15 @@
+import { Link, useActionData, useNavigation, useSubmit } from "react-router";
+import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { EnvelopeClosedIcon } from "@radix-ui/react-icons";
-import { useForm } from "react-hook-form";
-import { Link, useActionData, useNavigation, useSubmit } from "react-router";
-import { emailSchema } from "../../../utils/schema/validationSchemas";
-import Button from "../../../components/Button";
+import { emailSchema } from "@/utils/schema/validationSchemas";
+import Button from "@/components/Button";
 
 export default function SignUp() {
   const submit = useSubmit();
   const {
     handleSubmit,
     register,
-    formState: { errors },
   } = useForm({
     resolver: zodResolver(emailSchema),
   });

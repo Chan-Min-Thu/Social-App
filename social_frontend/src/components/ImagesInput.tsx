@@ -1,7 +1,7 @@
 import React, { useRef } from "react";
-import { createPostIcons } from "../config/CreatePost";
 import { ImageIcon } from "@radix-ui/react-icons";
-import Button from "./Button";
+import { createPostIcons } from "@/config/CreatePost";
+import Button from "@/components/Button";
 
 interface ImageInputProps {
   setImage: React.Dispatch<React.SetStateAction<ImageProps[]>>;

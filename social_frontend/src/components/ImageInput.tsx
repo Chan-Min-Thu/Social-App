@@ -1,11 +1,12 @@
 import React, { useRef } from "react";
-import { createPostIcons } from "../config/CreatePost";
 import { CameraIcon } from "@radix-ui/react-icons";
-import Button from "./Button";
+import { createPostIcons } from "@/config/CreatePost";
 import {
   useUploadProfileImage,
   useUploadCoverImage,
-} from "../hooks/uploadImage";
+} from "@/hooks/uploadImage";
+import Button from "@/components/Button";
+
 
 type ImageInputProps = {
   type: "profile" | "cover";

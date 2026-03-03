@@ -6,47 +6,48 @@ import {
   otpAction,
   signUpAction,
   userProfileAction,
-} from "../router/action/authAction";
+} from "@/router/action/authAction";
 import {
   confirmLoader,
   loginLoader,
   otpLoader,
   userProfileLoader,
-} from "../router/loader/authLoader";
-import AppLayout from "../pages/home/Applayout";
-import Login from "../pages/login/Login";
-import SignupLayout from "../pages/signup/SignupLayout";
-import SignUp from "../pages/signup/child/SignUp";
-import VerifyOtp from "../pages/signup/child/VerifyOtp";
-import ConfirmPassword from "../pages/signup/child/ConfirmPassword";
-import Friend from "../pages/friend/Friend";
-import SettingLayout from "../pages/setting/SettingLayout";
-import PostLayout from "../pages/post/PostLayout";
-import Friends from "../pages/friend/child/Friends";
-import Requests from "../pages/friend/child/Requests";
-import Sent from "../pages/friend/child/Sent";
-import Suggestions from "../pages/friend/child/Suggestions";
-import ErrorBoundary from "../pages/ErrorBoundary";
-import { postAction } from "../router/action/postAction";
-import HydrateFallBack from "../components/HydrateFallBack";
-import MyProfile from "../pages/profile/child/MyProfile";
-import FriendProfile from "../pages/profile/child/FriendProfile";
-import ChangePassword from "../pages/setting/child/ChangePassword";
-import Setting from "../pages/setting/child/Setting";
-import BlockedUsers from "../pages/setting/child/BlockUsers";
-import ProfileLayout from "../pages/profile/ProfileLayout";
+} from "@/router/loader/authLoader";
+import AppLayout from "@/pages/home/Applayout";
+import Login from "@/pages/login/Login";
+import SignupLayout from "@/pages/signup/SignupLayout";
+import SignUp from "@/pages/signup/child/SignUp";
+import VerifyOtp from "@/pages/signup/child/VerifyOtp";
+import ConfirmPassword from "@/pages/signup/child/ConfirmPassword";
+import Friend from "@/pages/friend/Friend";
+import SettingLayout from "@/pages/setting/SettingLayout";
+import PostLayout from "@/pages/post/PostLayout";
+import Friends from "@/pages/friend/child/Friends";
+import Requests from "@/pages/friend/child/Requests";
+import Sent from "@/pages/friend/child/Sent";
+import Suggestions from "@/pages/friend/child/Suggestions";
+import ErrorBoundary from "@/pages/ErrorBoundary";
+import { postAction } from "@/router/action/postAction";
+import HydrateFallBack from "@/components/HydrateFallBack";
+import MyProfile from "@/pages/profile/child/MyProfile";
+import FriendProfile from "@/pages/profile/child/FriendProfile";
+import ChangePassword from "@/pages/setting/child/ChangePassword";
+import Setting from "@/pages/setting/child/Setting";
+import BlockedUsers from "@/pages/setting/child/BlockUsers";
+import ProfileLayout from "@/pages/profile/ProfileLayout";
 import UserProfile from "@/pages/signup/child/UserProfile";
+import { postLoader } from "@/router/loader/postLoader";
 
 const router = createBrowserRouter([
   {
     path: "/",
     Component: AppLayout,
     ErrorBoundary: ErrorBoundary,
-    // HydrateFallback: HydrateFallBack,
+
     children: [
       {
         index: true,
-        // loader: postLoader,
+        loader: postLoader,
         action: postAction,
         Component: PostLayout,
         HydrateFallback: HydrateFallBack,

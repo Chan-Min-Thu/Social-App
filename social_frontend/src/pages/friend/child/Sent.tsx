@@ -1,10 +1,11 @@
 import { useOutletContext } from "react-router";
-import Button from "../../../components/Button";
-import Profile from "../../../components/Profile";
-import type { ContextType } from "./FriendLayout";
-import type {SentFriendType} from "../../../types/user.type"
-import { useRemoveFriendship } from "../../../hooks/acceptRequestFriend";
-import DialogBox from "../../../components/DialogBox";
+import { useRemoveFriendship } from "@/hooks/acceptRequestFriend";
+import { getProfileImageUrl } from "@/utils/profileUrl";
+import type { ContextType } from "@/pages/friend/child/FriendLayout";
+import Button from "@/components/Button";
+import DialogBox from "@/components/DialogBox";
+import Profile from "@/components/Profile";
+import type {SentFriendType} from "@/types/user.type"
 
 
 export default function Sent() {
@@ -33,7 +34,7 @@ export default function Sent() {
                   className="flex justify-between w-full gap-3"
                 >
                   <Profile
-                    imageUrl={data.profile.avatarUrl}
+                    imageUrl={getProfileImageUrl(data.profile.avatarUrl)}
                     name={data.profile.username}
                     status="You sent as a friend."
                   />

@@ -1,6 +1,6 @@
-import Button from "./Button";
-import Dialog from "./Dialog";
-import { PersonIcon } from "./icons/PersonIcon";
+import Button from "@/components/Button";
+import Dialog from "@/components/Dialog";
+import { PersonIcon } from "@/components/icons/PersonIcon";
 
 type EmptyProfileCardProps = {
   isFriendProfile: boolean;

@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router";
-import Button from "./Button";
-import { GroupPersonIcon } from "./icons/GroupPersonIcon";
+import Button from "@/components/Button";
+import { GroupPersonIcon } from "@/components/icons/GroupPersonIcon";
 
 const EmptyFriendCard = () => {
   const navigate = useNavigate();

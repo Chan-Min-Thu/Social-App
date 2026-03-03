@@ -1,8 +1,8 @@
-import { fetchBlockedFriends } from "../../../api/query";
-import BlockedUserCard from "../../../components/BlockedUserCard";
-import { ChevronLeftIcon } from "@radix-ui/react-icons";
 import { Link } from "react-router";
 import { useQuery } from "@tanstack/react-query";
+import { ChevronLeftIcon } from "@radix-ui/react-icons";
+import { fetchBlockedFriends } from "@/api/query";
+import BlockedUserCard from "@/components/BlockedUserCard";
 
 const BlockUsers = () => {
   const { data: blockedUsers } = useQuery({

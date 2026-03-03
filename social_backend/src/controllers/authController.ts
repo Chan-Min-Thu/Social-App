@@ -1,8 +1,10 @@
 import { Request, Response, NextFunction } from "express";
+import { body, validationResult } from "express-validator";
 import moment from "moment";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import { body, validationResult } from "express-validator";
+import { Otp } from "../../generated/prisma/client";
+import { getUserById } from "@/services/authService";
 import {
   createOtp,
   getUserByEmail,
@@ -10,29 +12,25 @@ import {
   updateOtp,
   createUser,
   updateUser,
-} from "../services/authService";
+} from "@/services/authService";
+import queue from "@/job/queues/queue";
+import { errorCode } from "@/config/errorCode";
 import {
   checkOtpErrorIfInSameDate,
   checkOtpRowExit,
   checkUserExit,
   checkUserIfNotExit,
-} from "../utils/auth";
-import { getUserById } from "./../services/authService";
-import { generateOtp, generateToken } from "../utils/generate";
-import { sendEmail } from "../utils/email";
-// import { Otp, User } from "../../generated/prisma";
-import { isSameDate } from "../utils/utilFunction/sameDate";
+} from "@/utils/auth";
+import { generateOtp, generateToken } from "@/utils/generate";
+import { isSameDate } from "@/utils/utilFunction/sameDate";
+import { errorFun } from "@/utils/utilFunction/errorFun";
 import {
   accessTokenOptions,
   refreshTokenOptions,
   tokenFun,
-} from "../utils/utilFunction/tokenFun";
-import { errorCode } from "../config/errorCode";
-import queue from "../job/queues/queue";
-import { UserType } from "../types/user.type";
-import { errorFun } from "../utils/utilFunction/errorFun";
-import { CustomRequest } from "../types/req.type";
-import { Otp } from "../../generated/prisma/client";
+} from "@/utils/utilFunction/tokenFun";
+import { UserType } from "@/types/user.type";
+import { CustomRequest } from "@/types/req.type";
 
 /*
  1. ) Email validation

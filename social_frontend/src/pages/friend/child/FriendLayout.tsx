@@ -1,5 +1,5 @@
-import type { UserType } from "@/types/user.type";
 import { Outlet } from "react-router";
+import type { UserType } from "@/types/user.type";
 
 export type ContextType = { data: UserType[] | null };
 

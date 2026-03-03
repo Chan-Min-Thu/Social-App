@@ -1,4 +1,4 @@
-import { ErrorType } from "../../types/error.type";
+import { ErrorType } from "@/types/error.type";
 
 export const errorFun = (err: ErrorType) => {
   const error: any = new Error(err.message);

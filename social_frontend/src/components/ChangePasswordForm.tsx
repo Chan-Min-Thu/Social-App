@@ -1,16 +1,20 @@
 import { useState } from "react";
-import { useNavigation } from "react-router";
+import { useNavigate } from "react-router";
+import { useMutation } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { toast } from "react-toastify";
 import { EyeClosedIcon, EyeOpenIcon } from "@radix-ui/react-icons";
-import { useUpdatePassword } from "@/hooks/updatePassword";
+import { updatePassword } from "@/api/query";
 import { updatePasswordSchema } from "@/utils/schema/validationSchemas";
 import { LockIcon } from "@/components/icons/LockIcon";
 import Button from "@/components/Button";
+import type { UpdatePasswordType } from "@/types/updatePassword.type";
 
 const ChangePasswordForm = () => {
+  const navigate = useNavigate();
   const [visible, setVisible] = useState({
-    currentPassword: false,
+    oldPassword: false,
     newPassword: false,
     newConfirmPassword: false,
   });
@@ -22,15 +26,23 @@ const ChangePasswordForm = () => {
     resolver: zodResolver(updatePasswordSchema),
   });
 
-  const { mutate } = useUpdatePassword();
-
-  // const actionData = useActionData();
-  const navigation = useNavigation();
-  const isSubmitting = navigation.state === "submitting";
-
+  const { mutate, isPending } = useMutation({
+    mutationFn: (data: UpdatePasswordType) => updatePassword(data),
+    onError: (error: any) => {
+      const errorMessage =
+        error.response?.data?.message || "Something went wrong";
+      toast.error(errorMessage, { position: "bottom-center" });
+    },
+    onSuccess: () => {
+      toast.success("Password updated successfully!", { position: "bottom-center" });
+      setTimeout(() => {
+        navigate("/profile", { replace: true });
+      }, 1500);
+    },
+  });
 
   const onSubmitHandler = (data: any) => {
-    mutate(data)
+    mutate(data);
   };
   return (
     <div className="card bg-base-100 w-full h-full p-5  shadow-sm mt-6 relative">
@@ -49,8 +61,8 @@ const ChangePasswordForm = () => {
       >
         <label className="inputbox w-full flex validator">
           <input
-            type={visible.currentPassword ? "text" : "password"}
-            {...register("currentPassword", {
+            type={visible.oldPassword ? "text" : "password"}
+            {...register("oldPassword", {
               required: "Current Password is required.",
             })}
             placeholder="Current Password"
@@ -61,18 +73,16 @@ const ChangePasswordForm = () => {
             onClick={() =>
               setVisible({
                 ...visible,
-                currentPassword: !visible.currentPassword,
+                oldPassword: !visible.oldPassword,
               })
             }
             content=""
           >
-            {visible.currentPassword ? <EyeOpenIcon /> : <EyeClosedIcon />}
+            {visible.oldPassword ? <EyeOpenIcon /> : <EyeClosedIcon />}
           </Button>
         </label>
-        {errors.currentPassword && (
-          <div className="text-error">
-            {errors.currentPassword.message}
-          </div>
+        {errors.oldPassword && (
+          <div className="text-error">{errors.oldPassword.message}</div>
         )}
         <label className="inputbox flex w-full validator">
           <input
@@ -98,9 +108,7 @@ const ChangePasswordForm = () => {
           </Button>
         </label>
         {errors.newPassword && (
-          <div className="text-error">
-            {errors.newPassword.message}
-          </div>
+          <div className="text-error">{errors.newPassword.message}</div>
         )}
         <label className="inputbox flex w-full validator">
           <input
@@ -124,16 +132,14 @@ const ChangePasswordForm = () => {
           </Button>
         </label>
         {errors.newConfirmPassword ? (
-          <div className="text-error">
-            {errors.newConfirmPassword.message}
-          </div>
+          <div className="text-error">{errors.newConfirmPassword.message}</div>
         ) : null}
-       {errors && <div className="text-error">{errors.root?.message}</div>}
+        {errors && <div className="text-error">{errors.root?.message}</div>}
         <Button
           type="submit"
-          disabled={isSubmitting}
+          disabled={isPending}
           className="btn btn-primary mt-2"
-          content={isSubmitting ? "Updating Password..." : "Update Password"}
+          content={isPending ? "Updating Password..." : "Update Password"}
         />
       </form>
     </div>

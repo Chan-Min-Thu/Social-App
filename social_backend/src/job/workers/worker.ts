@@ -2,7 +2,7 @@ import { Worker } from "bullmq";
 import { Redis } from "ioredis";
 import path from "path";
 import sharp from "sharp";
-import { sendEmail } from "@/utils/email";
+import { sendEmail } from "../../utils/email";
 
 const connection = new Redis({
   host: process.env.REDIS_HOST,

@@ -551,18 +551,17 @@ export const updatePassword = [
     const oldPassword = req.body.oldPassword;
     const newPassword = req.body.newPassword;
 
+    console.log(oldPassword, newPassword);
+
     // 1. Find User
     const user = (await getUserById(userId)) as UserType;
 
     // 2. Hash Compared password
-    const isMatchedOldPassword = await bcrypt.compare(
-      oldPassword,
-      user?.passwordHash,
-    );
-
+    const isMatchedOldPassword = await bcrypt.compare(oldPassword, user.passwordHash);
+    console.log(isMatchedOldPassword);
     if (!isMatchedOldPassword) {
       const error: any = new Error("Your old password was wrong.");
-      error.status = 401;
+      error.status = 400;
       error.code = errorCode.notMatched;
       return next(error);
     }

@@ -107,7 +107,7 @@ export const findFriendship = ({
         { requesterId: userId, addresseeId: friendId },
         { requesterId: friendId, addresseeId: userId },
       ],
-      status: "accepted",
+      // status: "accepted",
     },
   });
 };

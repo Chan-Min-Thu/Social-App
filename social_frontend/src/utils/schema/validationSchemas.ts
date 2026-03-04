@@ -28,7 +28,7 @@ export const emailSchema = z.object({
 
 export const updatePasswordSchema = z
   .object({
-    currentPassword: z
+    oldPassword: z
       .string()
       .min(8, "Password must be at least 8 characters long"),
     newPassword: z

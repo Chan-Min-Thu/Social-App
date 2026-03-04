@@ -44,7 +44,7 @@ export default function UserProfile() {
             {...register("username", {
               required: "Username is essentially required.",
             })}
-            placeholder="Current Password"
+            placeholder="Username"
             className="focus:outline-none flex-1 pl-5"
           />
         </label>

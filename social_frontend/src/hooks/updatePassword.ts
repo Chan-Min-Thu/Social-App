@@ -6,8 +6,12 @@ export const useUpdatePassword = () => {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (data:UpdatePasswordType) => updatePassword(data),
-    onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: ["settings"] });
+    onError: (error: any) => {
+    const errorMessage = error.response?.data?.message || "Something went wrong";
+    alert(errorMessage);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [""] });
     },
   });
 };

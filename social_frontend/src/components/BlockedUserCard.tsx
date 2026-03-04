@@ -2,6 +2,7 @@ import { useUnblockUser } from "@/hooks/unblockFriend";
 import Profile from "@/components/Profile";
 import Button from "@/components/Button";
 import DialogBox from "@/components/DialogBox";
+import { getProfileImageUrl } from "@/utils/profileUrl";
 import type { UserType } from "@/types/user.type";
 import { BlockedUserIcon } from "./icons/BlockedUserIcon";
 
@@ -28,7 +29,7 @@ const BlockedUserCard = ({ data }: BlockedUserCardProps) => {
       <div className="w-full my-4">
         <ul className="list bg-base-100 rounded-box m-2">
           <li className="list-row flex flex-col">
-            {data.length &&
+            {data.length ?
               data?.map((data: UserType) => (
                 <div key={data.id}>
                   <DialogBox
@@ -37,7 +38,7 @@ const BlockedUserCard = ({ data }: BlockedUserCardProps) => {
                   />
                   <div className="flex justify-between w-full">
                     <Profile
-                      imageUrl={data.avatarUrl}
+                      imageUrl={getProfileImageUrl(data.avatarUrl)}
                       name={data.username.toUpperCase()}
                       status="You blocked this user."
                     />
@@ -56,7 +57,7 @@ const BlockedUserCard = ({ data }: BlockedUserCardProps) => {
                     </div>
                   </div>
                 </div>
-              ))}
+              )):<p className=" text-xl font-medium text-center">No blocked users.</p>}
           </li>
         </ul>
       </div>

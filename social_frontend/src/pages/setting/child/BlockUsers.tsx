@@ -9,7 +9,6 @@ const BlockUsers = () => {
     queryKey: ["blocked-friends"],
     queryFn: fetchBlockedFriends,
   });
-  console.log(blockedUsers);
   return (
     <div className="">
       <Link

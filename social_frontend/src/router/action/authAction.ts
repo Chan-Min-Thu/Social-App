@@ -137,7 +137,7 @@ export const userProfileAction = async ({ request }: ActionFunctionArgs) => {
     if (response.status !== 200) {
       return response.data.message || "Registeration of profile failed";
     }
-    console.log("response from user profile api", response.data.data.id);
+
 
     getUser({
       id: response.data.data.id,

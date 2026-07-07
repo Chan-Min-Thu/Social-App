@@ -66,9 +66,8 @@ app.use("/api/v1", auth, reactionRoute);
 app.use("/api/v1", auth, commentRoute);
 app.use("/api/v1", auth, friendRoute);
 app.use("/api/v1", auth, profileRoute);
-
 app.use((error: ErrorType, req: Request, res: Response, next: NextFunction) => {
-  console.log(error);
+
   const status = error.status || 500;
   const message = error.message || "Server Error";
   const errorCode = error.code || "Error_code";

@@ -130,7 +130,7 @@ export const unblockFriendController = [
     if (reqBodyErrorFn(req, next)) return;
     const userId = req.userId;
     const { blockedId } = req.body;
-    console.log(blockedId);
+  
     const isFriend = (await findFriendshipBlocked({
       userId: String(userId),
       friendId: blockedId,
@@ -168,7 +168,7 @@ export const getBlockUserController = async (
   const blockedUserProfiles = blockedUserRelations.map((profile: any) =>
     profile.addressee.id === userId ? profile.requester : profile.addressee,
   );
-  console.log(blockedUserProfiles);
+
   res.status(200).json({
     message: "You are blocked users.",
     data: blockedUserProfiles,
@@ -288,7 +288,7 @@ export const getFriendsContorller = [
     } else if (status === "toadd") {
       //1. Get current friends and pending fri to avoid  suggessting them
       const exitingRelations = await getAcceptedAndPendingFriends(userId);
-      console.log("exitingRelations ,", exitingRelations)
+
       const excluedIds = new Set([
         userId,
         ...exitingRelations.map((f) =>

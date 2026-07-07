@@ -14,7 +14,7 @@ export default function Requests() {
   const { data } = useOutletContext<ContextType>();
   const mutation = useAcceptFriend();
   const { mutate: removeMutation } = useRemoveFriendship("requested");
-  console.log(data);
+
   return (
     <div className="w-full my-4">
       <ul className="list bg-base-100 rounded-box shadow-md m-2">

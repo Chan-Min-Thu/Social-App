@@ -93,7 +93,7 @@ export const createReaction = async ({ postId, type }: CreateReactionType) => {
 };
 
 export const createBlockUser = async (friendId: string) => {
-  console.log(friendId);
+
   await api
     .post("/friend-block", { blockedId: friendId })
     .then((res) => res.data)

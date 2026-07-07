@@ -5,6 +5,7 @@ export const healthCheck = (
   res: Response,
   next: NextFunction
 ) => {
+  console.log("=== Health Check ===");
   res.status(200).json({
     message: "Everything is Ok.",
   });

@@ -102,7 +102,7 @@ export const auth = async (
       .cookie("accessToken", newAccessToken, accessTokenOptions)
       .cookie("refreshToken", newRefreshToken, refreshTokenOptions);
     req.userId = decoded.id;
-    return next();
+  return next();
   };
 
   // Before access Token is not expired,
@@ -124,7 +124,7 @@ export const auth = async (
         );
       }
       req.userId = decoded.id;
-      next();
+     return next();
     } catch (error: any) {
       if (error.name === "TokenExpiredError") {
         generateNewToken();
